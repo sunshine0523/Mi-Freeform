@@ -1,38 +1,49 @@
 package com.sunshine.freeform.utils
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.hardware.SensorManager
+import android.util.Log
+import android.view.OrientationEventListener
+import android.view.Surface
+
+import java.lang.reflect.Field
+
+
 /**
  * @author sunshine
  * @date 2021/2/19
  */
-class ScreenOrientationListener constructor(context: Context?) : OrientationEventListener(context) {
-    private var mOrientation: kotlin.Int = 0
-    private var mOnOrientationChangedListener: ScreenOrientationListener.OnOrientationChangedListener? = null
-    private var mContext: Context?
+class ScreenOrientationListener(context: Context) : OrientationEventListener(context) {
+    private var mOrientation = 0
+    private var mOnOrientationChangedListener: OnOrientationChangedListener? = null
+    private val mContext: Context
     private var mFieldRotation: Field? = null
-    private var mOLegacy: Object? = null
-    fun setOnOrientationChangedListener(listener: ScreenOrientationListener.OnOrientationChangedListener?) {
-        this.mOnOrientationChangedListener = listener9
+    private var mOLegacy: Any? = null
+    fun setOnOrientationChangedListener(listener: OnOrientationChangedListener?) {
+        mOnOrientationChangedListener = listener
     }
 
-    fun getOrientation(): kotlin.Int {
-        var rotation: kotlin.Int = -1
+    @SuppressLint("PrivateApi")
+    fun getOrientation(): Int {
+        var rotation = -1
         try {
             if (null == mFieldRotation) {
-                var sensorManager: SensorManager? = mContext.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
-                var clazzLegacy: Class? = Class.forName("android.hardware.LegacySensorManager")
-                var constructor: Constructor? = clazzLegacy.getConstructor(SensorManager::class.java)
-                constructor.setAccessible(true)
+                val sensorManager = mContext.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+                val clazzLegacy = Class.forName("android.hardware.LegacySensorManager")
+                val constructor = clazzLegacy.getConstructor(SensorManager::class.java)
+                constructor.isAccessible = true
                 mOLegacy = constructor.newInstance(sensorManager)
                 mFieldRotation = clazzLegacy.getDeclaredField("sRotation")
-                mFieldRotation.setAccessible(true)
+                mFieldRotation!!.isAccessible = true
             }
-            rotation = mFieldRotation.getInt(mOLegacy)
+            rotation = mFieldRotation!!.getInt(mOLegacy)
         } catch (e: Exception) {
-            Log.e(ScreenOrientationListener.Companion.TAG, "getRotation e=" + e.getMessage())
+            Log.e(TAG, "getRotation e=" + e.message)
             e.printStackTrace()
         }
         //        Log.d(TAG, "getRotation rotation=" + rotation);
-        var orientation: kotlin.Int = -1
+        var orientation = -1
         when (rotation) {
             Surface.ROTATION_0 -> orientation = 0
             Surface.ROTATION_90 -> orientation = 90
@@ -45,28 +56,27 @@ class ScreenOrientationListener constructor(context: Context?) : OrientationEven
         return orientation
     }
 
-    @Override
-    fun onOrientationChanged(orientation: kotlin.Int) {
-        var orientation: kotlin.Int = orientation
-        if (orientation == OrientationEventListener.ORIENTATION_UNKNOWN) {
+    override fun onOrientationChanged(orientation: Int) {
+        var orientation = orientation
+        if (orientation == ORIENTATION_UNKNOWN) {
             return  // 手机平放时，检测不到有效的角度
         }
         orientation = getOrientation()
         if (mOrientation != orientation) {
             mOrientation = orientation
             if (null != mOnOrientationChangedListener) {
-                mOnOrientationChangedListener.onOrientationChanged(mOrientation)
-                Log.d(ScreenOrientationListener.Companion.TAG, "ScreenOrientationListener onOrientationChanged orientation=" + mOrientation)
+                mOnOrientationChangedListener!!.onOrientationChanged(mOrientation)
+                Log.d(TAG, "ScreenOrientationListener onOrientationChanged orientation=$mOrientation")
             }
         }
     }
 
-    open interface OnOrientationChangedListener {
-        open fun onOrientationChanged(orientation: kotlin.Int)
+    interface OnOrientationChangedListener {
+        fun onOrientationChanged(orientation: Int)
     }
 
     companion object {
-        private val TAG: String? = ScreenOrientationListener::class.java.getSimpleName()
+        private val TAG = ScreenOrientationListener::class.java.simpleName
     }
 
     init {
