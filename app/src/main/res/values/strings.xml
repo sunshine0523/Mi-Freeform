@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">米窗</string>
+    <string name="permission_label">权限</string>
+    <string name="floating_label">悬浮窗设置</string>
+    <string name="choose_freeform_apps_label">选择小窗应用</string>
+    <string name="mi_freeform_setting_label">米窗设置</string>
+    <string name="freeform_setting_label">小窗设置</string>
+    <string name="accessibility_label">当前应用监听和小窗位置监听</string>
+    <string name="app_info">米窗是一款在原生系统上可以像MIUI小窗一样工作的软件</string>
+    <string name="button_freeform_setting">小窗设置</string>
+    <string name="switch_freeform">开启小窗悬浮按钮</string>
+    <string name="switch_notify">在来通知时显示气泡</string>
+    <string name="switch_notify_summary">类似原生的通知气泡功能，在接收到通知时会在屏幕边缘显示一个通知气泡，点击即可小窗打开发送通知应用</string>
+    <string name="setting_freeform_apps">选择小窗应用</string>
+    <string name="setting_freeform_apps_summary">选择在悬浮按钮中可以开启小窗的应用</string>
+    <string name="setting_freeform">小窗设置</string>
+    <string name="setting_freeform_summary">对小窗大小、位置等进行设置</string>
+    <string name="setting_floating">悬浮按钮设置</string>
+    <string name="setting_floating_summary">对悬浮按钮的位置等设置</string>
+    <string name="text_test">测试文本</string>
+    <string name="category_freeform">小窗</string>
+    <string name="category_notify">通知气泡</string>
+    <string name="switch_show_location_off">当前在屏幕左边显示悬浮按钮</string>
+    <string name="switch_show_location_on">当前在屏幕右边显示悬浮按钮</string>
+    <string name="switch_show_location">点击切换悬浮按钮显示位置</string>
+    <string name="accessibility_description">“米窗”会使用无障碍功能来获取小窗位置和当前正在运行得应用，用来在应用切换和小窗位置移动时记录小窗状态以还原或挂起小窗</string>
+    <string name="permission_description">“米窗”需要“显示在其他应用的上层”权限用来显示悬浮窗以便打开小窗界面；
+        需要“通知使用权”权限用来监听应用通知以便在有新通知时打开小窗；
+        需要“使用情况访问权限”权限用来展示最近使用的应用；
+        需要开启“无障碍”功能用来获取当前屏幕方向用以改变小窗大小，小窗位置和当前应用以便在切换应用时在原位置打开小窗，在小窗贴合屏幕边缘时贴合边缘挂起；
+        需要root权限以小窗模式启动应用程序。
+        如果您拒绝这些权限或功能，“米窗”可能无法正常使用。</string>
+    <string name="draw_overlay_permission_granted">“显示在其他应用的上层”已经获取</string>
+    <string name="notification_listeners_permission_granted">“通知使用权”已经获取</string>
+    <string name="get_usage_stats_permission_granted">“使用情况访问权限”已经获取</string>
+    <string name="accessibility_permission_granted">“无障碍”已经运行</string>
+    <string name="draw_overlay_permission_denied">点击授权“显示在其他应用的上层”</string>
+    <string name="notification_listeners_permission_denied">点击授权“通知使用权”</string>
+    <string name="get_usage_stats_permission_denied">点击授权“使用情况访问权限”</string>
+    <string name="accessibility_permission_denied">点击开启“无障碍”</string>
+    <string name="permission_success">权限获取成功</string>
+    <string name="dialog_title">提示</string>
+    <string name="permission_fail">没有权限我真的不能运行/(ㄒoㄒ)/~~</string>
+    <string name="to_grant">去授权</string>
+    <string name="to_finish">退出</string>
+    <string name="draw_overlay_permission_fail">没有悬浮窗权限，请重启软件获取</string>
+    <string name="root_permission_granted">root权限已经获取</string>
+    <string name="root_permission_denied">点击获取root权限</string>
+    <string name="cannot_granted_notification">无法判断“通知使用权”权限，请自行前往设置开启</string>
+    <string name="cannot_granted_usage">无法判断“使用情况访问权限”，请自行前往设置开启</string>
+    <string name="cannot_granted_overlay">无法判断“显示在其他应用的上层”权限，请自行前往设置开启</string>
+    <string name="init_server_fail">初始化服务失败，请重启软件</string>
+    <string name="socket_connect_fail">服务连接失败，请尝试重新开关悬浮按钮进行连接</string>
+    <string name="service_state_dialog_title">提示</string>
+    <string name="service_state_dialog_message">正在启动服务…</string>
+    <string name="switch_service">开启服务</string>
+    <string name="release_file_fail">释放文件失败</string>
+    <string name="category_freeform_base">基本设置</string>
+    <string name="setting_freeform_model">小窗模式</string>
+    <string name="radiobutton_imagereader">模式1：省电、性能好、帧率低</string>
+    <string name="radiobutton_mediacodec">模式2：帧率高、性能较差</string>
+    <string name="choose_freeform_model_title">选择小窗模式</string>
+    <string name="done">确定</string>
+    <string name="cancel">取消</string>
+</resources>

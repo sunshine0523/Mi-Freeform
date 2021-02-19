@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/category_freeform_base">
+        <Preference
+            android:key="setting_freeform_model"
+            android:title="@string/setting_freeform_model" />
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/category_freeform">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="switch_service"
+            android:title="@string/switch_service" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="switch_floating"
+            android:title="@string/switch_freeform" />
+        <Preference
+            android:key="setting_freeform"
+            android:summary="@string/setting_freeform_summary"
+            android:title="@string/setting_freeform" />
+        <Preference
+            android:key="setting_floating"
+            android:summary="@string/setting_floating_summary"
+            android:title="@string/setting_floating" />
+        <Preference
+            android:key="setting_freeform_apps"
+            android:summary="@string/setting_freeform_apps_summary"
+            android:title="@string/setting_freeform_apps" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/category_notify">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="switch_notify"
+            android:summary="@string/switch_notify_summary"
+            android:title="@string/switch_notify" />
+    </PreferenceCategory>
+</PreferenceScreen>

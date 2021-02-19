@@ -1,0 +1,3 @@
+include ':freeform-server'
+include ':app'
+rootProject.name = "米窗"

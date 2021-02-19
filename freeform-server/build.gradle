@@ -1,0 +1,70 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        applicationId "com.sunshine.freeform_server"
+        minSdkVersion 29
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        //consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    sourceSets{
+        main{
+            java.srcDirs = ['src/main/java', 'src/main/aidl']
+        }
+    }
+
+    task copyRelease(dependsOn: 'deleteServer', type: Copy){
+        from file('build/outputs/apk/release/freeform-server-release-unsigned.apk')
+        into file('../app/src/main/assets')
+        rename('freeform-server-release-unsigned.apk', 'freeform-server.jar')
+    }
+
+    task deleteServer(type: Delete){
+        delete "../app/src/main/assets/scrcpy-server.jar"
+    }
+
+
+    task copyDebug (dependsOn: 'deleteServer', type: Copy){
+        from file("build/outputs/apk/debug/freeform-server-debug.apk")
+        into file("../app/src/main/assets/")
+        rename('freeform-server-debug.apk', 'freeform-server.jar')
+    }
+
+    afterEvaluate {
+        packageRelease.finalizedBy(copyRelease)
+    }
+
+    afterEvaluate {
+        packageDebug.finalizedBy(copyDebug)
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testImplementation 'junit:junit:4.+'
+}
