@@ -17,7 +17,7 @@ import java.lang.reflect.Field
 class ScreenOrientationListener(context: Context) : OrientationEventListener(context) {
     private var mOrientation = 0
     private var mOnOrientationChangedListener: OnOrientationChangedListener? = null
-    private val mContext: Context
+    private val mContext: Context = context
     private var mFieldRotation: Field? = null
     private var mOLegacy: Any? = null
     fun setOnOrientationChangedListener(listener: OnOrientationChangedListener?) {
@@ -57,6 +57,7 @@ class ScreenOrientationListener(context: Context) : OrientationEventListener(con
     }
 
     override fun onOrientationChanged(orientation: Int) {
+        println("orientation")
         var orientation = orientation
         if (orientation == ORIENTATION_UNKNOWN) {
             return  // 手机平放时，检测不到有效的角度
@@ -79,7 +80,4 @@ class ScreenOrientationListener(context: Context) : OrientationEventListener(con
         private val TAG = ScreenOrientationListener::class.java.simpleName
     }
 
-    init {
-        mContext = context
-    }
 }

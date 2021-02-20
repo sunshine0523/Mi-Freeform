@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sunshine.freeform.R
 import com.sunshine.freeform.callback.OrientationChangeListener
 import com.sunshine.freeform.callback.ServiceStateListener
+import com.sunshine.freeform.utils.ScreenOrientationListener
 import com.sunshine.freeform.utils.ServiceUtils
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
@@ -81,6 +82,13 @@ class FloatingService : Service() {
         showFloatingButtonWindow()
 
         toListenOrientation()
+
+        ScreenOrientationListener(this).setOnOrientationChangedListener(object : ScreenOrientationListener.OnOrientationChangedListener {
+            override fun onOrientationChanged(orientation: Int) {
+                println("changed")
+            }
+
+        })
 
         return super.onStartCommand(intent, flags, startId)
     }

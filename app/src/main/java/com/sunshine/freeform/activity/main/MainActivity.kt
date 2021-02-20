@@ -8,6 +8,7 @@ import android.provider.Settings
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sunshine.freeform.R
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        Toast.makeText(this, "f", Toast.LENGTH_LONG).show()
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         requirePermission()
@@ -70,9 +72,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         } else if (viewModel.isShowFloating() && !ServiceUtils.isServiceWork(this, "{$packageName}.service.floating.FloatingService")) {
             //如果服务没有运行就启动
             startService(Intent(applicationContext, FloatingService::class.java))
-            viewModel.getAllFreeFormApps().observe(this) {
+            viewModel.getAllFreeFormApps().observe(this, Observer {
                 FloatingService.floatingApps = it
-            }
+            })
         }
     }
 
