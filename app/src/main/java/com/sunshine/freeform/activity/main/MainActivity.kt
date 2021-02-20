@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Toast.makeText(this, "f", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "g", Toast.LENGTH_LONG).show()
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         requirePermission()
