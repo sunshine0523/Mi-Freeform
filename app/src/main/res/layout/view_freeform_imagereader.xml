@@ -10,7 +10,18 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/imageView_root"
+            android:visibility="invisible"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/view_close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view_swing" />
+
+        <ImageView
+            android:id="@+id/imageView_xposed"
+            android:visibility="invisible"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/view_close"
@@ -22,6 +33,7 @@
             android:id="@+id/view_swing"
             android:layout_width="match_parent"
             android:layout_height="25dp"
+            android:background="@color/freeform_bar"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,6 +43,7 @@
             android:id="@+id/view_close"
             android:layout_width="match_parent"
             android:layout_height="25dp"
+            android:background="@color/freeform_bar"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

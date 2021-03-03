@@ -11,4 +11,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
+    <color name="text">#000000</color>
+    <color name="floating_background">#FFFFFF</color>
+    <color name="freeform_size_cardview_background">@color/yellow_main</color>
+    <color name="freeform_bar">@color/white</color>
 </resources>

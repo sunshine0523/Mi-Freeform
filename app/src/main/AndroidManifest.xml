@@ -3,15 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sunshine.freeform">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <!--在Android 11且targetSDK为30的情况下需要新增权限才能获取到全部应用-->
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
-        tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 在Android 11且targetSDK为30的情况下需要新增权限才能获取到全部应用 -->
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" /> <!-- bugly -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission
+        android:name="android.permission.READ_LOGS"
+        tools:ignore="ProtectedPermissions" />
 
     <application
         android:allowBackup="true"
@@ -20,9 +26,42 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FreeForm">
+
+
+        <service
+            android:name=".service.core.CoreService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="@string/xposed_description" />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="53" /> <!-- bugly -->
+        <!-- 配置APP ID -->
+        <meta-data
+            android:name="BUGLY_APPID"
+            android:value="ef36a376e0" /> <!-- 配置APP版本号 -->
+        <meta-data
+            android:name="BUGLY_APP_VERSION"
+            android:value="0.0.8 beta" /> <!-- 配置APP渠道号 -->
+        <meta-data
+            android:name="BUGLY_APP_CHANNEL"
+            android:value="private" /> <!-- 配置Bugly调试模式（true或者false） -->
+        <meta-data
+            android:name="BUGLY_ENABLE_DEBUG"
+            android:value="false" />
+
+        <activity
+            android:name=".activity.free_form_setting.FreeFromSizeActivity"
+            android:label="@string/freeform_size_setting_label" />
         <activity
             android:name=".activity.free_form_setting.FreeFormSettingActivity"
-            android:label="@string/freeform_setting_label"/>
+            android:label="@string/freeform_setting_label" />
         <activity
             android:name=".activity.permission.PermissionActivity"
             android:label="@string/permission_label" />
@@ -30,12 +69,17 @@
             android:name=".activity.floating_setting.FloatingSettingActivity"
             android:label="@string/floating_label" />
         <activity
-            android:name=".activity.choose_free_form_apps.ChooseFreeFormAppsActivity"
+            android:name=".activity.choose_free_form_apps.ChooseAppsActivity"
             android:label="@string/choose_freeform_apps_label" />
         <activity
             android:name=".activity.mi_window_setting.MiWindowSettingActivity"
             android:label="@string/mi_freeform_setting_label" />
-        <activity android:name=".activity.main.MainActivity">
+        <activity android:name=".activity.main.MainActivity" />
+        <activity
+            android:name=".activity.splash.SplashActivity"
+            android:excludeFromRecents="true"
+            android:taskAffinity=":splash"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -45,30 +89,44 @@
 
         <service
             android:name=".service.floating.FloatingService"
+            android:configChanges="orientation|keyboard|layoutDirection|screenSize"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".service.FreeFormAccessibilityService"
+            android:name=".service.notification.NotificationService"
             android:enabled="true"
-            android:exported="false"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_config" />
-        </service>
-        <service
-            android:name=".service.NotificationService"
-            android:enabled="true"
-            android:exported="false"
+            android:exported="true"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+        <service
+            android:name=".service.notification.NotificationIntentService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".service.tile.QuickStartTileService"
+            android:icon="@drawable/tile_icon"
+            android:label="@string/choose_freeform_app"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="true" />
+        </service>
+
+        <receiver
+            android:name=".broadcast.StartActivityReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.sunshine.freeform.start_activity"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

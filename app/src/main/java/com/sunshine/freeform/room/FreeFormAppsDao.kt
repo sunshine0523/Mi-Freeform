@@ -21,4 +21,10 @@ interface FreeFormAppsDao {
 
     @Query("SELECT packageName FROM FreeFormAppsEntity")
     fun getAll() : LiveData<List<String>?>
+
+    @Query("SELECT packageName FROM FreeFormAppsEntity")
+    fun getAllWithoutLiveData() : List<String>?
+
+    @Query("DELETE FROM FreeFormAppsEntity")
+    fun deleteAll()
 }

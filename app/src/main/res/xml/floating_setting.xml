@@ -10,4 +10,21 @@
         app:switchTextOff="@string/switch_show_location_on"
         app:switchTextOn="@string/switch_show_location_on"
         app:title="@string/switch_show_location" />
+
+    <SeekBarPreference
+        android:layout_width="wrap_content"
+        android:key="floating_button_size"
+        android:max="250"
+        android:title="@string/floating_button_size"
+        app:defaultValue="125"
+        app:min="1" />
+
+    <SeekBarPreference
+        android:layout_width="wrap_content"
+        android:key="floating_button_alpha"
+        android:max="255"
+        android:title="@string/floating_button_alpha"
+        app:defaultValue="200"
+        app:min="0" />
+
 </PreferenceScreen>

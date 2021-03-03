@@ -4,11 +4,20 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('D:\\daima\\Android\\AndroidStudioProjects\\sunshinekey.jks')
+            storePassword 'androidhas1'
+            keyAlias = 'demo'
+            keyPassword 'androidhas1'
+        }
+    }
+
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.sunshine.freeform_server"
+        //applicationId "com.sunshine.freeform_server"
         minSdkVersion 29
         targetSdkVersion 30
         versionCode 1
@@ -20,8 +29,11 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            zipAlignEnabled true
+            shrinkResources true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -39,9 +51,9 @@ android {
     }
 
     task copyRelease(dependsOn: 'deleteServer', type: Copy){
-        from file('build/outputs/apk/release/freeform-server-release-unsigned.apk')
+        from file('build/outputs/apk/release/freeform-server-release.apk')
         into file('../app/src/main/assets')
-        rename('freeform-server-release-unsigned.apk', 'freeform-server.jar')
+        rename('freeform-server-release.apk', 'freeform-server.jar')
     }
 
     task deleteServer(type: Delete){

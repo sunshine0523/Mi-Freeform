@@ -19,3 +19,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# 如果混淆和代码压缩会导致反序列化失败，并且会导致代码被移除，因为这里没有引用
+-keep class com.sunshine.freeform.* {*;}

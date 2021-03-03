@@ -1,5 +1,6 @@
 package com.sunshine.freeform.service.floating
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
@@ -18,7 +19,7 @@ import com.sunshine.freeform.callback.FloatingClickListener
  * @param model 小窗启动模式 imagereader mediacodec
  */
 class FreeFormAppsFloatingAdapter(
-    private val service: FloatingService,
+    private val context: Context,
     private val apps: List<String>?,
     private val model: Int,
     private val callBack: FloatingClickListener
@@ -44,18 +45,32 @@ class FreeFormAppsFloatingAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val packageName = apps!![position]
         try {
-            val appInfo = service.packageManager.getApplicationInfo(packageName, 0)
+            val appInfo = context.packageManager.getApplicationInfo(packageName, 0)
             var activityName = ""
             resolveInfo.forEach {
                 if (it.activityInfo.applicationInfo.packageName == packageName) {
                     activityName = it.activityInfo.name
                 }
             }
-            holder.icon.setImageDrawable(appInfo.loadIcon(service.packageManager))
+            holder.icon.setImageDrawable(appInfo.loadIcon(context.packageManager))
             holder.click.setOnClickListener {
                 val command = "am start -n ${packageName}/${activityName} --display "
-                if (model == 2) FreeFormMediaCodecView(service, command, packageName)
-                else FreeFormImageReaderView(service, command, packageName)
+
+                //FreeFormTextureWindow(service, command, packageName)
+                FreeFormWindow(context, command, packageName)
+
+                //废除了显示模式选择
+//                when (model) {
+//                    3 -> {
+//                        FreeFormTextureWindow(service, command, packageName)
+//                    }
+//                    2 -> {
+//                        FreeFormMediaCodecWindow(service, command, packageName)
+//                    }
+//                    else -> {
+//                        FreeFormImageReaderWindow(service, command, packageName)
+//                    }
+//                }
                 callBack.onClick()
             }
         } catch (e: PackageManager.NameNotFoundException) {}
@@ -68,6 +83,6 @@ class FreeFormAppsFloatingAdapter(
     init {
         val intent = Intent(Intent.ACTION_MAIN, null)
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
-        resolveInfo = service.packageManager.queryIntentActivities(intent, 0)
+        resolveInfo = context.packageManager.queryIntentActivities(intent, 0)
     }
 }

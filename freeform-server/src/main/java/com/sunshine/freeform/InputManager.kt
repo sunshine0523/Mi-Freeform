@@ -37,6 +37,8 @@ class InputManager(private val manager: IInterface) {
             method!!.invoke(manager, inputEvent, mode) as Boolean
         } catch (e: InvocationTargetException) {
             println("injectInputEvent $e")
+            val t = e.targetException
+            t.printStackTrace()
             false
         } catch (e: IllegalAccessException) {
             println("injectInputEvent $e")
@@ -55,7 +57,6 @@ class InputManager(private val manager: IInterface) {
         /**
          * 反射获取setDisplayId(int)方法
          */
-        @Throws(NoSuchMethodException::class)
         private fun getSetDisplayIdMethod(): Method? {
             if (setDisplayIdMethod == null) {
                 setDisplayIdMethod = InputEvent::class.java.getMethod(

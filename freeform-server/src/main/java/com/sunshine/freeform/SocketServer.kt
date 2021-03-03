@@ -1,20 +1,21 @@
 package com.sunshine.freeform
 
 import android.os.SystemClock
+import android.view.InputDevice
+import android.view.InputEvent
+import android.view.KeyEvent
 import android.view.MotionEvent
 import java.io.IOException
 import java.io.ObjectInputStream
 import java.net.ServerSocket
 import java.net.Socket
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.locks.ReentrantLock
 
 class SocketServer {
     private lateinit var inputManager: InputManager
     private var motionEvent: MotionEvent? = null
+    //当前是否有key事件
+    private var keyEventStats: Boolean = false
     private var displayId = -1
 
     private var touchServerSocket: ServerSocket? = null
@@ -50,11 +51,25 @@ class SocketServer {
             }catch (e: Exception) {
                 println("TimeUnit $e")
             }
-            if (displayId != -1 && motionEvent != null) {
-                InputManager.setDisplayId(motionEvent!!, displayId)
-                inputManager.injectInputEvent(motionEvent, 0)
-                println(motionEvent)
-                motionEvent = null
+            if (displayId != -1) {
+                if (motionEvent != null) {
+                    InputManager.setDisplayId(motionEvent!!, displayId)
+                    inputManager.injectInputEvent(motionEvent, 0)
+                    motionEvent = null
+                }
+                if (keyEventStats) {
+                    val down = KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK, 0)
+                    val up = KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BACK, 0)
+
+                    InputManager.setDisplayId(down, displayId)
+                    KeyEvent::class.java.getMethod("setSource", Int::class.javaPrimitiveType).invoke(down, InputDevice.SOURCE_KEYBOARD)
+                    inputManager.injectInputEvent(down, 0)
+
+                    KeyEvent::class.java.getMethod("setSource", Int::class.javaPrimitiveType).invoke(up, InputDevice.SOURCE_KEYBOARD)
+                    InputManager.setDisplayId(up, displayId)
+                    inputManager.injectInputEvent(up, 0)
+                    keyEventStats = false
+                }
             }
         }
 
@@ -80,31 +95,33 @@ class SocketServer {
                 val ois = ObjectInputStream(socket!!.getInputStream())
                 while (true) {
                     val eventData = ois.readObject() as EventData
-                    val count = eventData.xArray.size
-                    val pointerProperties: Array<MotionEvent.PointerProperties?> = arrayOfNulls(count)
-                    val pointerCoords: Array<MotionEvent.PointerCoords?> = arrayOfNulls(count)
-                    for (i in 0 until count) {
-                        pointerProperties[i] = MotionEvent.PointerProperties()
-                        pointerProperties[i]!!.id = i
-                        pointerProperties[i]!!.toolType = MotionEvent.TOOL_TYPE_FINGER
+                    //motionEvent
+                    if (eventData.type == 1) {
+                        val count = eventData.xArray!!.size
+                        val pointerProperties: Array<MotionEvent.PointerProperties?> = arrayOfNulls(count)
+                        val pointerCoords: Array<MotionEvent.PointerCoords?> = arrayOfNulls(count)
+                        for (i in 0 until count) {
+                            pointerProperties[i] = MotionEvent.PointerProperties()
+                            pointerProperties[i]!!.id = i
+                            pointerProperties[i]!!.toolType = MotionEvent.TOOL_TYPE_FINGER
 
-                        pointerCoords[i] = MotionEvent.PointerCoords()
-                        pointerCoords[i]!!.apply {
-                            orientation = 0f
-                            pressure = 1f
-                            size = 1f
-                            x = eventData.xArray[i]
-                            y = eventData.yArray[i]
+                            pointerCoords[i] = MotionEvent.PointerCoords()
+                            pointerCoords[i]!!.apply {
+                                orientation = 0f
+                                pressure = 1f
+                                size = 1f
+                                x = eventData.xArray!![i]
+                                y = eventData.yArray!![i]
+                            }
                         }
-                    }
-                    /**
-                     * 为什么要采用每次事件都发送displayId，这不是浪费资源吗
-                     * 并不是
-                     * 因为如果支持创建多个小窗的话，那么每次点击的就可能不是一个id
-                     * 所以采用这种方式可以处理多个小窗
-                     */
-                    displayId = eventData.displayId
-                    motionEvent = MotionEvent.obtain(
+                        /**
+                         * 为什么要采用每次事件都发送displayId，这不是浪费资源吗
+                         * 并不是
+                         * 因为如果支持创建多个小窗的话，那么每次点击的就可能不是一个id
+                         * 所以采用这种方式可以处理多个小窗
+                         */
+                        displayId = eventData.displayId
+                        motionEvent = MotionEvent.obtain(
                             SystemClock.uptimeMillis(),
                             SystemClock.uptimeMillis(),
                             eventData.action,
@@ -115,11 +132,18 @@ class SocketServer {
                             0,
                             1.0f,
                             1.0f,
-                            eventData.deviceId,
+                            -1,//eventData.deviceId,
                             0,
                             eventData.source,
-                            eventData.flags
-                    )
+                            0//eventData.flags
+                        )
+                    }
+                    //keyEvent模式
+                    else {
+                        displayId = eventData.displayId
+                        keyEventStats = true
+                    }
+
                 }
             }catch (e: Exception) {
                 println("connectThread $e")

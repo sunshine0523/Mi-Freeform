@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SeekBarPreference
 import androidx.preference.SwitchPreference
 import com.sunshine.freeform.R
 import com.sunshine.freeform.service.floating.FloatingService
@@ -23,6 +24,12 @@ class FloatingSettingView(context: Context) : PreferenceFragmentCompat(), Prefer
         preferenceManager.findPreference<SwitchPreference>("switch_show_location")?.apply {
             onPreferenceChangeListener = this@FloatingSettingView
         }
+        preferenceManager.findPreference<SeekBarPreference>("floating_button_size")?.apply {
+            onPreferenceChangeListener = this@FloatingSettingView
+        }
+        preferenceManager.findPreference<SeekBarPreference>("floating_button_alpha")?.apply {
+            onPreferenceChangeListener = this@FloatingSettingView
+        }
     }
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
@@ -36,10 +43,15 @@ class FloatingSettingView(context: Context) : PreferenceFragmentCompat(), Prefer
         when(preference?.key) {
             "switch_show_location" -> {
                 if (sp.getBoolean("switch_floating", false)) {
-                    requireActivity().stopService(Intent(requireContext(), FloatingService::class.java))
-                    requireActivity().startService(Intent(requireContext(), FloatingService::class.java))
+                    requireActivity().stopService(Intent(requireActivity(), FloatingService::class.java))
+                    requireActivity().startService(Intent(requireActivity(), FloatingService::class.java))
                 }
-
+            }
+            "floating_button_size" -> {
+                FloatingService.floatButtonSizeChangeListener?.onChanged(newValue as Int)
+            }
+            "floating_button_alpha" -> {
+                FloatingService.floatButtonAlphaChangeListener?.onChanged(newValue as Int)
             }
         }
         return true

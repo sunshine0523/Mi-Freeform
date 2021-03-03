@@ -20,18 +20,39 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         return sp.getBoolean("switch_floating", false)
     }
 
+    fun isNotification(): Boolean {
+        return sp.getBoolean("switch_notify", false)
+    }
+
+    /**
+     * 关闭本地服务
+     */
     fun closeService() {
-        //关闭服务进程
-        val pid = ShellUtils.execCommand("ps -ef | grep com.sunshine.freeform.Server | grep -v grep | awk '{print \$2}'", true).successMsg
-        ShellUtils.execRootCmdSilent("kill -9 $pid")
         sp.edit().apply {
             putBoolean("switch_service", false)
             putBoolean("switch_floating", false)
+            putBoolean("switch_notify", false)
             apply()
         }
     }
 
+    /**
+     * 远程服务是否开启
+     */
+    fun serviceIsClose(): Boolean {
+        val pid = ShellUtils.execCommand("ps -ef | grep com.sunshine.freeform.Server | grep -v grep | awk '{print \$2}'", true).successMsg
+        return pid.isNullOrBlank()
+    }
+
+    fun getControlModel(): Int {
+        return sp.getInt("freeform_control_model", 1)
+    }
+
     fun getAllFreeFormApps(): LiveData<List<String>?> {
-        return repository.getAll()
+        return repository.getAllFreeForm()
+    }
+
+    fun getAllNotificationApps(): LiveData<List<String>?> {
+        return repository.getAllNotification()
     }
 }

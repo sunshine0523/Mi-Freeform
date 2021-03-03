@@ -5,10 +5,11 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import com.sunshine.freeform.callback.ServiceStateListener
+import com.sunshine.freeform.utils.ShellUtils
 import java.io.ObjectOutputStream
 import java.net.Socket
-import java.util.concurrent.TimeUnit
 
 /**
  * @author sunshine
@@ -16,6 +17,12 @@ import java.util.concurrent.TimeUnit
  * 一些小窗配置
  */
 object FreeFormConfig {
+
+    private const val TAG = "FreeFormConfig"
+
+    //控制模式 1 root 2 xposed
+    var controlModel = 1
+
     private const val IP_ADDRESS = "127.0.0.1"
     private const val TOUCH_PORT = 10259
     var touchSocket: Socket? = null
@@ -25,13 +32,10 @@ object FreeFormConfig {
 
     var handler: Handler? = null
 
-    const val MIME_TYPE = "video/hevc"    //h265
-    const val FRAME_RATE = 60             //fps
-    const val IFRAME_INTERVAL = 1         //关键帧间隔1s
     var dpi = 300                         //小窗默认分辨率为300dpi，可以自定义
 
     //所有小窗的集合，用于屏幕旋转时监听
-    var freeFormViewSet = HashSet<FreeFormView>()
+    var freeFormViewSet = HashSet<FreeFormWindow>()
     //屏幕方向，1 竖屏 2横屏 0未定义
     var orientation = Configuration.ORIENTATION_UNDEFINED
 
@@ -40,9 +44,32 @@ object FreeFormConfig {
     //最小化的边缘留白
     const val SMALL_FREEFORM_DISTANCE = 250
 
-    fun init(listener: ServiceStateListener?) {
-        initSocket(listener)
-        startSendEventThread()
+    fun startActivityForHook(packageName: String) {
+        var freeFormWindow: FreeFormWindow? = null
+        freeFormViewSet.forEach {
+            if (it.packageName == packageName) {
+                freeFormWindow = it
+                return@forEach
+            }
+        }
+        if (freeFormWindow != null) {
+            ShellUtils.execCommand("${freeFormWindow!!.command}${freeFormWindow!!.displayId}", true)
+            //Log.e(TAG, "${freeFormWindow!!.command}${freeFormWindow!!.displayId}")
+        }
+    }
+
+    fun init(listener: ServiceStateListener?, controlModel: Int) {
+        this.controlModel = controlModel
+        //root
+        if (controlModel == 1) {
+            initSocket(listener)
+            startSendEventThread()
+        }
+        //xposed直接回调即可
+        else {
+            listener?.onStart()
+        }
+
     }
 
     /**
@@ -75,6 +102,16 @@ object FreeFormConfig {
             Looper.loop()
         }
         sendThread?.start()
+    }
+
+    /**
+     * 显示的小窗中是否存在要打开的小窗，存在就不允许打开了
+     */
+    fun hasFreeFormWindow(packageName: String): Boolean {
+        freeFormViewSet.forEach {
+            if (packageName == it.packageName) return true
+        }
+        return false
     }
 
     /**

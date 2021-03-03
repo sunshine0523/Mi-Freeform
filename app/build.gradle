@@ -5,9 +5,18 @@ plugins {
     id 'kotlin-android-extensions'
 
     id 'kotlin-kapt'
+    id 'bugly'
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('D:\\daima\\Android\\AndroidStudioProjects\\sunshinekey.jks')
+            storePassword 'androidhas1'
+            keyAlias = 'demo'
+            keyPassword 'androidhas1'
+        }
+    }
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
@@ -15,16 +24,24 @@ android {
         applicationId "com.sunshine.freeform"
         minSdkVersion 29
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode 8
+        versionName "0.0.8 beta"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            // 设置支持的SO库架构
+            abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
     }
 
     buildTypes {
         release {
+            zipAlignEnabled true
+            shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -43,11 +60,12 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.preference:preference-ktx:1.1.1'
 
     def room_version = "2.2.6"
     implementation "androidx.room:room-runtime:$room_version"
@@ -56,4 +74,16 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     // optional - Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
+
+    compileOnly 'de.robv.android.xposed:api:82'
+
+    compileOnly 'de.robv.android.xposed:api:82:sources'
+
+    implementation 'com.tencent.bugly:crashreport:latest.release'
+    implementation 'com.tencent.bugly:nativecrashreport:latest.release' //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
+}
+
+bugly {
+    appId = 'ef36a376e0' // 注册时分配的App ID
+    appKey = 'e3e6002c-b33f-4fca-851b-d93481d46813' // 注册时分配的App Key
 }

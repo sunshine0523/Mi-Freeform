@@ -10,9 +10,10 @@ import androidx.room.RoomDatabase
  * @date 2021/1/31
  * 软件数据库
  */
-@Database(entities = [FreeFormAppsEntity::class], version = 1, exportSchema = false)
+@Database(entities = [FreeFormAppsEntity::class, NotificationAppsEntity::class], version = 1, exportSchema = false)
 abstract class MyDatabase : RoomDatabase() {
     abstract val freeFormAppsDao: FreeFormAppsDao
+    abstract val notificationAppsDao: NotificationAppsDao
 
     companion object {
         private var database: MyDatabase? = null

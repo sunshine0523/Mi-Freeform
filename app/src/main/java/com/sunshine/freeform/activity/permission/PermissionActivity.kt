@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_permission.*
 
 class PermissionActivity : AppCompatActivity(), View.OnClickListener {
 
-    //当前已经获取权限的数量，5为全部获取成功
+    //当前已经获取权限的数量，4为全部获取成功
     private var hasPermissionCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,28 +31,28 @@ class PermissionActivity : AppCompatActivity(), View.OnClickListener {
         hasDrawOverlays()
         hasNotificationListener()
         hasGetUsageStats()
-        hasAccessibility()
+        //hasAccessibility()
         hasRoot()
     }
 
     //设置服务监听
     private fun serviceListener() {
         //无障碍权限监听，没找到回调，先这样设置
-        PermissionUtils.accessibilityStateListener = object : ServiceStateListener {
-            override fun onStart() {
-                button_accessibility.isClickable = false
-                button_accessibility.text = getString(R.string.accessibility_permission_granted)
-                hasPermissionCount++
-            }
-
-            override fun onStop() {
-                button_accessibility.isCheckable = true
-                button_accessibility.text = getString(R.string.accessibility_permission_denied)
-                button_accessibility.setOnClickListener(this@PermissionActivity)
-                hasPermissionCount--
-            }
-
-        }
+//        PermissionUtils.accessibilityStateListener = object : ServiceStateListener {
+//            override fun onStart() {
+//                button_accessibility.isClickable = false
+//                button_accessibility.text = getString(R.string.accessibility_permission_granted)
+//                hasPermissionCount++
+//            }
+//
+//            override fun onStop() {
+//                button_accessibility.isCheckable = true
+//                button_accessibility.text = getString(R.string.accessibility_permission_denied)
+//                button_accessibility.setOnClickListener(this@PermissionActivity)
+//                hasPermissionCount--
+//            }
+//
+//        }
 
         //通知使用权监听
         PermissionUtils.notificationStateListener = object : ServiceStateListener {
@@ -138,19 +138,19 @@ class PermissionActivity : AppCompatActivity(), View.OnClickListener {
 
     }
 
-    //无障碍
-    private fun hasAccessibility() {
-        if (PermissionUtils.hasAccessibility(this)) {
-            button_accessibility.isClickable = false
-            button_accessibility.text = getString(R.string.accessibility_permission_granted)
-            hasPermissionCount++
-        } else {
-            button_accessibility.isCheckable = true
-            button_accessibility.text = getString(R.string.accessibility_permission_denied)
-            button_accessibility.setOnClickListener(this)
-            //hasPermissionCount--
-        }
-    }
+//    //无障碍
+//    private fun hasAccessibility() {
+//        if (PermissionUtils.hasAccessibility(this)) {
+//            button_accessibility.isClickable = false
+//            button_accessibility.text = getString(R.string.accessibility_permission_granted)
+//            hasPermissionCount++
+//        } else {
+//            button_accessibility.isCheckable = true
+//            button_accessibility.text = getString(R.string.accessibility_permission_denied)
+//            button_accessibility.setOnClickListener(this)
+//            //hasPermissionCount--
+//        }
+//    }
 
     //root
     private fun hasRoot() {
@@ -186,9 +186,9 @@ class PermissionActivity : AppCompatActivity(), View.OnClickListener {
                         ), TagUtils.GET_USAGE_STATS_PERMISSION
                 )
             }
-            R.id.button_accessibility -> {
-                startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-            }
+//            R.id.button_accessibility -> {
+//                startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+//            }
             R.id.button_root -> {
                 hasRoot()
             }
@@ -200,7 +200,7 @@ class PermissionActivity : AppCompatActivity(), View.OnClickListener {
      */
     override fun onBackPressed() {
         //先执行再调用super
-        if (hasPermissionCount < 5) setResult(RESULT_CANCELED)
+        if (hasPermissionCount < 4) setResult(RESULT_CANCELED)
         else setResult(RESULT_OK)
         super.onBackPressed()
     }

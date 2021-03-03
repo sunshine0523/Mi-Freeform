@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <PreferenceCategory android:title="@string/category_freeform">
-
+    <PreferenceCategory android:title="@string/category_freeform_base">
         <SwitchPreference
             android:defaultValue="false"
             android:key="switch_service"
             android:title="@string/switch_service" />
         <SwitchPreference
             android:defaultValue="false"
+            android:key="switch_hide_recent"
+            android:title="@string/switch_hide_recent"
+            android:summary="@string/switch_hide_recent_summary"/>
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="@string/category_freeform">
+
+
+        <SwitchPreference
+            android:defaultValue="false"
             android:key="switch_floating"
             android:title="@string/switch_freeform" />
+<!--        <SwitchPreference-->
+<!--            android:defaultValue="false"-->
+<!--            android:key="switch_preference_freeform_only_enable_landscape"-->
+<!--            android:title="@string/switch_preference_only_enable_landscape" />-->
         <Preference
             android:key="setting_freeform"
             android:summary="@string/setting_freeform_summary"
@@ -31,5 +44,13 @@
             android:key="switch_notify"
             android:summary="@string/switch_notify_summary"
             android:title="@string/switch_notify" />
+        <Preference
+            android:key="setting_notification_apps"
+            android:summary="@string/setting_notification_apps_summary"
+            android:title="@string/setting_notification_apps"/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="switch_preference_only_enable_landscape"
+            android:title="@string/switch_preference_only_enable_landscape" />
     </PreferenceCategory>
 </PreferenceScreen>

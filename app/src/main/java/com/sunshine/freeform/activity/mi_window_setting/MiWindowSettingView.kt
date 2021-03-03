@@ -1,24 +1,33 @@
 package com.sunshine.freeform.activity.mi_window_setting
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
+
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+
 import com.sunshine.freeform.R
-import com.sunshine.freeform.activity.choose_free_form_apps.ChooseFreeFormAppsActivity
+import com.sunshine.freeform.activity.choose_free_form_apps.ChooseAppsActivity
 import com.sunshine.freeform.activity.floating_setting.FloatingSettingActivity
 import com.sunshine.freeform.activity.free_form_setting.FreeFormSettingActivity
 import com.sunshine.freeform.callback.FreeFormListener
 import com.sunshine.freeform.callback.ServiceStateListener
 import com.sunshine.freeform.service.floating.FloatingService
+import com.sunshine.freeform.service.floating.FreeFormConfig
+import com.sunshine.freeform.service.notification.NotificationService
+import com.sunshine.freeform.utils.InputEventUtils
 import com.sunshine.freeform.utils.ShellUtils
+
 import java.io.File
 import java.io.FileOutputStream
 
@@ -37,17 +46,41 @@ class MiWindowSettingView : PreferenceFragmentCompat(), Preference.OnPreferenceC
         sp = requireContext().getSharedPreferences("com.sunshine.freeform_preferences", Context.MODE_PRIVATE)
 
         preferenceManager.findPreference<SwitchPreference>("switch_service")?.apply {
+            //xposed模式无需开启服务
+            val isXposed = sp.getInt("freeform_control_model", 1) == 2
+            if (isXposed) {
+                isChecked = true
+                isEnabled = false
+                summary = getString(R.string.xposed_donnot_start_service)
+            }
             onPreferenceChangeListener = this@MiWindowSettingView
         }
 
         preferenceManager.findPreference<SwitchPreference>("switch_floating")?.apply {
             isEnabled = sp.getBoolean("switch_service", false)
+            //注入失败，可能是xposed没有激活
+            if (sp.getInt("freeform_control_model", 1) == 2 && !InputEventUtils().testXposedInjectMotionEvent()) {
+                isChecked = false
+                isEnabled = InputEventUtils().testXposedInjectMotionEvent()
+                summary = getString(R.string.control_false)
+            }
+
             onPreferenceChangeListener = this@MiWindowSettingView
         }
         preferenceManager.findPreference<SwitchPreference>("switch_notify")?.apply {
+            isEnabled = sp.getBoolean("switch_service", false)
+            //注入失败，可能是xposed没有激活
+            if (sp.getInt("freeform_control_model", 1) == 2 && !InputEventUtils().testXposedInjectMotionEvent()) {
+                isChecked = false
+                isEnabled = InputEventUtils().testXposedInjectMotionEvent()
+                summary = getString(R.string.control_false)
+            }
             onPreferenceChangeListener = this@MiWindowSettingView
         }
         preferenceManager.findPreference<Preference>("setting_freeform_apps")?.apply {
+            onPreferenceClickListener = this@MiWindowSettingView
+        }
+        preferenceManager.findPreference<Preference>("setting_notification_apps")?.apply {
             onPreferenceClickListener = this@MiWindowSettingView
         }
         preferenceManager.findPreference<Preference>("setting_freeform")?.apply {
@@ -56,12 +89,21 @@ class MiWindowSettingView : PreferenceFragmentCompat(), Preference.OnPreferenceC
         preferenceManager.findPreference<Preference>("setting_floating")?.apply {
             onPreferenceClickListener = this@MiWindowSettingView
         }
+        preferenceManager.findPreference<SwitchPreference>("switch_preference_only_enable_landscape")?.apply {
+            onPreferenceChangeListener = this@MiWindowSettingView
+        }
+        preferenceManager.findPreference<SwitchPreference>("switch_preference_freeform_only_enable_landscape")?.apply {
+            onPreferenceChangeListener = this@MiWindowSettingView
+        }
     }
 
     override fun onPreferenceClick(preference: Preference?): Boolean {
         when(preference?.key) {
             "setting_freeform_apps" -> {
-                startActivity(Intent(context, ChooseFreeFormAppsActivity::class.java))
+                startActivity(Intent(context, ChooseAppsActivity::class.java).putExtra("type", 1))
+            }
+            "setting_notification_apps" -> {
+                startActivity(Intent(context, ChooseAppsActivity::class.java).putExtra("type", 2))
             }
             "setting_freeform" -> {
                 startActivity(Intent(context, FreeFormSettingActivity::class.java))
@@ -93,6 +135,7 @@ class MiWindowSettingView : PreferenceFragmentCompat(), Preference.OnPreferenceC
                                 dialog.cancel()
                                 Handler(Looper.getMainLooper()).post {
                                     preferenceManager.findPreference<SwitchPreference>("switch_floating")?.isEnabled = true
+                                    preferenceManager.findPreference<SwitchPreference>("switch_notify")?.isEnabled = true
                                 }
                             }
 
@@ -108,8 +151,6 @@ class MiWindowSettingView : PreferenceFragmentCompat(), Preference.OnPreferenceC
                             }
                         })
                     }.start()
-
-
                 } else {
                     requireActivity().stopService(
                             Intent(
@@ -117,11 +158,22 @@ class MiWindowSettingView : PreferenceFragmentCompat(), Preference.OnPreferenceC
                                     FloatingService::class.java
                             )
                     )
+                    requireActivity().stopService(
+                        Intent(
+                            requireContext().applicationContext,
+                            NotificationService::class.java
+                        )
+                    )
                     //先关闭本地与服务连接，再关闭服务
                     preferenceManager.findPreference<SwitchPreference>("switch_floating")?.apply {
                         isEnabled = false
                         isChecked = false
                     }
+                    preferenceManager.findPreference<SwitchPreference>("switch_notify")?.apply {
+                        isEnabled = false
+                        isChecked = false
+                    }
+
                     //关闭服务进程
                     val pid = ShellUtils.execCommand(
                             "ps -ef | grep com.sunshine.freeform.Server | grep -v grep | awk '{print \$2}'",
@@ -132,31 +184,77 @@ class MiWindowSettingView : PreferenceFragmentCompat(), Preference.OnPreferenceC
             }
             "switch_floating" -> {
                 if (newValue as Boolean) {
-                    val builder = MaterialAlertDialogBuilder(requireContext())
-                    builder.apply {
-                        setTitle(getString(R.string.service_state_dialog_title))
-                        setMessage(getString(R.string.service_state_dialog_message))
-                        setCancelable(false)
-                    }
-                    val dialog = builder.create()
-                    dialog.show()
-                    FloatingService.listener = object : ServiceStateListener {
-                        override fun onStart() {
-                            dialog.cancel()
+                    //如果通知服务已经启动，那么不需要启动了
+                    if (!isShowNotification()) {
+                        val builder = MaterialAlertDialogBuilder(requireContext())
+                        builder.apply {
+                            setTitle(getString(R.string.service_state_dialog_title))
+                            setMessage(getString(R.string.service_state_dialog_message))
+                            setCancelable(false)
                         }
+                        val dialog = builder.create()
+                        dialog.show()
+                        FloatingService.listener = object : ServiceStateListener {
+                            override fun onStart() {
+                                dialog.cancel()
+                            }
 
-                        override fun onStop() {
-                            dialog.cancel()
-                            Looper.prepare()
-                            Toast.makeText(requireContext(), getString(R.string.init_server_fail), Toast.LENGTH_LONG).show()
-                            Looper.loop()
+                            override fun onStop() {
+                                dialog.cancel()
+                                Looper.prepare()
+                                Toast.makeText(requireContext(), getString(R.string.init_server_fail), Toast.LENGTH_LONG).show()
+                                Looper.loop()
+                            }
+
                         }
-
                     }
-                    requireActivity().startService(Intent(requireContext().applicationContext, FloatingService::class.java))
+
+                    requireActivity().startService(Intent(requireActivity(), FloatingService::class.java))
                 } else {
-                    requireActivity().stopService(Intent(requireContext().applicationContext, FloatingService::class.java))
+                    requireActivity().stopService(Intent(requireActivity(), FloatingService::class.java))
                 }
+            }
+            "switch_notify" -> {
+                if (newValue as Boolean) {
+                    requireActivity().startService(Intent(requireActivity(), NotificationService::class.java))
+                    //如果在显示悬浮窗，那就说明服务已经连接了，不需要在连接了
+                    if (!isShowFloating()) {
+                        val builder = MaterialAlertDialogBuilder(requireContext())
+                        builder.apply {
+                            setTitle(getString(R.string.service_state_dialog_title))
+                            setMessage(getString(R.string.service_state_dialog_message))
+                            setCancelable(false)
+                        }
+                        val dialog = builder.create()
+                        dialog.show()
+
+                        FreeFormConfig.init(object : ServiceStateListener {
+                            override fun onStart() {
+                                dialog.cancel()
+                            }
+
+                            override fun onStop() {
+                                dialog.cancel()
+                                Looper.prepare()
+                                Toast.makeText(requireContext(), getString(R.string.init_server_fail), Toast.LENGTH_LONG).show()
+                                Looper.loop()
+                            }
+
+                        }, getControlModel())
+                    }
+                } else {
+                    if (!isShowFloating()) {
+                        val pid = ShellUtils.execCommand(
+                            "ps -ef | grep com.sunshine.freeform.Server | grep -v grep | awk '{print \$2}'",
+                            true
+                        ).successMsg
+                        ShellUtils.execRootCmdSilent("kill -9 $pid")
+                    }
+                }
+            }
+
+            "switch_preference_only_enable_landscape" -> {
+                NotificationService.onlyEnableLandscape = newValue as Boolean
             }
         }
         return true
@@ -196,5 +294,25 @@ class MiWindowSettingView : PreferenceFragmentCompat(), Preference.OnPreferenceC
         ShellUtils.execRootCmdSilent("CLASSPATH=/data/local/tmp/freeform-server.jar nohup app_process / com.sunshine.freeform.Server >/dev/null 2>&1 &")
 
         callBack.onSuccess()
+    }
+
+    /**
+     * 远程服务是否开启
+     */
+    private fun serviceIsClose(): Boolean {
+        val pid = ShellUtils.execCommand("ps -ef | grep com.sunshine.freeform.Server | grep -v grep | awk '{print \$2}'", true).successMsg
+        return pid.isNullOrBlank()
+    }
+
+    private fun getControlModel(): Int {
+        return sp.getInt("setting_freeform_control_model", 1)
+    }
+
+    private fun isShowFloating(): Boolean {
+        return sp.getBoolean("switch_floating", false)
+    }
+
+    private fun isShowNotification(): Boolean {
+        return sp.getBoolean("switch_notify", false)
     }
 }

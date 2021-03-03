@@ -19,3 +19,13 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# 混淆会导致序列化失败
+-keep class com.sunshine.freeform.EventData {*;}
+# 不混淆需要hook的类
+-keep class com.sunshine.freeform.utils.HookIMS {*;}
+-keep class com.sunshine.freeform.utils.HookSystemUI {*;}
+-keep class com.sunshine.freeform.utils.HookStartActivity {*;}
+
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}

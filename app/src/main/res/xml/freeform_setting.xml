@@ -3,7 +3,16 @@
 
     <PreferenceCategory android:title="@string/category_freeform_base">
         <Preference
-            android:key="setting_freeform_model"
-            android:title="@string/setting_freeform_model" />
+            android:key="setting_freeform_size"
+            android:title="@string/setting_freeform_size"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/category_freeform_advanced">
+<!--        <Preference-->
+<!--            android:key="setting_freeform_display_model"-->
+<!--            android:title="@string/setting_freeform_display_model" />-->
+        <Preference
+            android:key="setting_freeform_control_model"
+            android:title="@string/setting_freeform_control_model" />
     </PreferenceCategory>
 </PreferenceScreen>

@@ -1,10 +1,12 @@
 package com.sunshine.freeform.activity.mi_window_setting
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.sunshine.freeform.R
+import com.sunshine.freeform.service.core.CoreService
+import com.sunshine.freeform.service.notification.NotificationService
 import com.sunshine.freeform.service.floating.FloatingService
 
 /**
@@ -19,19 +21,21 @@ class MiWindowSettingActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProvider(this).get(MiWindowSettingViewModel::class.java)
 
-        viewModel.getAllFreeFormApps().observe(this, { list ->
+        viewModel.getAllFreeFormApps().observe(this, Observer {
             //将更新提供给服务
-            FloatingService.floatingApps = list
+            CoreService.floatingApps = it
         })
 
-        val freeFormSettingView = MiWindowSettingView()
+        viewModel.getAllNotificationApps().observe(this, Observer {
+            //将更新提供给服务
+            NotificationService.notificationApps = it
+        })
+
+
+
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.mi_window_setting_view, freeFormSettingView)
+            .replace(R.id.mi_window_setting_view, MiWindowSettingView())
             .commit()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
     }
 }

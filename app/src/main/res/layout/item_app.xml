@@ -16,23 +16,23 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_launcher_background" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/textView_app_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/textView_app_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
 
-            android:layout_marginEnd="16dp"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
+        android:layout_marginEnd="16dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
 
-            android:singleLine="true"
-            android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/switch_app"
-            app:layout_constraintStart_toEndOf="@+id/imageView_app_icon"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/text_test" />
+        android:singleLine="true"
+        android:textColor="@color/text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/switch_app"
+        app:layout_constraintStart_toEndOf="@+id/imageView_app_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/text_test" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switch_app"

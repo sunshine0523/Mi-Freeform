@@ -14,8 +14,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sunshine.freeform.R
 import com.sunshine.freeform.activity.mi_window_setting.MiWindowSettingActivity
 import com.sunshine.freeform.activity.permission.PermissionActivity
+import com.sunshine.freeform.service.core.CoreService
+import com.sunshine.freeform.service.notification.NotificationService
 import com.sunshine.freeform.service.floating.FloatingService
-import com.sunshine.freeform.utils.PermissionUtils
+import com.sunshine.freeform.service.floating.FreeFormConfig
 import com.sunshine.freeform.utils.ServiceUtils
 import com.sunshine.freeform.utils.TagUtils
 import kotlinx.android.synthetic.main.activity_main.*
@@ -33,12 +35,29 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Toast.makeText(this, "g", Toast.LENGTH_LONG).show()
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
+        initCoreService()
+        initOrientation()
         requirePermission()
 
         button_freeform_setting.setOnClickListener(this)
+    }
+
+    /**
+     * 初始化核心服务
+     */
+    private fun initCoreService() {
+        if (!ServiceUtils.isServiceWork(this, "{$packageName}.service.core.CoreService")) {
+            startService(Intent(this, CoreService::class.java))
+        }
+    }
+
+    /**
+     * 初始化屏幕方向，使悬浮按钮和小窗正常显示
+     */
+    private fun initOrientation() {
+        FreeFormConfig.orientation = resources.configuration.orientation
     }
 
     /**
@@ -64,17 +83,34 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             Toast.makeText(this, getString(R.string.cannot_granted_usage), Toast.LENGTH_LONG).show()
             false
         }
-        val accessibility = PermissionUtils.hasAccessibility(this)
+        val accessibility = true//PermissionUtils.hasAccessibility(this)
 
         if (!overlays || !notification || !usage || !accessibility) {
             //注意这个tag必须要大于等于0，否则会失效
             startActivityForResult(Intent(this, PermissionActivity::class.java), TagUtils.MAIN_ACTIVITY)
-        } else if (viewModel.isShowFloating() && !ServiceUtils.isServiceWork(this, "{$packageName}.service.floating.FloatingService")) {
-            //如果服务没有运行就启动
-            startService(Intent(applicationContext, FloatingService::class.java))
-            viewModel.getAllFreeFormApps().observe(this, Observer {
-                FloatingService.floatingApps = it
-            })
+        } else {
+            //如果服务关闭的并且不是xposed模式，那么将服务关闭
+            if (viewModel.serviceIsClose() && viewModel.getControlModel() == 1) {
+                viewModel.closeService()
+            }
+            if (viewModel.isShowFloating() && !ServiceUtils.isServiceWork(this, "{$packageName}.service.floating.FloatingService")) {
+                //如果服务没有运行就启动
+                startService(Intent(applicationContext, FloatingService::class.java))
+                viewModel.getAllFreeFormApps().observe(this, Observer {
+                    CoreService.floatingApps = it
+                })
+            }
+            if (viewModel.isNotification()) {
+                if (!ServiceUtils.isServiceWork(this, "{$packageName}.service.notification.NotificationService")) {
+                    startService(Intent(applicationContext, NotificationService::class.java))
+                }
+                viewModel.getAllNotificationApps().observe(this, Observer {
+                    NotificationService.notificationApps = it
+                })
+                if (!viewModel.isShowFloating()) {
+                    FreeFormConfig.init(null, viewModel.getControlModel())
+                }
+            }
         }
     }
 
@@ -107,7 +143,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 RESULT_OK -> {
                     Toast.makeText(this, getString(R.string.permission_success), Toast.LENGTH_SHORT).show()
                     //如果服务没有开启，就把设置设为关闭
-                    if (viewModel.isShowFloating() && !ServiceUtils.isServiceWork(this, "{$packageName}.service.floating.FloatingService")) {
+                    if (viewModel.serviceIsClose()) {
                         viewModel.closeService()
                     }
                 }
