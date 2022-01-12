@@ -8,30 +8,32 @@
     <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 在Android 11且targetSDK为30的情况下需要新增权限才能获取到全部应用 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
-        tools:ignore="QueryAllPackagesPermission" /> <!-- bugly -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+        tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- bugly -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission
         android:name="android.permission.READ_LOGS"
         tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="moe.shizuku.manager.permission.API_V23" />
 
     <application
-        android:allowBackup="true"
+        android:name=".MyApplication"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FreeForm">
-
-
-        <service
-            android:name=".service.core.CoreService"
-            android:enabled="true"
-            android:exported="true" />
 
         <meta-data
             android:name="xposedmodule"
@@ -41,14 +43,17 @@
             android:value="@string/xposed_description" />
         <meta-data
             android:name="xposedminversion"
-            android:value="53" /> <!-- bugly -->
+            android:value="53" />
+        <meta-data
+            android:name="xposedscope"
+            android:resource="@array/xposedscope" /> <!-- bugly -->
         <!-- 配置APP ID -->
         <meta-data
             android:name="BUGLY_APPID"
             android:value="ef36a376e0" /> <!-- 配置APP版本号 -->
         <meta-data
             android:name="BUGLY_APP_VERSION"
-            android:value="0.0.8 beta" /> <!-- 配置APP渠道号 -->
+            android:value="1.0.2.2 beta" /> <!-- 配置APP渠道号 -->
         <meta-data
             android:name="BUGLY_APP_CHANNEL"
             android:value="private" /> <!-- 配置Bugly调试模式（true或者false） -->
@@ -57,20 +62,37 @@
             android:value="false" />
 
         <activity
+            android:name=".activity.floating_apps_sort.FloatingAppsSortActivity"
+            android:label="@string/sort_apps_label" />
+        <activity
             android:name=".activity.free_form_setting.FreeFromSizeActivity"
             android:label="@string/freeform_size_setting_label" />
         <activity
             android:name=".activity.free_form_setting.FreeFormSettingActivity"
             android:label="@string/freeform_setting_label" />
         <activity
-            android:name=".activity.permission.PermissionActivity"
-            android:label="@string/permission_label" />
+            android:name=".activity.donation.DonationActivity"
+            android:label="@string/donation_title" />
         <activity
             android:name=".activity.floating_setting.FloatingSettingActivity"
             android:label="@string/floating_label" />
         <activity
             android:name=".activity.choose_free_form_apps.ChooseAppsActivity"
             android:label="@string/choose_freeform_apps_label" />
+        <activity
+            android:name=".activity.senior.SeniorActivity"
+            android:label="@string/senior_label" />
+        <activity
+            android:name=".activity.floating_view.FloatingViewActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:label="@string/floating_view_label"
+            android:taskAffinity=":floating_view"
+            android:theme="@style/Theme.FreeForm.FloatingViewTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activity.mi_window_setting.MiWindowSettingActivity"
             android:label="@string/mi_freeform_setting_label" />
@@ -79,7 +101,7 @@
             android:name=".activity.splash.SplashActivity"
             android:excludeFromRecents="true"
             android:taskAffinity=":splash"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -88,12 +110,12 @@
         </activity>
 
         <service
-            android:name=".service.floating.FloatingService"
+            android:name=".service.FloatingService"
             android:configChanges="orientation|keyboard|layoutDirection|screenSize"
             android:enabled="true"
             android:exported="false" />
         <service
-            android:name=".service.notification.NotificationService"
+            android:name=".service.NotificationService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
@@ -102,14 +124,15 @@
             </intent-filter>
         </service>
         <service
-            android:name=".service.notification.NotificationIntentService"
+            android:name=".service.NotificationIntentService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
         <service
-            android:name=".service.tile.QuickStartTileService"
+            android:name=".service.QuickStartTileService"
             android:icon="@drawable/tile_icon"
             android:label="@string/choose_freeform_app"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
@@ -118,15 +141,50 @@
                 android:name="android.service.quicksettings.ACTIVE_TILE"
                 android:value="true" />
         </service>
+        <service
+            android:name=".service.ForegroundService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <service
+            android:name=".service.Floating2Service"
+            android:enabled="true"
+            android:exported="false" />
 
         <receiver
             android:name=".broadcast.StartActivityReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.sunshine.freeform.start_activity"/>
+                <action android:name="com.sunshine.freeform.start_activity" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".broadcast.StartByMiFreeFormReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.sunshine.freeform.start_by_mi_freeform" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".broadcast.BootBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:enabled="true"
+            android:exported="true"
+            android:multiprocess="false"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
     </application>
 
 </manifest>

@@ -4,13 +4,14 @@ import android.hardware.input.InputManager
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.util.Log
 import android.view.InputEvent
 import android.view.KeyEvent
 import android.view.MotionEvent
 
-import com.sunshine.freeform.EventData
-import com.sunshine.freeform.service.floating.FreeFormConfig
+import com.sunshine.freeform.bean.KeyEventBean
+import com.sunshine.freeform.bean.MotionEventBean
+import com.sunshine.freeform.view.floating.FreeFormHelper
+import java.io.ObjectOutputStream
 
 import java.lang.reflect.Method
 
@@ -99,23 +100,25 @@ class InputEventUtils {
         }
 
         handler.post {
-            injectMotionEvent = MotionEvent.obtain(
-                SystemClock.uptimeMillis(),
-                SystemClock.uptimeMillis(),
-                event.action,
-                count,
-                pointerProperties,
-                pointerCoords,
-                event.metaState,
-                event.buttonState,
-                event.xPrecision,
-                event.yPrecision,
-                event.deviceId,//eventData.deviceId,
-                event.edgeFlags,
-                event.source,
-                event.flags//eventData.flags
-            )
-            xposedInjectInputEvent(injectMotionEvent, displayId)
+            try {
+                injectMotionEvent = MotionEvent.obtain(
+                    SystemClock.uptimeMillis(),
+                    SystemClock.uptimeMillis(),
+                    event.action,
+                    count,
+                    pointerProperties,
+                    pointerCoords,
+                    event.metaState,
+                    event.buttonState,
+                    event.xPrecision,
+                    event.yPrecision,
+                    event.deviceId,//eventData.deviceId,
+                    event.edgeFlags,
+                    event.source,
+                    event.flags//eventData.flags
+                )
+                xposedInjectInputEvent(injectMotionEvent, displayId)
+            }catch (e: Exception) {}
         }
     }
 
@@ -142,6 +145,10 @@ class InputEventUtils {
             e.fillInStackTrace().printStackTrace()
             null
         }
+    }
+
+    fun shizukuPressBack(displayId: Int) {
+        FreeFormHelper.getControlService()?.pressBack(displayId)
     }
 
     /**
@@ -172,20 +179,11 @@ class InputEventUtils {
         for (i in 0 until count) {
             val coords = MotionEvent.PointerCoords()
             motionEvent.getPointerCoords(i, coords)
-            xArray!![i] = coords.x * scale
-            yArray!![i] = coords.y * scale
+            xArray!![i] = coords.x / scale
+            yArray!![i] = coords.y / scale
         }
-        FreeFormConfig.handler?.post {
-            try {
-                FreeFormConfig.touchOos!!.writeObject(EventData(1, motionEvent.action, xArray!!, yArray!!, motionEvent.flags, motionEvent.source, displayId))
-                FreeFormConfig.touchOos!!.flush()
-            } catch (e: Exception) {
-                println("onTouch $e")
-                //仅重启连接不移除所有小窗
-                FreeFormConfig.onDelete(removeAllFreeForm = false)
-                FreeFormConfig.init(null, FreeFormConfig.controlModel)
-            }
-        }
+
+        FreeFormHelper.getControlService()?.touch(MotionEventBean(motionEvent.action, xArray!!, yArray!!, displayId))
     }
 
     /**
@@ -193,26 +191,46 @@ class InputEventUtils {
      * 只是发送信号，具体交给服务处理
      */
     fun rootInjectKeyEvent(
-        displayId: Int
+        displayId: Int,
+        oos: ObjectOutputStream?
     ) {
-        FreeFormConfig.handler?.post {
+        handler.post {
             try {
-                FreeFormConfig.touchOos!!.writeObject(EventData(2, 0, null, null, 0, 0, displayId))
-                FreeFormConfig.touchOos!!.flush()
-            } catch (e: Exception) {
-                println("onTouch $e")
-                //仅重启连接不移除所有小窗
-                FreeFormConfig.onDelete(removeAllFreeForm = false)
-                FreeFormConfig.init(null, FreeFormConfig.controlModel)
+                oos!!.writeObject(KeyEventBean(-1, displayId))
+                oos.writeObject(null)
+                oos.flush()
+            }catch (e: Exception) {
+
             }
+        }
+//        FreeFormConfig.handler?.post {
+//            try {
+//                FreeFormConfig.touchOos!!.writeObject(EventData(2, 0, null, null, 0, 0, displayId))
+//                FreeFormConfig.touchOos!!.flush()
+//            } catch (e: Exception) {
+//                println("onTouch $e")
+//                //仅重启连接不移除所有小窗
+//                FreeFormConfig.onDelete(removeAllFreeForm = false)
+//                FreeFormConfig.init(null, FreeFormConfig.controlModel)
+//            }
+//        }
+    }
+
+    fun shellExecCommand(command: String, oos: ObjectOutputStream?) {
+        handler.post {
+            try {
+                oos!!.writeObject(command)
+                oos.writeObject(null)
+                oos.flush()
+            }catch (e: Exception) {}
         }
     }
 
     init {
-        Thread {
+        Thread(Runnable {
             Looper.prepare()
             handler = Handler(Looper.myLooper()!!)
             Looper.loop()
-        }.start()
+        }, "InputEventUtilsThread").start()
     }
 }

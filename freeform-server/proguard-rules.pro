@@ -22,3 +22,5 @@
 
 # 如果混淆和代码压缩会导致反序列化失败，并且会导致代码被移除，因为这里没有引用
 -keep class com.sunshine.freeform.* {*;}
+-keep class com.sunshine.freeform.bean.KeyEventBean {*;}
+-keep class com.sunshine.freeform.bean.MotionEventBean {*;}

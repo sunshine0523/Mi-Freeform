@@ -9,28 +9,165 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/app_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/app_info"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView_info"
+            style="@style/FreeForm.CardViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/info_card_height"
+            android:layout_marginStart="@dimen/card_view_margin"
+            android:layout_marginTop="@dimen/card_view_margin"
+            android:layout_marginEnd="@dimen/card_view_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/button_freeform_setting"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/info_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/red">
+
+                <ImageView
+                    android:id="@+id/imageView_service"
+                    android:layout_width="@dimen/info_image_size"
+                    android:layout_height="@dimen/info_image_size"
+                    android:layout_marginStart="@dimen/info_image_margin"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_error_white" />
+
+                <TextView
+                    android:id="@+id/textView_service_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/info_text_margin_left_right"
+                    android:layout_marginTop="@dimen/info_text_margin_up_down"
+                    android:text="@string/no_start"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/info_text_size"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/imageView_service"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView_service_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/info_text_margin_left_right"
+                    android:layout_marginBottom="@dimen/info_text_margin_up_down"
+                    android:text="@string/service_not_start_description"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView_service" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView_app"
+            style="@style/FreeForm.CardViewStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/button_freeform_setting"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/app_info" />
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView_info"
+            android:layout_marginStart="@dimen/card_view_margin"
+            android:layout_marginTop="@dimen/card_view_margin"
+            android:layout_marginEnd="@dimen/card_view_margin">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_freeform_setting"
+                    style="@style/FreeForm.ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:text="@string/mi_freeform_setting_label"
+                    app:icon="@drawable/tile_icon"
+                    app:iconSize="@dimen/icon_size"
+                    app:iconPadding="@dimen/icon_padding"
+                    android:padding="@dimen/card_view_child_padding"/>
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView_about"
+            style="@style/FreeForm.CardViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView_app"
+            android:layout_marginStart="@dimen/card_view_margin"
+            android:layout_marginTop="@dimen/card_view_margin"
+            android:layout_marginEnd="@dimen/card_view_margin">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_donate"
+                    style="@style/FreeForm.ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:text="@string/juanzeng"
+                    app:icon="@drawable/ic_money"
+                    app:iconSize="@dimen/icon_size"
+                    app:iconPadding="@dimen/icon_padding"
+                    android:padding="@dimen/card_view_child_padding"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_star"
+                    style="@style/FreeForm.ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:text="@string/pingfen"
+                    app:icon="@drawable/ic_star"
+                    app:iconSize="@dimen/icon_size"
+                    app:iconPadding="@dimen/icon_padding"
+                    android:padding="@dimen/card_view_child_padding"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_coolapk"
+                    style="@style/FreeForm.ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:text="@string/coolapk_my_name"
+                    app:icon="@drawable/ic_coolapk"
+                    app:iconSize="@dimen/icon_size"
+                    app:iconPadding="@dimen/icon_padding"
+                    android:padding="@dimen/card_view_child_padding"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_qq_group"
+                    style="@style/FreeForm.ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:text="@string/add_qq_qun"
+                    app:icon="@drawable/ic_qq"
+                    app:iconSize="@dimen/icon_size"
+                    app:iconPadding="@dimen/icon_padding"
+                    android:padding="@dimen/card_view_child_padding"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_telegram"
+                    style="@style/FreeForm.ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:text="@string/button_telegram"
+                    app:icon="@drawable/ic_telegram"
+                    app:iconSize="@dimen/icon_size"
+                    app:iconPadding="@dimen/icon_padding"
+                    android:padding="@dimen/card_view_child_padding"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

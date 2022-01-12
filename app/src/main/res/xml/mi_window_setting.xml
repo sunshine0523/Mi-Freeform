@@ -1,54 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/category_freeform_base">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        android:title="@string/category_freeform_base"
+        app:iconSpaceReserved="true">
+<!--        <SwitchPreference-->
+<!--            app:iconSpaceReserved="false"-->
+<!--            android:defaultValue="false"-->
+<!--            android:key="switch_service"-->
+<!--            android:title="@string/switch_service"-->
+<!--            android:summary="@string/switch_service_summary"/>-->
         <SwitchPreference
-            android:defaultValue="false"
-            android:key="switch_service"
-            android:title="@string/switch_service" />
-        <SwitchPreference
+            app:iconSpaceReserved="true"
             android:defaultValue="false"
             android:key="switch_hide_recent"
             android:title="@string/switch_hide_recent"
             android:summary="@string/switch_hide_recent_summary"/>
-    </PreferenceCategory>
-
-
-    <PreferenceCategory android:title="@string/category_freeform">
-
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="switch_floating"
-            android:title="@string/switch_freeform" />
 <!--        <SwitchPreference-->
+<!--            app:iconSpaceReserved="false"-->
 <!--            android:defaultValue="false"-->
-<!--            android:key="switch_preference_freeform_only_enable_landscape"-->
-<!--            android:title="@string/switch_preference_only_enable_landscape" />-->
+<!--            android:key="switch_use_system_freeform"-->
+<!--            android:title="@string/use_system_freeform"/>-->
+<!--        <Preference-->
+<!--            app:iconSpaceReserved="true"-->
+<!--            android:key="setting_freeform"-->
+<!--            android:summary="@string/setting_freeform_summary"-->
+<!--            android:title="@string/setting_freeform" />-->
         <Preference
-            android:key="setting_freeform"
-            android:summary="@string/setting_freeform_summary"
-            android:title="@string/setting_freeform" />
-        <Preference
-            android:key="setting_floating"
-            android:summary="@string/setting_floating_summary"
-            android:title="@string/setting_floating" />
-        <Preference
+            app:iconSpaceReserved="true"
             android:key="setting_freeform_apps"
             android:summary="@string/setting_freeform_apps_summary"
             android:title="@string/setting_freeform_apps" />
+<!--        <Preference-->
+<!--            app:iconSpaceReserved="false"-->
+<!--            android:key="senior"-->
+<!--            android:title="@string/senior" />-->
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/category_notify">
+
+    <PreferenceCategory
+        android:title="@string/keep_running"
+        app:iconSpaceReserved="true">
+
+        <Preference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:summary="@string/keep_running_summary"
+            app:iconSpaceReserved="true" />
+
+        <Preference
+            app:iconSpaceReserved="true"
+            app:icon="@drawable/ic_battery"
+            android:key="battery"
+            android:title="@string/battery"
+            android:summary="@string/battery_summary"/>
+<!--        <SwitchPreference-->
+<!--            app:iconSpaceReserved="true"-->
+<!--            android:defaultValue="false"-->
+<!--            android:key="switch_foreground_service"-->
+<!--            android:title="@string/foreground_service"-->
+<!--            android:summary="@string/foreground_service_subtitle"/>-->
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/category_floating"
+        app:iconSpaceReserved="true">
+        <SwitchPreference
+            app:iconSpaceReserved="true"
+            android:defaultValue="false"
+            android:key="switch_floating"
+            android:title="@string/switch_freeform" />
+        <Preference
+            app:iconSpaceReserved="true"
+            android:key="setting_floating"
+            android:summary="@string/setting_floating_summary"
+            android:title="@string/setting_floating" />
+        <SwitchPreference
+            app:iconSpaceReserved="true"
+            android:defaultValue="false"
+            android:key="switch_preference_floating_only_enable_landscape"
+            android:title="@string/switch_preference_only_enable_landscape" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:iconSpaceReserved="true"
+        android:title="@string/category_notify">
 
         <SwitchPreference
+            app:iconSpaceReserved="true"
             android:defaultValue="false"
             android:key="switch_notify"
             android:summary="@string/switch_notify_summary"
             android:title="@string/switch_notify" />
         <Preference
+            app:iconSpaceReserved="true"
             android:key="setting_notification_apps"
             android:summary="@string/setting_notification_apps_summary"
             android:title="@string/setting_notification_apps"/>
         <SwitchPreference
+            app:iconSpaceReserved="true"
             android:defaultValue="false"
             android:key="switch_preference_only_enable_landscape"
             android:title="@string/switch_preference_only_enable_landscape" />

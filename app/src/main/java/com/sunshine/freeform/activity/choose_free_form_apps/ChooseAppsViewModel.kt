@@ -1,12 +1,15 @@
 package com.sunshine.freeform.activity.choose_free_form_apps
 
 import android.app.Application
-import android.content.Context
-import android.content.pm.PackageManager
+import android.content.pm.LauncherActivityInfo
 import android.content.pm.ResolveInfo
+import android.os.UserManager
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.sunshine.freeform.room.DatabaseRepository
+import com.sunshine.freeform.room.FreeFormAppsEntity
+import com.sunshine.freeform.room.NotificationAppsEntity
+import com.sunshine.freeform.systemapi.UserHandle
 
 /**
  * @author sunshine
@@ -18,28 +21,47 @@ class ChooseAppsViewModel(application: Application) : AndroidViewModel(applicati
 
     var type = 1
 
-    fun getAllApps(): LiveData<List<String>?> {
-        return if (type == 1) repository.getAllFreeForm() else repository.getAllNotification()
+    fun getAllApps(): LiveData<List<FreeFormAppsEntity>?> {
+        return repository.getAllFreeForm()
     }
 
-    fun insertApps(packageName: String) {
-        if (type == 1) repository.insertFreeForm(packageName) else repository.insertNotification(packageName)
-
+    fun getAllNotificationApps(): LiveData<List<NotificationAppsEntity>?> {
+        return repository.getAllNotification()
     }
 
-    fun deleteApps(packageName: String) {
-        if (type == 1) repository.deleteFreeForm(packageName) else repository.deleteNotification(packageName)
+    fun insertApps(packageName: String, userId: Int) {
+        when (type) {
+            2 -> repository.insertNotification(packageName, userId)
+            else -> repository.insertFreeForm(packageName, userId)
+        }
+    }
+
+    fun deleteApps(packageName: String, userId: Int) {
+        when (type) {
+            2 -> repository.deleteNotification(packageName, userId)
+            else -> {
+                repository.deleteFreeForm(packageName, userId)
+            }
+        }
     }
 
     fun deleteAll() {
-        if (type == 1) repository.deleteAllFreeForm() else repository.deleteAllNotification()
+        when (type) {
+            2 -> repository.deleteAllNotification()
+            1 -> {
+                repository.deleteAllFreeForm()
+            }
+        }
     }
 
     //添加列表中所有软件
-    fun insertAllApps(packages: MutableList<ResolveInfo>?) {
+    fun insertAllApps(allAppsList: ArrayList<LauncherActivityInfo>, userManager: UserManager) {
         deleteAll()
-        packages?.forEach {
-            insertApps(it.activityInfo.applicationInfo.packageName)
+        allAppsList.forEach {
+            when (type) {
+                2 -> repository.insertNotification(it.applicationInfo.packageName, UserHandle.getUserId(it.user, it.applicationInfo.uid))
+                else -> repository.insertFreeForm(it.applicationInfo.packageName, UserHandle.getUserId(it.user, it.applicationInfo.uid))
+            }
         }
     }
 

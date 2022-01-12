@@ -1,13 +1,16 @@
 package com.sunshine.freeform.activity.mi_window_setting
 
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.PowerManager
+import android.provider.Settings
+import android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
+import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.widget.Toast
 
 import androidx.preference.Preference
@@ -21,12 +24,15 @@ import com.sunshine.freeform.activity.choose_free_form_apps.ChooseAppsActivity
 import com.sunshine.freeform.activity.floating_setting.FloatingSettingActivity
 import com.sunshine.freeform.activity.free_form_setting.FreeFormSettingActivity
 import com.sunshine.freeform.callback.FreeFormListener
-import com.sunshine.freeform.callback.ServiceStateListener
-import com.sunshine.freeform.service.floating.FloatingService
-import com.sunshine.freeform.service.floating.FreeFormConfig
-import com.sunshine.freeform.service.notification.NotificationService
-import com.sunshine.freeform.utils.InputEventUtils
+import com.sunshine.freeform.service.FloatingService
+import com.sunshine.freeform.activity.senior.SeniorActivity
+import com.sunshine.freeform.hook.service.MiFreeFormService
+import com.sunshine.freeform.service.Floating2Service
+import com.sunshine.freeform.service.ForegroundService
+import com.sunshine.freeform.service.NotificationService
+import com.sunshine.freeform.utils.ServiceUtils
 import com.sunshine.freeform.utils.ShellUtils
+import com.sunshine.freeform.utils.TagUtils
 
 import java.io.File
 import java.io.FileOutputStream
@@ -45,49 +51,51 @@ class MiWindowSettingView : PreferenceFragmentCompat(), Preference.OnPreferenceC
 
         sp = requireContext().getSharedPreferences("com.sunshine.freeform_preferences", Context.MODE_PRIVATE)
 
-        preferenceManager.findPreference<SwitchPreference>("switch_service")?.apply {
-            //xposed模式无需开启服务
-            val isXposed = sp.getInt("freeform_control_model", 1) == 2
-            if (isXposed) {
-                isChecked = true
-                isEnabled = false
-                summary = getString(R.string.xposed_donnot_start_service)
-            }
+        preferenceManager.findPreference<SwitchPreference>("switch_use_system_freeform")?.apply {
             onPreferenceChangeListener = this@MiWindowSettingView
         }
 
         preferenceManager.findPreference<SwitchPreference>("switch_floating")?.apply {
-            isEnabled = sp.getBoolean("switch_service", false)
-            //注入失败，可能是xposed没有激活
-            if (sp.getInt("freeform_control_model", 1) == 2 && !InputEventUtils().testXposedInjectMotionEvent()) {
-                isChecked = false
-                isEnabled = InputEventUtils().testXposedInjectMotionEvent()
-                summary = getString(R.string.control_false)
-            }
-
             onPreferenceChangeListener = this@MiWindowSettingView
         }
         preferenceManager.findPreference<SwitchPreference>("switch_notify")?.apply {
-            isEnabled = sp.getBoolean("switch_service", false)
-            //注入失败，可能是xposed没有激活
-            if (sp.getInt("freeform_control_model", 1) == 2 && !InputEventUtils().testXposedInjectMotionEvent()) {
-                isChecked = false
-                isEnabled = InputEventUtils().testXposedInjectMotionEvent()
-                summary = getString(R.string.control_false)
-            }
             onPreferenceChangeListener = this@MiWindowSettingView
         }
         preferenceManager.findPreference<Preference>("setting_freeform_apps")?.apply {
+            onPreferenceClickListener = this@MiWindowSettingView
+        }
+        preferenceManager.findPreference<Preference>("setting_floating_compatible")?.apply {
+            onPreferenceClickListener = this@MiWindowSettingView
+        }
+        preferenceManager.findPreference<Preference>("battery")?.apply {
+            onPreferenceClickListener = this@MiWindowSettingView
+        }
+        preferenceManager.findPreference<SwitchPreference>("switch_foreground_service")?.apply {
+            if (MiFreeFormService.getClient() == null) {
+                isChecked = true
+                isEnabled = false
+                summary = getString(R.string.foreground_need_running)
+            } else {
+                isEnabled = true
+                summary = getString(R.string.foreground_service_subtitle)
+                onPreferenceChangeListener = this@MiWindowSettingView
+            }
+        }
+        preferenceManager.findPreference<Preference>("senior")?.apply {
             onPreferenceClickListener = this@MiWindowSettingView
         }
         preferenceManager.findPreference<Preference>("setting_notification_apps")?.apply {
             onPreferenceClickListener = this@MiWindowSettingView
         }
         preferenceManager.findPreference<Preference>("setting_freeform")?.apply {
+            isEnabled = !sp.getBoolean("switch_use_system_freeform", false)
             onPreferenceClickListener = this@MiWindowSettingView
         }
         preferenceManager.findPreference<Preference>("setting_floating")?.apply {
             onPreferenceClickListener = this@MiWindowSettingView
+        }
+        preferenceManager.findPreference<SwitchPreference>("switch_preference_floating_only_enable_landscape")?.apply {
+            onPreferenceChangeListener = this@MiWindowSettingView
         }
         preferenceManager.findPreference<SwitchPreference>("switch_preference_only_enable_landscape")?.apply {
             onPreferenceChangeListener = this@MiWindowSettingView
@@ -101,6 +109,15 @@ class MiWindowSettingView : PreferenceFragmentCompat(), Preference.OnPreferenceC
         when(preference?.key) {
             "setting_freeform_apps" -> {
                 startActivity(Intent(context, ChooseAppsActivity::class.java).putExtra("type", 1))
+            }
+            "setting_floating_compatible" -> {
+                startActivity(Intent(context, ChooseAppsActivity::class.java).putExtra("type", 3))
+            }
+            "battery" -> {
+                ignoreBatteryOptimization()
+            }
+            "senior" -> {
+                requireContext().startActivity(Intent(requireContext(), SeniorActivity::class.java))
             }
             "setting_notification_apps" -> {
                 startActivity(Intent(context, ChooseAppsActivity::class.java).putExtra("type", 2))
@@ -117,6 +134,10 @@ class MiWindowSettingView : PreferenceFragmentCompat(), Preference.OnPreferenceC
 
     override fun onPreferenceChange(preference: Preference?, newValue: Any?): Boolean {
         when(preference?.key) {
+            "switch_use_system_freeform" -> {
+                preferenceManager.findPreference<Preference>("setting_freeform")?.isEnabled =
+                    !(newValue as Boolean)
+            }
             "switch_service" -> {
                 //开启服务状态
                 if (newValue as Boolean) {
@@ -182,74 +203,117 @@ class MiWindowSettingView : PreferenceFragmentCompat(), Preference.OnPreferenceC
                     ShellUtils.execRootCmdSilent("kill -9 $pid")
                 }
             }
+
+            "switch_foreground_service" -> {
+                if (newValue as Boolean) {
+                    requireContext().startForegroundService(Intent(requireContext(), ForegroundService::class.java))
+                } else {
+                    requireContext().stopService(Intent(requireContext(), ForegroundService::class.java))
+                }
+            }
+
             "switch_floating" -> {
                 if (newValue as Boolean) {
-                    //如果通知服务已经启动，那么不需要启动了
-                    if (!isShowNotification()) {
-                        val builder = MaterialAlertDialogBuilder(requireContext())
-                        builder.apply {
-                            setTitle(getString(R.string.service_state_dialog_title))
-                            setMessage(getString(R.string.service_state_dialog_message))
-                            setCancelable(false)
+                    //有悬浮窗权限
+                    if (Settings.canDrawOverlays(requireContext())) {
+//                        //如果通知服务已经启动，那么不需要启动了
+//                        if (!isShowNotification() && !FreeFormUtils.socketStartSuccess) {
+//                            val builder = MaterialAlertDialogBuilder(requireContext())
+//                            builder.apply {
+//                                setTitle(getString(R.string.service_state_dialog_title))
+//                                setMessage(getString(R.string.service_state_dialog_message))
+//                                setCancelable(false)
+//                            }
+//                            val dialog = builder.create()
+//                            dialog.show()
+//
+////                            FreeFormUtils.init(object : ServiceStateListener {
+////                                override fun onStart() {
+////                                    dialog.cancel()
+////                                }
+////
+////                                override fun onStop() {
+////                                    dialog.cancel()
+////                                    Looper.prepare()
+////                                    Toast.makeText(requireContext(), getString(R.string.init_server_fail), Toast.LENGTH_LONG).show()
+////                                    Looper.loop()
+////                                }
+////
+////                            }, getControlModel())
+//                        }
+                        requireContext().startService(Intent(requireContext(), Floating2Service::class.java))
+                    } else {
+                        //没有悬浮窗权限
+                        try {
+                            Toast.makeText(requireContext(), "请选择米窗开启“显示在其他应用界面的上层”权限", Toast.LENGTH_SHORT).show()
+                            requireContext().startActivity(
+                                    Intent(
+                                            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                            Uri.parse("package:${requireContext().packageName}")
+                                    )
+                            )
+                        } catch (e: Exception) {
+                            Toast.makeText(requireContext(), "无法跳转到设置界面，请手动前往设置开启米窗的“显示在其他应用界面的上层”权限", Toast.LENGTH_LONG).show()
                         }
-                        val dialog = builder.create()
-                        dialog.show()
-                        FloatingService.listener = object : ServiceStateListener {
-                            override fun onStart() {
-                                dialog.cancel()
-                            }
 
-                            override fun onStop() {
-                                dialog.cancel()
-                                Looper.prepare()
-                                Toast.makeText(requireContext(), getString(R.string.init_server_fail), Toast.LENGTH_LONG).show()
-                                Looper.loop()
-                            }
-
-                        }
+                        return false
                     }
 
-                    requireActivity().startService(Intent(requireActivity(), FloatingService::class.java))
                 } else {
-                    requireActivity().stopService(Intent(requireActivity(), FloatingService::class.java))
+                    requireContext().stopService(Intent(requireContext(), Floating2Service::class.java))
                 }
             }
             "switch_notify" -> {
                 if (newValue as Boolean) {
-                    requireActivity().startService(Intent(requireActivity(), NotificationService::class.java))
-                    //如果在显示悬浮窗，那就说明服务已经连接了，不需要在连接了
-                    if (!isShowFloating()) {
-                        val builder = MaterialAlertDialogBuilder(requireContext())
-                        builder.apply {
-                            setTitle(getString(R.string.service_state_dialog_title))
-                            setMessage(getString(R.string.service_state_dialog_message))
-                            setCancelable(false)
+                    if (hasNotificationPermission()) {
+//                        //如果在显示悬浮窗，那就说明服务已经连接了，不需要在连接了
+//                        if (!isShowFloating() && !FreeFormUtils.socketStartSuccess) {
+//                            val builder = MaterialAlertDialogBuilder(requireContext())
+//
+//                            builder.apply {
+//                                setTitle(getString(R.string.service_state_dialog_title))
+//                                setMessage(getString(R.string.service_state_dialog_message))
+//                                setCancelable(false)
+//                            }
+//                            val dialog = builder.create()
+//                            dialog.show()
+//
+////                            FreeFormUtils.init(object : ServiceStateListener {
+////                                override fun onStart() {
+////                                    dialog.cancel()
+////                                }
+////
+////                                override fun onStop() {
+////                                    dialog.cancel()
+////                                    Looper.prepare()
+////                                    Toast.makeText(requireContext(), getString(R.string.init_server_fail), Toast.LENGTH_LONG).show()
+////                                    Looper.loop()
+////                                }
+////
+////                            }, getControlModel())
+//                        }
+                        requireContext().startService(Intent(requireContext(), NotificationService::class.java))
+                    } else {
+                        //无通知使用权，去获取
+                        try {
+                            Toast.makeText(requireContext(), "请开启“通知使用权”权限", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+                        }catch (e: Exception) {
+                            Toast.makeText(requireContext(), "无法跳转到设置界面，请手动前往设置开启米窗的“通知使用权”权限", Toast.LENGTH_LONG).show()
                         }
-                        val dialog = builder.create()
-                        dialog.show()
 
-                        FreeFormConfig.init(object : ServiceStateListener {
-                            override fun onStart() {
-                                dialog.cancel()
-                            }
-
-                            override fun onStop() {
-                                dialog.cancel()
-                                Looper.prepare()
-                                Toast.makeText(requireContext(), getString(R.string.init_server_fail), Toast.LENGTH_LONG).show()
-                                Looper.loop()
-                            }
-
-                        }, getControlModel())
+                        return false
                     }
+
                 } else {
-                    if (!isShowFloating()) {
-                        val pid = ShellUtils.execCommand(
-                            "ps -ef | grep com.sunshine.freeform.Server | grep -v grep | awk '{print \$2}'",
-                            true
-                        ).successMsg
-                        ShellUtils.execRootCmdSilent("kill -9 $pid")
-                    }
+                    requireContext().stopService(Intent(requireContext(), NotificationService::class.java))
+                }
+            }
+
+            "switch_preference_floating_only_enable_landscape" -> {
+                if (sp.getBoolean("switch_floating", false)) {
+                    requireActivity().stopService(Intent(requireActivity(), FloatingService::class.java))
+                    requireActivity().startService(Intent(requireActivity(), FloatingService::class.java))
                 }
             }
 
@@ -286,7 +350,6 @@ class MiWindowSettingView : PreferenceFragmentCompat(), Preference.OnPreferenceC
                 ShellUtils.execRootCmdSilent("mv /data/user/0/com.sunshine.freeform/files/freeform-server.jar /data/local/tmp/freeform-server.jar")
                 ShellUtils.execRootCmdSilent("chmod 4755 /data/local/tmp/freeform-server.jar")
             }catch (e: Exception) {
-                println("initFreeForm $e")
                 Toast.makeText(requireContext(), getString(R.string.release_file_fail), Toast.LENGTH_LONG).show()
             }
         }
@@ -304,8 +367,14 @@ class MiWindowSettingView : PreferenceFragmentCompat(), Preference.OnPreferenceC
         return pid.isNullOrBlank()
     }
 
+    private fun hasNotificationPermission(): Boolean {
+        return ServiceUtils.isServiceWork(requireContext(), "${requireContext().packageName}.service.notification.NotificationService")
+    }
+
     private fun getControlModel(): Int {
-        return sp.getInt("setting_freeform_control_model", 1)
+        //如果是在酷安发布的，只能使用xposed控制
+        if (TagUtils.RELEASE_MODE == TagUtils.COOLAPK_MODE) return 2
+        return sp.getInt("setting_freeform_control_model", 2)
     }
 
     private fun isShowFloating(): Boolean {
@@ -314,5 +383,29 @@ class MiWindowSettingView : PreferenceFragmentCompat(), Preference.OnPreferenceC
 
     private fun isShowNotification(): Boolean {
         return sp.getBoolean("switch_notify", false)
+    }
+
+    /**
+     * 忽略电池优化
+     */
+    private fun ignoreBatteryOptimization() {
+        val powerManager = requireContext().getSystemService(Context.POWER_SERVICE) as PowerManager
+        var hasIgnored = false
+        hasIgnored = powerManager.isIgnoringBatteryOptimizations(requireContext().packageName)
+        //  判断当前APP是否有加入电池优化的白名单，如果没有，弹出加入电池优化的白名单的设置对话框。
+        if (!hasIgnored) {
+            //未加入电池优化的白名单 则弹出系统弹窗供用户选择(这个弹窗也是一个页面)
+            val intent = Intent(ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
+            intent.data = Uri.parse("package:" + requireContext().packageName)
+            startActivity(intent)
+        } else{
+            //已加入电池优化的白名单 则进入系统电池优化页面
+            val powerUsageIntent = Intent(ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+            val resolveInfo = requireContext().packageManager.resolveActivity(powerUsageIntent, 0)
+            //判断系统是否有这个页面
+            if (resolveInfo != null) {
+                startActivity(powerUsageIntent)
+            }
+        }
     }
 }

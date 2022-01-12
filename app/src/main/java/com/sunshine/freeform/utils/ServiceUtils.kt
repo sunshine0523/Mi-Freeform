@@ -3,11 +3,7 @@ package com.sunshine.freeform.utils
 import android.app.ActivityManager
 import android.content.Context
 
-import com.sunshine.freeform.callback.OrientationChangeListener
-
-
 /**
- * @author sunshine
  * @date 2021/2/1
  * 服务相关工具类
  */

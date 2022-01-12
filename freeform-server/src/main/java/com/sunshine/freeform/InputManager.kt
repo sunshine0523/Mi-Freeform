@@ -2,7 +2,6 @@ package com.sunshine.freeform
 
 import android.annotation.SuppressLint
 import android.os.IInterface
-import android.util.Log
 import android.view.InputEvent
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method

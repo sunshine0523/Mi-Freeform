@@ -1,37 +1,34 @@
 package com.sunshine.freeform.activity.mi_window_setting
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.sunshine.freeform.R
-import com.sunshine.freeform.service.core.CoreService
-import com.sunshine.freeform.service.notification.NotificationService
-import com.sunshine.freeform.service.floating.FloatingService
+import com.sunshine.freeform.base.BaseActivity
+import com.sunshine.freeform.service.NotificationService
 
 /**
  * @author sunshine
  * @date 2021/1/31
  * 小窗设置
  */
-class MiWindowSettingActivity : AppCompatActivity() {
+class MiWindowSettingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mi_window_setting)
+        setTitle(getString(R.string.mi_freeform_setting_label))
 
         val viewModel = ViewModelProvider(this).get(MiWindowSettingViewModel::class.java)
 
-        viewModel.getAllFreeFormApps().observe(this, Observer {
-            //将更新提供给服务
-            CoreService.floatingApps = it
-        })
+//        viewModel.getAllFreeFormApps().observe(this, Observer {
+//            //将更新提供给服务
+//            CoreService.floatingApps = it
+//        })
 
         viewModel.getAllNotificationApps().observe(this, Observer {
             //将更新提供给服务
             NotificationService.notificationApps = it
         })
-
-
 
         supportFragmentManager
             .beginTransaction()

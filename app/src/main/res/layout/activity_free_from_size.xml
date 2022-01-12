@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                app:cardBackgroundColor="@color/freeform_size_cardview_background"
+                app:cardBackgroundColor="?colorPrimary"
                 app:cardCornerRadius="10dp" />
         </FrameLayout>
 

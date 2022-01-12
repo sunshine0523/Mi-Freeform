@@ -1,14 +1,16 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    //绑定ID
     id 'kotlin-android-extensions'
-
     id 'kotlin-kapt'
-    id 'bugly'
 }
 
 android {
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
     signingConfigs {
         release {
             storeFile file('D:\\daima\\Android\\AndroidStudioProjects\\sunshinekey.jks')
@@ -17,22 +19,17 @@ android {
             keyPassword 'androidhas1'
         }
     }
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    compileSdkVersion 31
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.sunshine.freeform"
         minSdkVersion 29
-        targetSdkVersion 30
-        versionCode 8
-        versionName "0.0.8 beta"
+        targetSdkVersion 31
+        versionCode 35
+        versionName "2.0.0 alpha"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
-        ndk {
-            // 设置支持的SO库架构
-            abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
-        }
     }
 
     buildTypes {
@@ -51,14 +48,22 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    sourceSets{
+        main{
+            java{
+                exclude 'com/android/server/display/DisplayDevice.java'
+            }
+        }
+    }
 }
 
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.2'
+    implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'com.google.android.material:material:1.6.0-alpha01'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     testImplementation 'junit:junit:4.+'
@@ -67,7 +72,7 @@ dependencies {
 
     implementation 'androidx.preference:preference-ktx:1.1.1'
 
-    def room_version = "2.2.6"
+    def room_version = "2.4.0"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     // optional - Kotlin Extensions and Coroutines support for Room
@@ -76,14 +81,26 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
 
     compileOnly 'de.robv.android.xposed:api:82'
-
     compileOnly 'de.robv.android.xposed:api:82:sources'
 
-    implementation 'com.tencent.bugly:crashreport:latest.release'
-    implementation 'com.tencent.bugly:nativecrashreport:latest.release' //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
-}
+    implementation 'dev.rikka.rikkax.preference:simplemenu-preference:1.0.1'
 
-bugly {
-    appId = 'ef36a376e0' // 注册时分配的App ID
-    appKey = 'e3e6002c-b33f-4fca-851b-d93481d46813' // 注册时分配的App Key
+    def shizuku_version = '11.0.0'
+    // required by Shizuku and Sui
+    implementation "rikka.shizuku:api:$shizuku_version"
+    // required by Shizuku
+    implementation "rikka.shizuku:provider:$shizuku_version"
+
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+
+    //dataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-preferences-core:1.0.0")
+
+//    implementation('com.github.huweijian5:GestureDetectorView:1.0.5')
+    implementation 'com.github.promeg:tinypinyin:2.0.3' // TinyPinyin核心包，约80KB
+
+    implementation 'com.github.promeg:tinypinyin-lexicons-android-cncity:2.0.3' // 可选，适用于Android的中国地区词典
 }

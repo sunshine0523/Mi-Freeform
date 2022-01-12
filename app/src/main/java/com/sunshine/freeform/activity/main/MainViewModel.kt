@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.sunshine.freeform.room.DatabaseRepository
+import com.sunshine.freeform.room.NotificationAppsEntity
 import com.sunshine.freeform.utils.ShellUtils
 
 /**
@@ -22,6 +23,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun isNotification(): Boolean {
         return sp.getBoolean("switch_notify", false)
+    }
+
+    fun isStartForegroundService(): Boolean {
+        return sp.getBoolean("switch_foreground_service", false)
     }
 
     /**
@@ -45,14 +50,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getControlModel(): Int {
-        return sp.getInt("freeform_control_model", 1)
+        return sp.getInt("freeform_control_model", 2)
     }
 
-    fun getAllFreeFormApps(): LiveData<List<String>?> {
-        return repository.getAllFreeForm()
-    }
-
-    fun getAllNotificationApps(): LiveData<List<String>?> {
+    fun getAllNotificationApps(): LiveData<List<NotificationAppsEntity>?> {
         return repository.getAllNotification()
+    }
+
+    fun getServerVersion(): Long {
+        return sp.getLong("server_version", -1)
+    }
+
+    fun putServerVersion(version: Long) {
+        sp.edit().putLong("server_version", version).apply()
     }
 }

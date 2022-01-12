@@ -1,6 +1,5 @@
 package com.sunshine.freeform.room
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -15,6 +14,8 @@ class NotificationAppsEntity(
 //    @PrimaryKey(autoGenerate = true)
 //    val id: Int,
     @PrimaryKey
-    val packageName: String
+    val packageName: String,
+    //20210604新增用户标识
+    val userId: Int = 0
 )
 

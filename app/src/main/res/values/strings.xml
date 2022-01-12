@@ -7,29 +7,23 @@
     <string name="freeform_setting_label">小窗设置</string>
     <string name="freeform_size_setting_label">小窗大小设置</string>
     <string name="accessibility_label">当前应用监听和小窗位置监听</string>
-    <string name="app_info">米窗是一款在原生系统上可以像MIUI小窗一样工作的软件</string>
+    <string name="app_info">米窗是一款在类原生系统上可以像MIUI小窗一样工作的软件</string>
     <string name="button_freeform_setting">小窗设置</string>
-    <string name="switch_freeform">开启小窗悬浮按钮</string>
+    <string name="switch_freeform">开启全局侧边栏</string>
     <string name="switch_notify">接管选定应用通知</string>
     <string name="switch_notify_summary">在选定应用发送通知时，米窗会拦截并且发送一个相同内容的通知，点击该通知会使用小窗打开通知。米窗承诺绝对不会保存、发送任何通知中信息，欢迎监督。</string>
     <string name="setting_freeform_apps">选择小窗应用</string>
-    <string name="setting_freeform_apps_summary">选择在悬浮按钮中可以开启小窗的应用</string>
+    <string name="setting_freeform_apps_summary">选择可以开启小窗的应用</string>
     <string name="setting_freeform">小窗设置</string>
     <string name="setting_freeform_summary">对小窗大小、位置等进行设置</string>
     <string name="setting_floating">悬浮按钮设置</string>
     <string name="setting_floating_summary">对悬浮按钮的位置等设置</string>
     <string name="text_test">测试文本</string>
     <string name="category_freeform">小窗</string>
-    <string name="category_notify">通知气泡</string>
-    <string name="switch_show_location_off">当前在屏幕左边显示悬浮按钮</string>
-    <string name="switch_show_location_on">当前在屏幕右边显示悬浮按钮</string>
-    <string name="switch_show_location">点击切换悬浮按钮显示位置</string>
-    <string name="accessibility_description">“米窗”会使用无障碍功能来获取小窗位置和当前正在运行得应用，用来在应用切换和小窗位置移动时记录小窗状态以还原或挂起小窗</string>
-    <string name="permission_description">“米窗”需要“显示在其他应用的上层”权限用来显示悬浮窗以便打开小窗界面；
-        需要“通知使用权”权限用来监听应用通知以便在有新通知时打开小窗；
-        需要“使用情况访问权限”权限用来展示最近使用的应用；
-        需要root权限以小窗模式启动应用程序。
-        如果您拒绝这些权限或功能，“米窗”可能无法正常使用。</string>
+    <string name="category_notify">通知</string>
+    <string name="switch_show_location_off">当前在屏幕左边显示侧边栏</string>
+    <string name="switch_show_location_on">当前在屏幕右边显示侧边栏</string>
+    <string name="switch_show_location">点击切换全局侧边栏显示位置</string>
     <string name="draw_overlay_permission_granted">“显示在其他应用的上层”已经获取</string>
     <string name="notification_listeners_permission_granted">“通知使用权”已经获取</string>
     <string name="get_usage_stats_permission_granted">“使用情况访问权限”已经获取</string>
@@ -65,12 +59,8 @@
     <string name="done">确定</string>
     <string name="cancel">取消</string>
     <string name="category_freeform_advanced">高级设置</string>
-    <string name="radiobutton_root">模式1：无需Xposed，系统资源消耗大</string>
-    <string name="radiobutton_xposed">模式2：触控更加跟手，系统资源消耗小，需要Xposed</string>
-    <string name="xposed_message">Xposed模式触控更加跟手，系统资源占用更低，但是需要重启设备后生效，需要重启设备后生效，需要重启设备后生效。如果重启后仍然无法触控，说明hook失败，请联系开发者。米窗承诺使用Xposed只做必要的hook，绝无恶意代码，欢迎大家监督。</string>
-    <string name="require_reboot">重启设备后生效</string>
-    <string name="xposed_donnot_start_service">Xposed控制模式下无需开启该服务</string>
-    <string name="setting_freeform_size">小窗默认大小</string>
+    <string name="setting_freeform_size">恢复小窗默认大小</string>
+    <string name="setting_freeform_size_summary">如果您在设置小窗大小后出现问题，您可以点击该选项来恢复默认大小</string>
     <string name="height">高度</string>
     <string name="width">宽度</string>
     <string name="save">保存</string>
@@ -88,10 +78,123 @@
     <string name="search">搜索</string>
     <string name="switch_hide_recent">从最近任务隐藏</string>
     <string name="switch_hide_recent_summary">在米窗中从多任务划掉米窗再重新进入即可生效</string>
-    <string name="xposed_description"><![CDATA[Lsposed勾选“系统框架（或者Android系统，包名：android）”和“系统界面（或者系统UI、系统用户界面、SystemUI，包名：com.android.systemui）”即可。启用米窗Xposed功能，可以使触控更加跟手；在Android 11上，还可以防止小窗内应用旋转造成的系统界面崩溃问题。如需启用，还需在米窗设置->小窗设置->控制模式中选择模式2。请注意：启用该功能后可能会被恶意程序控制设备（模拟触控、模拟按键等），请注意安全。]]></string>
+    <string name="xposed_description"><![CDATA[米窗已经在LSPposed上自动勾选了必须的模块，但是，如果您需要“应用不支持在辅屏上显示”问题，还需要自行勾选有问题的应用。在Android 11上，还可以防止小窗内应用旋转造成的系统界面崩溃问题。]]></string>
     <string name="already_show">当前应用已经在小窗中打开</string>
     <string name="control_false">检测到无法控制，请检查xposed</string>
     <string name="choose_freeform_app">选择小窗应用</string>
-    <string name="core_not_running">核心服务没有运行，请开启米窗后再试</string>
+    <string name="core_not_running">核心服务没有运行，请开启米窗后再试；root模式请注意开启服务</string>
     <string name="width_greater_height_error">为了保证小窗正常观感，请勿将宽度设置大于高度</string>
+    <string name="switch_freeform_classic_button">显示经典控制按钮</string>
+    <string name="switch_freeform_classic_button_summary">在小窗右上角显示“最大化”和“关闭”按钮</string>
+    <string name="link_service">连接服务</string>
+    <string name="xposed_donnot_link_service">Xposed控制模式下无需连接该服务</string>
+    <string name="switch_service_summary">仅root模式需要开启，但仍然建议在不使用米窗时手动关闭该服务</string>
+    <string name="pingfen">打个分吧</string>
+    <string name="coolapk_my_name">酷安关注我 @KindBrave</string>
+    <string name="add_qq_qun">加入QQ交流群</string>
+    <string name="setting_floating_compatible">选择兼容性应用</string>
+    <string name="setting_floating_compatible_summary">如果某些应用和移动小窗位置部分有冲突导致显示不完整、无法触控等问题，请对该软件启用兼容性</string>
+    <string name="switch_hide_floating">无操作贴边</string>
+    <string name="switch_hide_floating_summary">当悬浮球一定时间没有操作时，将会自动贴边</string>
+    <string name="category_floating">全局侧边栏</string>
+    <string name="start_market_fail">打开应用商店失败</string>
+    <string name="start_coolapk_fail">打开酷安失败</string>
+    <string name="start_qq_fail">打开QQ失败</string>
+    <string name="juanzeng">捐赠</string>
+    <string name="setting_freeform_advanced">高级</string>
+    <string name="setup_info">似乎我们是初次见面，那就让我来引导您了解米窗，同时做一些必要设置。米窗是一款在类原生系统上可以像MIUI小窗一样工作的软件。它使用并不复杂，但是需要您授权ROOT、启用Xposed模块等权限，如果您没有听说过或不了解这些，请不要使用米窗；您也可以点击此处了解米窗为什么需要这些权限。为了更好的为您提供服务，请您阅读并同意《服务及免责声明》。如果您不接受上述声明，请不要使用米窗。</string>
+    <string name="permission_info">为了保证米窗正常使用，需要使用以下权限，米窗承诺，不会滥用权限获取您的任何信息\n\nXposed权限：米窗需要使用Xposed权限来进行控制小窗中的应用，包括：触摸、返回；可以让悬浮窗在任意界面上进行叠加；此外，在Android 11上，需要Xposed权限来防止小窗运行中发生的闪退问题，在Android 10上，可以防止启动小窗失败等问题\n\nROOT权限：米窗需要使用ROOT权限来进行启动小窗中的应用；并且可以自动启动下述权限\n\n使用情况访问权限：米窗需要使用“使用情况访问权限”来获取设备中最近使用的应用情况，用于展示最近应用以启动小窗\n\n通知使用权：米窗需要使用“通知使用权”来获取设备的通知信息，用于接管系统通知进行小窗打开。\n\n\n此外，米窗还申请了下述权限来保证米窗的正常运行：\n\n互联网访问权限：米窗的ROOT模式（暂未对用户开放，内测）控制需要本地互联网连接，但需要申请该权限\n\n振动器权限：米窗在多个界面需要进行振动以反馈给您\n\n获取设备中应用信息：在Android 11上，米窗需要申请该权限才能获取设备上全部应用信息，申请该权限为了向您展示设备应用来进行是否进行小窗打开\n\n电池优化：为了保证米窗可以在后台保证运行，您可以选择关闭对米窗的电池优化\n\n关闭通知栏：为了在点击小窗通知后和点击磁贴后可以自动关闭通知栏，申请了该权限\n\n\n为了获取米窗在运行时的崩溃日志，米窗接入了腾讯Bugly。Bugly向您申请了下述权限：\n\n互联网访问权限：Bugly上传崩溃日志时，需要该权限\n\n网络连接状态权限：Bugly上传崩溃日志时，需要该权限\n\n读取系统日志：Bugly获取米窗崩溃日志时，需要该权限\n\n\n以上是米窗申请的全部权限，如果您对该说明有异议，请联系开发者。如果您不同意该权限声明，米窗可能无法为您提供服务。</string>
+    <string name="service_info">米窗的获取、使用、更新等服务完全免费，但米窗不保证会因为一些不稳定因素而终止服务。使用米窗可能会让您的设备出现“死机”、“成砖”等严重影响日常使用的问题，米窗默认您拥有基本的解决上述问题的能力。同时建议您在使用米窗前对设备重要信息进行备份，并且不要将米窗安装在您的主要设备上。米窗不保证对您的设备出现问题提供技术支持。使用米窗即代表您同意上述声明</string>
+    <string name="enable_xposed">Xposed模块已经勾选</string>
+    <string name="disenable_xposed">Xposed模块没有运行，请按照Xposed管理器米窗模块说明进行勾选并重启</string>
+    <string name="enable_root">ROOT权限已经授予</string>
+    <string name="get_help">操作指南</string>
+    <string name="choose_freeform_control_model_title">选择控制模式</string>
+    <string name="permission_instruction">权限声明</string>
+    <string name="service_instruction">服务及免责声明</string>
+    <string name="setting_freeform_show_model">小窗显示模式</string>
+    <string name="radiobutton_user">模式1：使用用户级悬浮窗，在一些重要系统界面（如：设置、应用权限授权等）无法显示</string>
+    <string name="radiobutton_system">模式2：使用系统级悬浮窗，可以显示在任何界面，但一些设备上不支持</string>
+    <string name="choose_freeform_show_model_title">选择显示模式</string>
+    <string name="show_overlay_fail">开启小窗失败。您是否设置了显示模式为系统模式但Xposed没有勾选小窗？或作用域没有选择系统框架？</string>
+    <string name="start_with_freeform">小窗打开</string>
+    <string name="floating_view_label">选择该活动启动选择小窗应用</string>
+    <string name="battery">电池优化</string>
+    <string name="battery_summary">为了保证米窗在后台能够正常运行，您可以关闭对米窗的电池优化，但是米窗可能因此耗费设备的更多电量</string>
+    <string name="freeform_control_mode">关闭/最大化方式</string>
+    <string name="to_default_freeform_size">已恢复默认大小</string>
+    <string name="senior">高级</string>
+    <string name="senior_label">高级设置</string>
+    <string name="senior_info">米窗始终坚持免费使用的承诺，但是为了后续开发更多好玩实用的功能，还需要您的支持。如果您有兴趣帮助米窗，可以选择酷安给我五星好评、捐赠开发者。支付宝捐赠可以点击下方按钮进行跳转，微信捐赠暂不支持跳转，您可以截图保存后通过扫码的方式捐赠，感激不尽。无论您捐赠与否，米窗提供的功能都将保持一致，感谢您的支持。</string>
+    <string name="server_info">米窗需要开启一个服务才能保证正常使用。现在您可以选择Root方式或通过连接计算机执行一段指令开启服务。</string>
+    <string name="button_start_server_by_root">通过Root开启</string>
+    <string name="button_start_server_by_adb">通过ADB开启</string>
+    <string name="start_by_root_success">服务已经通过Root启动</string>
+    <string name="button_stop_server_by_root">通过Root停止</string>
+    <string name="button_stop_server_by_adb">通过ADB停止</string>
+    <string name="adb_start_message">您只需要将您的设备通过数据线连接到计算机，并且在命令行输入adb shell后，执行以下代码：\nCLASSPATH=/storage/emulated/0/Android/data/com.sunshine.freeform/files/Documents/freeform-server.jar\nnohup app_process / com.sunshine.freeform.Server >/dev/null 2>&amp;1 &amp;即可开启米窗所需的服务
+    </string>
+    <string name="adb_stop_message">您只需要将您的设备通过数据线连接到计算机，并且在命令行输入adb shell后，执行以下代码：\nkill $(ps -ef | grep com.sunshine.freeform.Server | grep -v grep | awk \'{print $2}\')\n即可停止开启的服务，您还可以通过重启设备来停止服务\nroot开启的服务无法通过该命令停止\n如果命令无法停止服务，您只需要重启即可解决
+    </string>
+    <string name="copy">复制到剪贴板</string>
+    <string name="start_server_command_title">米窗开启服务指令</string>
+    <string name="stop_server_command_title">米窗开启服务指令</string>
+    <string name="start_server_command">CLASSPATH=/storage/emulated/0/Android/data/com.sunshine.freeform/files/Documents/freeform-server.jar nohup app_process / com.sunshine.freeform.Server >/dev/null 2>&amp;1 &amp;</string>
+    <string name="stop_server_command">kill $(ps -ef | grep com.sunshine.freeform.Server | grep -v grep | awk \'{print $2}\')</string>
+    <string name="copy_done">已经复制</string>
+    <string name="log">运行日志</string>
+    <string name="small_freeform_size">挂起时小窗大小</string>
+    <string name="small_freeform_size_summary">为了保证观感，不支持调整宽高比，只支持调节缩放大小比例</string>
+    <string name="server_stop">服务已经停止</string>
+    <string name="server_label">服务</string>
+    <string name="server_running">服务正在运行，如需开启请尝试停止服务</string>
+    <string name="start_success">启动服务成功</string>
+    <string name="start_fail">启动服务失败</string>
+    <string name="get_file_fail">获取服务文件失败</string>
+    <string name="button_telegram">Telegram 频道 @Mi-FreeForm</string>
+    <string name="keep_running">保活设置</string>
+    <string name="keep_running_summary">米窗无法保证总会保活成功，但仍然会尽力去保证在后台仍然能够提供正常服务。您可以根据米窗后台存活情况开启下面的保活选项</string>
+    <string name="sort_apps_label">排序应用</string>
+    <string name="textview_setup_help"><Data>
+            <![CDATA[在1.0.2 beta开始，米窗开始使用<b>Shizuku或Sui启动核心功能</b>。如果您的设备没有magisk或没有root，那么请您<b>在酷安下载Shizuku进行授权，如果您有，可以通过刷入Riru-Sui模块进行授权</b>。如果您不了解Shizuku和Sui，您可以去酷安搜索相关信息。同时为了米窗的一些附加功能正常使用，<b>建议您在xposed管理器中勾选米窗并重启设备</b>。<b>如果您不了解米窗的操作或对米窗的操作有疑问，请点击下方操作指南来查阅</b>。]]>
+        </Data>
+    </string>
+    <string name="read_statement_done">我已经阅读并同意上方所示的《权限声明》和《服务及免责声明》</string>
+    <string name="donation_title">捐赠</string>
+    <string name="alipay">支付宝捐赠</string>
+    <string name="so_sad">捐什么捐，我要白嫖！</string>
+    <string name="wechat">下方微信赞赏码截图就可以啦</string>
+    <string name="pay_list">捐赠名单</string>
+
+    <string name="foreground_service">前台服务</string>
+    <string name="foreground_service_subtitle">开启该选项后，米窗将会在通知界面创建一个持久性通知来保证正常运行，点击该通知同样可以打开小窗选择界面，您可以将该通知设置为静音。</string>
+
+    <!--mi_window_setting.xml-->
+    <string name="use_system_freeform">使用系统自带小窗</string>
+    <string name="open_by_mi_freeform">米窗打开</string>
+    <string name="vibrator">振动反馈</string>
+    <string name="vibrator_summary">在关闭小窗、最小化小窗时是否振动反馈</string>
+    <string name="all_apps">所有应用</string>
+    <string name="edit_apps">编辑</string>
+
+    <!--FloatingViewAdapter-->
+    <string name="small_running">(正在运行)</string>
+
+    <string name="sui_start">Sui/Shizuku服务已经运行</string>
+    <string name="xposed_start">Xposed服务已经运行</string>
+    <string name="no_start">米窗没有激活</string>
+    <string name="service_not_start_description">米窗所需的服务没有运行</string>
+    <string name="welcome_title">欢迎使用米窗</string>
+    <string name="xposed_service_description">你可以体验完整的米窗服务</string>
+    <string name="no_service_description">Xposed和Sui/Shizuku服务都没有启动</string>
+    <string name="sui_service_description">你可以体验大部分米窗服务</string>
+    <string name="foreground_notification_name">米窗前台服务通知</string>
+    <string name="foreground_notification_title">米窗正在后台运行</string>
+    <string name="foreground_notification_text">点击即可打开小窗应用选择界面</string>
+    <string name="foreground_need_running">非Xposed模式下为了保证服务正常运行，前台服务必须开启</string>
+
+    <!--Floating2Service-->
+    <string name="request_overlay_permission" translatable="false">请选择米窗开启“显示在其他应用界面的上层”权限</string>
+    <string name="request_overlay_permission_fail">无法跳转到设置界面，请手动前往设置开启米窗的“显示在其他应用界面的上层”权限</string>
+    <string name="shizuku_not_running"><![CDATA[Shizuku&Sui没有安装或运行]]></string>
 </resources>

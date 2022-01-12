@@ -1,18 +1,18 @@
 package com.sunshine.freeform.activity.floating_setting
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.sunshine.freeform.R
-import kotlinx.android.synthetic.main.activity_floating_setting.*
+import com.sunshine.freeform.base.BaseActivity
 
-class FloatingSettingActivity : AppCompatActivity() {
+class FloatingSettingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_floating_setting)
+        setTitle(getString(R.string.floating_label))
 
         supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.floating_setting_view, FloatingSettingView(this))
+                .replace(R.id.floating_setting_view, FloatingSettingView())
                 .commit()
     }
 }

@@ -1,9 +1,9 @@
 package com.sunshine.freeform.room
 
 import android.content.Context
-import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import com.sunshine.freeform.room.MyDatabase.Companion.getDatabase
+import kotlinx.coroutines.flow.Flow
 import java.lang.Exception
 
 /**
@@ -15,18 +15,34 @@ class DatabaseRepository(context: Context) {
     private val freeFormAppsDao: FreeFormAppsDao
     private val notificationAppsDao: NotificationAppsDao
 
-    fun insertFreeForm(packageName: String) {
+    fun insertFreeForm(packageName: String, userId: Int) {
         try {
-            freeFormAppsDao.insert(packageName)
+            freeFormAppsDao.insert(packageName, userId)
         }catch (e: Exception) { }
     }
 
-    fun deleteFreeForm(packageName: String) {
-        freeFormAppsDao.delete(packageName)
+    fun deleteFreeForm(packageName: String, userId: Int) {
+        freeFormAppsDao.delete(packageName, userId)
     }
 
-    fun getAllFreeForm() : LiveData<List<String>?> {
+    fun getAllFreeFormName(): LiveData<List<String>?> {
+        return freeFormAppsDao.getAllName()
+    }
+
+    fun getAllFreeForm() : LiveData<List<FreeFormAppsEntity>?> {
         return freeFormAppsDao.getAll()
+    }
+
+    fun getAllFreeFormAppsByFlow(): Flow<List<FreeFormAppsEntity>?> {
+        return freeFormAppsDao.getAllByFlow()
+    }
+
+    fun getCount(): Int {
+        return freeFormAppsDao.getCount()
+    }
+
+    fun update(entity: FreeFormAppsEntity) {
+        freeFormAppsDao.update(entity)
     }
 
     fun getAllFreeFormWithoutLiveData() : List<String>? {
@@ -37,18 +53,22 @@ class DatabaseRepository(context: Context) {
         freeFormAppsDao.deleteAll()
     }
 
-    fun insertNotification(packageName: String) {
+    fun deleteMore(freeFormAppsEntityList: List<FreeFormAppsEntity>) {
+        freeFormAppsDao.deleteList(freeFormAppsEntityList)
+    }
+
+    fun insertNotification(packageName: String, userId: Int) {
         try {
-            notificationAppsDao.insert(packageName)
+            notificationAppsDao.insert(packageName, userId)
         }catch (e: Exception) {}
 
     }
 
-    fun deleteNotification(packageName: String) {
-        notificationAppsDao.delete(packageName)
+    fun deleteNotification(packageName: String, userId: Int) {
+        notificationAppsDao.delete(packageName, userId)
     }
 
-    fun getAllNotification() : LiveData<List<String>?> {
+    fun getAllNotification() : LiveData<List<NotificationAppsEntity>?> {
         return notificationAppsDao.getAll()
     }
 

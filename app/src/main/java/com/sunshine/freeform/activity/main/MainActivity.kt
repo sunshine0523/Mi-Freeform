@@ -1,131 +1,174 @@
 package com.sunshine.freeform.activity.main
 
-import android.app.AppOpsManager
-import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.pm.PackageManager.PERMISSION_GRANTED
+import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+
 import com.sunshine.freeform.R
+import com.sunshine.freeform.activity.donation.DonationActivity
+import com.sunshine.freeform.activity.floating_view.FloatingViewActivity
 import com.sunshine.freeform.activity.mi_window_setting.MiWindowSettingActivity
-import com.sunshine.freeform.activity.permission.PermissionActivity
-import com.sunshine.freeform.service.core.CoreService
-import com.sunshine.freeform.service.notification.NotificationService
-import com.sunshine.freeform.service.floating.FloatingService
-import com.sunshine.freeform.service.floating.FreeFormConfig
+import com.sunshine.freeform.base.BaseActivity
+import com.sunshine.freeform.callback.SuiServerListener
+import com.sunshine.freeform.hook.service.MiFreeFormService
+import com.sunshine.freeform.service.Floating2Service
+import com.sunshine.freeform.service.FloatingService
+import com.sunshine.freeform.service.ForegroundService
+import com.sunshine.freeform.service.NotificationService
+import com.sunshine.freeform.utils.FreeFormUtils
+import com.sunshine.freeform.utils.PermissionUtils
 import com.sunshine.freeform.utils.ServiceUtils
 import com.sunshine.freeform.utils.TagUtils
-import kotlinx.android.synthetic.main.activity_main.*
+import com.sunshine.freeform.view.floating.FreeFormHelper
+import com.sunshine.freeform.view.floating.FreeFormView
 
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.DelicateCoroutinesApi
+
+import rikka.shizuku.Shizuku
 
 /**
  * @author sunshine
  * @date 2021/1/31
  */
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+@DelicateCoroutinesApi
+class MainActivity : BaseActivity(), View.OnClickListener {
+
+    companion object {
+        const val TAG = "MainActivity"
+        const val MY_COOLAPK_PAGE = "http://www.coolapk.com/u/810697"
+        const val COOLAPK_PACKAGE = "com.coolapk.market"
+        var listener: SuiServerListener? = null
+    }
 
     private lateinit var viewModel: MainViewModel
+
+    private val onRequestPermissionResultListener =
+        Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
+            if (requestCode == TagUtils.SUI_CODE && grantResult == PERMISSION_GRANTED) {
+                checkSuiPermission()
+            }
+        }
+
+    private val binderReceivedListener = Shizuku.OnBinderReceivedListener {
+        FreeFormHelper.init(this, object : SuiServerListener() {
+            override fun onStart() {
+                try {
+                    imageView_service.setImageResource(R.drawable.ic_done_white)
+                    textView_service_info.text = getString(R.string.sui_start)
+                    textView_service_description.text = getString(R.string.sui_service_description)
+                    info_bg.setBackgroundColor(getColor(R.color.green))
+                }catch (e: Exception) {
+                    imageView_service.setImageResource(R.drawable.ic_error_white)
+                    textView_service_info.text = getString(R.string.no_start)
+                    textView_service_description.text = getString(R.string.no_service_description)
+                    info_bg.setBackgroundColor(getColor(R.color.red))
+                }
+            }
+            override fun onStop() {
+                imageView_service.setImageResource(R.drawable.ic_error_white)
+                textView_service_info.text = getString(R.string.no_start)
+                textView_service_description.text = getString(R.string.no_service_description)
+                info_bg.setBackgroundColor(getColor(R.color.red))
+            }
+        })
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        doNotShowBackKey()
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        setTitle(getString(R.string.app_name))
 
-        initCoreService()
-        initOrientation()
-        requirePermission()
+        initService()
 
         button_freeform_setting.setOnClickListener(this)
+        button_donate.setOnClickListener(this)
+        button_star.setOnClickListener(this)
+        button_coolapk.setOnClickListener(this)
+        button_qq_group.setOnClickListener(this)
+        button_telegram.setOnClickListener(this)
     }
 
-    /**
-     * 初始化核心服务
-     */
-    private fun initCoreService() {
-        if (!ServiceUtils.isServiceWork(this, "{$packageName}.service.core.CoreService")) {
-            startService(Intent(this, CoreService::class.java))
-        }
+    override fun onResume() {
+        super.onResume()
+        initServiceInfo()
     }
 
-    /**
-     * 初始化屏幕方向，使悬浮按钮和小窗正常显示
-     */
-    private fun initOrientation() {
-        FreeFormConfig.orientation = resources.configuration.orientation
-    }
-
-    /**
-     * 请求权限类
-     */
-    private fun requirePermission() {
-        //如果有权限没有打开，去授权界面
-        val overlays = try {
-            Settings.canDrawOverlays(this)
-        }catch (e: Exception) {
-            Toast.makeText(this, getString(R.string.cannot_granted_overlay), Toast.LENGTH_LONG).show()
-            false
-        }
-        val notification = try {
-            Settings.Secure.getString(contentResolver, "enabled_notification_listeners").contains(packageName)
-        }catch (e: Exception) {
-            Toast.makeText(this, getString(R.string.cannot_granted_notification), Toast.LENGTH_LONG).show()
-            false
-        }
-        val usage = try {
-            (getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager).checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, android.os.Process.myUid(), packageName) == AppOpsManager.MODE_ALLOWED
-        }catch (e: Exception) {
-            Toast.makeText(this, getString(R.string.cannot_granted_usage), Toast.LENGTH_LONG).show()
-            false
-        }
-        val accessibility = true//PermissionUtils.hasAccessibility(this)
-
-        if (!overlays || !notification || !usage || !accessibility) {
-            //注意这个tag必须要大于等于0，否则会失效
-            startActivityForResult(Intent(this, PermissionActivity::class.java), TagUtils.MAIN_ACTIVITY)
+    private fun initServiceInfo() {
+        if (MiFreeFormService.getClient() != null) {
+            //if (viewModel.isStartForegroundService()) startForegroundService(Intent(this, ForegroundService::class.java))
+            imageView_service.setImageResource(R.drawable.ic_done_white)
+            textView_service_info.text = getString(R.string.xposed_start)
+            textView_service_description.text = getString(R.string.xposed_service_description)
+            info_bg.setBackgroundColor(getColor(R.color.green))
         } else {
-            //如果服务关闭的并且不是xposed模式，那么将服务关闭
-            if (viewModel.serviceIsClose() && viewModel.getControlModel() == 1) {
-                viewModel.closeService()
-            }
-            if (viewModel.isShowFloating() && !ServiceUtils.isServiceWork(this, "{$packageName}.service.floating.FloatingService")) {
-                //如果服务没有运行就启动
-                startService(Intent(applicationContext, FloatingService::class.java))
-                viewModel.getAllFreeFormApps().observe(this, Observer {
-                    CoreService.floatingApps = it
-                })
-            }
-            if (viewModel.isNotification()) {
-                if (!ServiceUtils.isServiceWork(this, "{$packageName}.service.notification.NotificationService")) {
-                    startService(Intent(applicationContext, NotificationService::class.java))
+            //if (viewModel.isStartForegroundService()) startForegroundService(Intent(this, ForegroundService::class.java))
+
+            Shizuku.addBinderReceivedListenerSticky(binderReceivedListener)
+            try {
+                if (Shizuku.checkSelfPermission() != PERMISSION_GRANTED) {
+                    Shizuku.addRequestPermissionResultListener(onRequestPermissionResultListener)
+                    Shizuku.requestPermission(TagUtils.SUI_CODE)
+                } else {
+                    imageView_service.setImageResource(R.drawable.ic_done_white)
+                    textView_service_info.text = getString(R.string.sui_start)
+                    textView_service_description.text = getString(R.string.sui_service_description)
+                    info_bg.setBackgroundColor(getColor(R.color.green))
                 }
-                viewModel.getAllNotificationApps().observe(this, Observer {
-                    NotificationService.notificationApps = it
-                })
-                if (!viewModel.isShowFloating()) {
-                    FreeFormConfig.init(null, viewModel.getControlModel())
-                }
+            }catch (e: Exception) {
+                Toast.makeText(this, getString(R.string.shizuku_not_running), Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun deniedDialog() {
-        val builder = MaterialAlertDialogBuilder(this)
-        builder.setTitle(getString(R.string.dialog_title))
-        builder.setMessage(getString(R.string.permission_fail))
-        builder.setPositiveButton(getString(R.string.to_grant)) { _, _ ->
-            startActivityForResult(Intent(this, PermissionActivity::class.java), TagUtils.MAIN_ACTIVITY)
+    private fun initService() {
+        if (viewModel.isShowFloating() && !ServiceUtils.isServiceWork(this, "$packageName.service.Floating2Service")) startService(Intent(applicationContext, Floating2Service::class.java))
+
+        if (viewModel.isNotification()) {
+            if (!ServiceUtils.isServiceWork(this, "$packageName.service.notification.NotificationService")) startService(Intent(applicationContext, NotificationService::class.java))
+
+            viewModel.getAllNotificationApps().observe(this, Observer {
+                NotificationService.notificationApps = it
+            })
         }
-        builder.setNegativeButton(getString(R.string.to_finish)) { _, _ ->
-            finish()
+    }
+
+    private fun checkSuiPermission() {
+        if (Shizuku.checkSelfPermission() == PERMISSION_GRANTED) {
+            FreeFormHelper.init(this, object : SuiServerListener() {
+                override fun onStart() {
+                    try {
+                        imageView_service.setImageResource(R.drawable.ic_done_white)
+                        textView_service_info.text = getString(R.string.sui_start)
+                        textView_service_description.text = getString(R.string.sui_service_description)
+                        info_bg.setBackgroundColor(getColor(R.color.green))
+                    }catch (e: Exception) {
+                        imageView_service.setImageResource(R.drawable.ic_error_white)
+                        textView_service_info.text = getString(R.string.no_start)
+                        textView_service_description.text = getString(R.string.no_service_description)
+                        info_bg.setBackgroundColor(getColor(R.color.red))
+                    }
+                }
+                override fun onStop() {}
+            })
+        } else {
+            imageView_service.setImageResource(R.drawable.ic_error_white)
+            textView_service_info.text = getString(R.string.no_start)
+            textView_service_description.text = getString(R.string.no_service_description)
+            info_bg.setBackgroundColor(getColor(R.color.red))
         }
-        builder.setCancelable(false)
-        builder.create().show()
     }
 
     override fun onClick(v: View?) {
@@ -133,24 +176,60 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             R.id.button_freeform_setting -> {
                 startActivity(Intent(this, MiWindowSettingActivity::class.java))
             }
+            R.id.button_donate -> {
+                startActivity(Intent(this, DonationActivity::class.java))
+            }
+            R.id.button_star -> {
+                try {
+                    val str = "market://details?id=com.sunshine.freeform"
+                    val localIntent = Intent(Intent.ACTION_VIEW, Uri.parse(str))
+                    localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    localIntent.`package` = "com.coolapk.market"
+                    startActivity(localIntent)
+                } catch (e: Exception) {
+                    try {
+                        val str = "market://details?id=com.sunshine.freeform"
+                        val localIntent = Intent(Intent.ACTION_VIEW, Uri.parse(str))
+                        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(localIntent)
+                    }catch (e : Exception){
+                        Toast.makeText(this, getString(R.string.start_market_fail), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            R.id.button_coolapk -> {
+                try {
+                    val str = MY_COOLAPK_PAGE
+                    val localIntent = Intent(Intent.ACTION_VIEW, Uri.parse(str))
+                    localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    localIntent.`package` = COOLAPK_PACKAGE
+                    startActivity(localIntent)
+                } catch (e: Exception) {
+                    Toast.makeText(this, getString(R.string.start_coolapk_fail), Toast.LENGTH_SHORT).show()
+                }
+            }
+            R.id.button_qq_group -> {
+                try {
+                    val intent = Intent()
+                    val key = "qNbvThGAg7lPnCfLNWL-NKw0Teaso05e"
+                    intent.data =
+                        Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26jump_from%3Dwebapi%26k%3D$key")
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Toast.makeText(this, getString(R.string.start_qq_fail), Toast.LENGTH_SHORT).show()
+                }
+            }
+            R.id.button_telegram -> {
+                val uri = Uri.parse("https://t.me/mi_freeform")
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(intent)
+            }
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == TagUtils.MAIN_ACTIVITY) {
-            when(resultCode) {
-                RESULT_OK -> {
-                    Toast.makeText(this, getString(R.string.permission_success), Toast.LENGTH_SHORT).show()
-                    //如果服务没有开启，就把设置设为关闭
-                    if (viewModel.serviceIsClose()) {
-                        viewModel.closeService()
-                    }
-                }
-                RESULT_CANCELED -> {
-                    deniedDialog()
-                }
-            }
-        }
+    override fun onDestroy() {
+        super.onDestroy()
+        Shizuku.removeRequestPermissionResultListener(onRequestPermissionResultListener)
+        Shizuku.removeBinderReceivedListener(binderReceivedListener)
     }
 }

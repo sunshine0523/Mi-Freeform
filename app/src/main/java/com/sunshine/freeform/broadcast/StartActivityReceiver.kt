@@ -3,8 +3,8 @@ package com.sunshine.freeform.broadcast
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import com.sunshine.freeform.service.floating.FreeFormConfig
+import com.sunshine.freeform.utils.FreeFormUtils
+
 
 class StartActivityReceiver : BroadcastReceiver() {
 
@@ -15,7 +15,7 @@ class StartActivityReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val packageName = intent.getStringExtra("packageName")
         if (packageName != null) {
-            FreeFormConfig.startActivityForHook(packageName)
+            FreeFormUtils.startActivityForHook(packageName)
         }
     }
 }

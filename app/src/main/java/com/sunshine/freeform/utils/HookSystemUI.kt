@@ -5,7 +5,6 @@ import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
-import java.util.*
 
 /**
  * @author sunshine
@@ -30,19 +29,57 @@ class HookSystemUI : IXposedHookLoadPackage {
                     }
                 }
             })
-        }
-//        if (android.os.Build.VERSION.SDK_INT == 29 && lpparam?.packageName == "com.android.systemui") {
-//            val clazz = XposedHelpers.findClass("com.android.systemui.shared.system.TaskStackChangeListener", lpparam.classLoader)
-//            XposedBridge.hookAllMethods(clazz, "onActivityLaunchOnSecondaryDisplayFailed", object : XC_MethodHook() {
-//                override fun beforeHookedMethod(param: MethodHookParam?) {
-//                    if (param != null) {
-//                        try {
-//                            XposedBridge.log("参数：${param.args[0]}")
-//                        }catch (e: Exception) {}
-//
+
+//            val clazz1 = XposedHelpers.findClass("com.android.systemui.SystemUI", lpparam!!.classLoader)
+//            XposedHelpers.findAndHookConstructor(
+//                clazz1,
+//                Context::class.java,
+//                object : XC_MethodHook() {
+//                    override fun afterHookedMethod(param: MethodHookParam?) {
+//                        println(param!!.args[0])
 //                    }
 //                }
-//            })
-//        }
+//            )
+        }
+
+
+
+        if (android.os.Build.VERSION.SDK_INT == 29 && lpparam?.packageName == "com.android.systemui") {
+            val clazz = XposedHelpers.findClass("com.android.systemui.SystemBars", lpparam.classLoader)
+            XposedHelpers.findAndHookMethod(
+                clazz,
+                "createStatusBarFromConfig",
+                object : XC_MethodHook() {
+                    override fun afterHookedMethod(param: MethodHookParam?) {
+//                        val superClazz = XposedHelpers.findClass("com.android.systemui.SystemUI", lpparam.classLoader)
+//                        val context = XposedHelpers.findField(superClazz, "mContext").get(param!!.thisObject) as Context
+//                        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+//                        val button = Button(context)
+//                        val layoutParams = WindowManager.LayoutParams()
+//                        layoutParams.width = 1000
+//                        layoutParams.height = 1000
+//                        layoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+//                        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+//                        windowManager.addView(button, layoutParams)
+//
+//                        val userServiceArgs = Shizuku.UserServiceArgs(ComponentName("com.android.systemui", MyAidl::class.java.name))
+
+//                        val inputManager = context.getSystemService(Context.INPUT_SERVICE) as InputManager
+//                        val method = inputManager::class.java.getMethod("injectInputEvent", InputEvent::class.java, Int::class.javaPrimitiveType)
+//                        val motionEvent = MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0.0f, 0.0f, 0)
+//                        motionEvent::class.java.getMethod("setDisplayId", Int::class.javaPrimitiveType).invoke(motionEvent, 1)
+//                        method.invoke(inputManager, motionEvent, 0)
+//
+//                        val activityOptions = ActivityOptions.makeBasic()
+//                        activityOptions.launchDisplayId = 0
+//                        val packageManager = context.packageManager
+//                        val intent = packageManager.getLaunchIntentForPackage("com.sunshine.lnuplus")
+//                        if (intent != null) {
+//                            context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), activityOptions.toBundle())
+//                        }
+                    }
+                }
+            )
+        }
     }
 }

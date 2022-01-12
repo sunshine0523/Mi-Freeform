@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="false"
         android:key="switch_show_location"
         app:summaryOff="@string/switch_show_location_off"
@@ -11,20 +12,29 @@
         app:switchTextOn="@string/switch_show_location_on"
         app:title="@string/switch_show_location" />
 
-    <SeekBarPreference
-        android:layout_width="wrap_content"
-        android:key="floating_button_size"
-        android:max="250"
-        android:title="@string/floating_button_size"
-        app:defaultValue="125"
-        app:min="1" />
+<!--    <SwitchPreference-->
+<!--        app:iconSpaceReserved="false"-->
+<!--        android:defaultValue="false"-->
+<!--        android:key="switch_hide_floating"-->
+<!--        app:title="@string/switch_hide_floating"-->
+<!--        app:summary="@string/switch_hide_floating_summary"/>-->
 
-    <SeekBarPreference
-        android:layout_width="wrap_content"
-        android:key="floating_button_alpha"
-        android:max="255"
-        android:title="@string/floating_button_alpha"
-        app:defaultValue="200"
-        app:min="0" />
+<!--    <SeekBarPreference-->
+<!--        app:iconSpaceReserved="false"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:key="floating_button_size"-->
+<!--        android:max="250"-->
+<!--        android:title="@string/floating_button_size"-->
+<!--        app:defaultValue="125"-->
+<!--        app:min="1" />-->
+
+<!--    <SeekBarPreference-->
+<!--        app:iconSpaceReserved="false"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:key="floating_button_alpha"-->
+<!--        android:max="255"-->
+<!--        android:title="@string/floating_button_alpha"-->
+<!--        app:defaultValue="200"-->
+<!--        app:min="0" />-->
 
 </PreferenceScreen>

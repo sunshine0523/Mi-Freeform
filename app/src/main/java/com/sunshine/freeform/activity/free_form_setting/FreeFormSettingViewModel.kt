@@ -7,7 +7,6 @@ import android.content.res.Configuration
 import android.graphics.Point
 import android.view.WindowManager
 import androidx.lifecycle.AndroidViewModel
-import com.sunshine.freeform.service.floating.FreeFormConfig
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt

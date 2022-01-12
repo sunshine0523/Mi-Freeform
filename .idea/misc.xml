@@ -1,6 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/drawable-night/corners_bg_default.xml" value="0.2557291666666667" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/drawable/corners_bg.xml" value="0.32447916666666665" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/drawable/corners_bg_default.xml" value="0.3546875" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/drawable/corners_bg_transparent.xml" value="0.2557291666666667" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/drawable/freeform_corners.xml" value="0.38229166666666664" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/drawable/ic_bar.xml" value="0.2791666666666667" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout-land/view_floting_view_recycler_app.xml" value="0.13932980599647266" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/activity_base.xml" value="0.12681159420289856" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/activity_floating_view.xml" value="0.32708333333333334" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/activity_free_form_setting.xml" value="0.1" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/activity_main.xml" value="0.15096251266464034" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/activity_mi_window_setting.xml" value="0.1" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/item_app.xml" value="0.33" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/item_floating.xml" value="0.1646403242147923" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/view_all_apps.xml" value="0.22" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/view_bar_layout.xml" value="0.21927083333333333" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/view_floating.xml" value="0.2755208333333333" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/view_floting_view_recycler_app.xml" value="0.25" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/view_freeform_hook_window.xml" value="0.36614583333333334" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/view_freeform_view.xml" value="0.36614583333333334" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/view_freeform_window.xml" value="0.2755208333333333" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/view_freeform_window_new.xml" value="0.3007246376811594" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/view_freeform_window_new_2.xml" value="0.36614583333333334" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/view_notification.xml" value="0.15670289855072464" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/layout/view_system_shortcut.xml" value="0.2911458333333333" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/xml/floating_setting.xml" value="0.1" />
+        <entry key="..\:/daima/Android/AndroidStudioProjects/freeform/app/src/main/res/xml/mi_window_setting.xml" value="0.14" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

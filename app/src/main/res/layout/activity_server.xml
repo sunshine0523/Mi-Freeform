@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".activity.main.MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView_server_info"
+            style="@style/FreeForm.CardViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/card_view_margin"
+            android:layout_marginTop="@dimen/card_view_margin"
+            android:layout_marginEnd="@dimen/card_view_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="@dimen/card_view_child_padding"
+                    android:text="@string/server_info"
+                    android:textColor="@color/color_text" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView_server_sui"
+            style="@style/FreeForm.CardViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/card_view_margin"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/card_view_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView_server_info">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_start_server_by_sui"
+                    style="@style/FreeForm.ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:padding="@dimen/card_view_child_padding"
+                    android:text="Sui授权"
+                    app:icon="@drawable/ic_root"
+                    app:iconPadding="@dimen/icon_padding"
+                    app:iconSize="@dimen/icon_size" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView_start"
+            style="@style/FreeForm.CardViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/card_view_margin"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/card_view_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView_server_sui">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_start_server_by_root"
+                    style="@style/FreeForm.ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:padding="@dimen/card_view_child_padding"
+                    android:text="@string/button_start_server_by_root"
+                    app:icon="@drawable/ic_root"
+                    app:iconPadding="@dimen/icon_padding"
+                    app:iconSize="@dimen/icon_size" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_start_server_by_adb"
+                    style="@style/FreeForm.ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:padding="@dimen/card_view_child_padding"
+                    android:text="@string/button_start_server_by_adb"
+                    app:icon="@drawable/ic_settings"
+                    app:iconPadding="@dimen/icon_padding"
+                    app:iconSize="@dimen/icon_size" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView_stop"
+            style="@style/FreeForm.CardViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/card_view_margin"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/card_view_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView_start">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_stop_server_by_root"
+                    style="@style/FreeForm.ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:padding="@dimen/card_view_child_padding"
+                    android:text="@string/button_stop_server_by_root"
+                    app:icon="@drawable/ic_root"
+                    app:iconPadding="@dimen/icon_padding"
+                    app:iconSize="@dimen/icon_size" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_stop_server_by_adb"
+                    style="@style/FreeForm.ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:padding="@dimen/card_view_child_padding"
+                    android:text="@string/button_stop_server_by_adb"
+                    app:icon="@drawable/ic_settings"
+                    app:iconPadding="@dimen/icon_padding"
+                    app:iconSize="@dimen/icon_size" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView_log"
+            style="@style/FreeForm.CardViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/card_view_margin"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="@dimen/card_view_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView_stop">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_log"
+                    style="@style/FreeForm.ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:padding="@dimen/card_view_child_padding"
+                    android:text="@string/log"
+                    app:icon="@drawable/ic_log"
+                    app:iconPadding="@dimen/icon_padding"
+                    app:iconSize="@dimen/icon_size" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
