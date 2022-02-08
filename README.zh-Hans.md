@@ -6,8 +6,7 @@
 
 [English](README.md)
 
-![Logo](app/src/main/res/mipmap/ic_launcher.png)
-<img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/app/src/main/res/mipmap/ic_launcher.png" width="50"/>
+<img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/app/src/main/res/mipmap/ic_launcher.png" width="100"/>
 
 米窗是一款通过Shizuku/Sui激活的，可以让绝大多数APP以小窗形式展示的应用。目前支持：
 - 通过全局侧边栏以小窗模式打开收藏应用
@@ -19,6 +18,6 @@
 [![酷安](images/coolapk.png =25x25)](https://www.coolapk.com/apk/com.sunshine.freeform)
 
 ## 截图
-<img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/images/screenshot_1.jpg" width="100"/>
-<img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/images/screenshot_2.jpg" width="100"/>
+<img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/images/screenshot_1.jpg" width="500"/>
+<img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/images/screenshot_2.jpg" width="500"/>
 ## License
