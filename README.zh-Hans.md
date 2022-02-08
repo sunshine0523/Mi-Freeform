@@ -6,7 +6,7 @@
 
 [English](README.md)
 
-![Logo](app/src/main/res/mipmap/ic_launcher.png =50x50)
+![Logo](app/src/main/res/mipmap/ic_launcher.png)
 
 米窗是一款通过Shizuku/Sui激活的，可以让绝大多数APP以小窗形式展示的应用。目前支持：
 - 通过全局侧边栏以小窗模式打开收藏应用
@@ -15,7 +15,7 @@
 - 使发送通知的APP以小窗模式打开
 
 ## 下载
-[![酷安](images/coolapk.png =25x25)](https://www.coolapk.com/apk/com.sunshine.freeform)
+[![酷安](images/coolapk.png)](https://www.coolapk.com/apk/com.sunshine.freeform)
 
 ## 截图
 ![Image](images/screenshot_1.jpg)
