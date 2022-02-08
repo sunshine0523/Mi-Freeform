@@ -4,7 +4,7 @@
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/sunshine0523/Mi-FreeForm)
 
-[English](README.md)
+[简体中文](README.zh-Hans.md)
 
 <img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/app/src/main/res/mipmap/ic_launcher.png" width="100"/>
 
