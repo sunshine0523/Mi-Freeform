@@ -16,11 +16,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sunshine.freeform.R
 import com.sunshine.freeform.activity.choose_free_form_apps.ChooseAppsActivity
 import com.sunshine.freeform.activity.floating_apps_sort.FloatingAppsSortActivity
-import com.sunshine.freeform.activity.floating_view.FreeFormWindow
-import com.sunshine.freeform.activity.floating_view.FreeFormWindowNew2
 import com.sunshine.freeform.callback.ClickListener
 import com.sunshine.freeform.room.FreeFormAppsEntity
-import com.sunshine.freeform.utils.FreeFormUtils
+import kotlinx.coroutines.DelicateCoroutinesApi
 import java.lang.reflect.Method
 
 /**
@@ -28,6 +26,7 @@ import java.lang.reflect.Method
  * @date 2021/3/7
  * 选择应用侧边栏适配器
  */
+@DelicateCoroutinesApi
 class FloatingViewAdapter(
     private val context: Context,
     private val apps: List<FreeFormAppsEntity>?,
@@ -55,7 +54,7 @@ class FloatingViewAdapter(
 
     override fun getItemCount(): Int {
         //2021.07.25更新，新增展示最小化的应用
-        return apps?.size?.plus(2)?.plus(FreeFormUtils.smallFreeFormList.size) ?: 2
+        return apps?.size?.plus(2)!!
     }
 
     @SuppressLint("SetTextI18n")
@@ -69,19 +68,8 @@ class FloatingViewAdapter(
                     openAllAppsCallback.onClick()
                 }
             }
-            in 1 .. FreeFormUtils.smallFreeFormList.size -> {
-                val freeFormWindowAbs = FreeFormUtils.smallFreeFormList[position - 1]
-                val packageName = freeFormWindowAbs.packageName
-                try {
-                    val appInfo = context.packageManager.getApplicationInfo(packageName, 0)
-                    holder.icon.setImageDrawable(appInfo.loadIcon(context.packageManager))
-                    holder.appName.text = "${appInfo.loadLabel(context.packageManager)}\n${context.getString(R.string.small_running)}"
-                    holder.click.setOnClickListener {
-                        freeFormWindowAbs.exitSmall()
-                    }
-                } catch (e: PackageManager.NameNotFoundException) {}
-            }
-            apps!!.size + FreeFormUtils.smallFreeFormList.size + 1 -> {
+
+            apps!!.size + 1 -> {
                 holder.icon.setImageResource(R.drawable.ic_add)
                 holder.appName.text = context.getString(R.string.edit_apps)
                 holder.click.setOnClickListener {
@@ -90,7 +78,7 @@ class FloatingViewAdapter(
                 }
             }
             else -> {
-                val packageName = apps[position - FreeFormUtils.smallFreeFormList.size - 1].packageName
+                val packageName = apps[position - 1].packageName
                 try {
                     val appInfo = context.packageManager.getApplicationInfo(packageName, 0)
                     var activityName = ""

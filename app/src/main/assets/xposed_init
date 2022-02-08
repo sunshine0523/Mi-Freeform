@@ -1,5 +1,2 @@
-com.sunshine.freeform.utils.HookSystemUI
-com.sunshine.freeform.utils.HookTest
-com.sunshine.freeform.utils.HookLauncher
+com.sunshine.freeform.hook.HookSystemUI
 com.sunshine.freeform.hook.HookFramework
-com.sunshine.freeform.utils.HookStartActivity

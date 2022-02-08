@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.sunshine.freeform" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sunshine.freeform">
+
+    <application>
+        <service
+            android:name=".BindService"
+            android:enabled="true"
+            android:exported="true" />
+    </application>
+
+</manifest>

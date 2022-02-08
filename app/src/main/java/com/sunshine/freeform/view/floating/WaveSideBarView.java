@@ -21,6 +21,7 @@ import java.util.List;
  * 波浪侧边栏
  * author: imilk
  * https://github.com/Solartisan/WaveSideBar.git
+ * 米窗声明：该类作者并非米窗，作者信息和源代码地址见上
  */
 public class WaveSideBarView extends View {
 

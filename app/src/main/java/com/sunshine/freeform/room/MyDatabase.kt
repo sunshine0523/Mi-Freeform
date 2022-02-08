@@ -10,7 +10,6 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 /**
  * @author sunshine
  * @date 2021/1/31
- * 软件数据库
  */
 @Database(entities = [FreeFormAppsEntity::class, NotificationAppsEntity::class], version = 5, exportSchema = false)
 abstract class MyDatabase : RoomDatabase() {

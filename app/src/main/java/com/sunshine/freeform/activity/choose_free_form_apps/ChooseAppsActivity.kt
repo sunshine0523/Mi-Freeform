@@ -15,7 +15,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sunshine.freeform.R
-import com.sunshine.freeform.base.BaseActivity
+import com.sunshine.freeform.activity.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_choose_free_form_apps.*
 import java.util.*
 import kotlin.collections.ArrayList

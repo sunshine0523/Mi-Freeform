@@ -10,6 +10,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+/**
+ * @author Trinea
+ * @date 2013-5-16
+ * http://www.trinea.cn
+ * 米窗声明：该类作者并非米窗，作者信息和源代码地址见上
+ */
 public class ShellHookUtils {
 
 
@@ -23,17 +29,6 @@ public class ShellHookUtils {
         throw new AssertionError();
     }
 
-
-    /**
-     * 查看是否有了root权限
-     *
-     * @return
-     */
-    public static boolean checkRootPermission() {
-        return execCommand("echo root", true, false).result == 0;
-    }
-
-
     /**
      * 执行shell命令，默认返回结果
      *
@@ -46,73 +41,6 @@ public class ShellHookUtils {
     public static CommandResult execCommand(String command, boolean isRoot) {
         return execCommand(new String[] { command }, isRoot, true);
     }
-
-
-    /**
-     * 执行shell命令，默认返回结果
-     *
-     * @param commands
-     *            command list
-     *  运行是否需要root权限
-     * @return
-     * @see ShellHookUtils#execCommand(String[], boolean, boolean)
-     */
-    public static CommandResult execCommand(List<String> commands,
-                                            boolean isRoot) {
-        return execCommand(
-                commands == null ? null : commands.toArray(new String[] {}),
-                isRoot, true);
-    }
-
-
-    /**
-     * 执行shell命令，默认返回结果
-     *
-     * @param commands
-     *            command array
-     *  运行是否需要root权限
-     * @return
-     * @see ShellHookUtils#execCommand(String[], boolean, boolean)
-     */
-    public static CommandResult execCommand(String[] commands, boolean isRoot) {
-        return execCommand(commands, isRoot, true);
-    }
-
-
-    /**
-     * execute shell command
-     *
-     * @param command
-     *            command
-     *  运行是否需要root权限
-     * @param isNeedResultMsg
-     *            whether need result msg
-     * @return
-     * @see ShellHookUtils#execCommand(String[], boolean, boolean)
-     */
-    public static CommandResult execCommand(String command, boolean isRoot,
-                                            boolean isNeedResultMsg) {
-        return execCommand(new String[] { command }, isRoot, isNeedResultMsg);
-    }
-
-
-    /**
-     * execute shell commands
-     *
-     * @param commands
-     *            command list
-     *  运行是否需要root权限
-     *  是否需要返回运行结果
-     * @return
-     * @see ShellHookUtils#execCommand(String[], boolean, boolean)
-     */
-    public static CommandResult execCommand(List<String> commands,
-                                            boolean isRoot, boolean isNeedResultMsg) {
-        return execCommand(
-                commands == null ? null : commands.toArray(new String[] {}),
-                isRoot, isNeedResultMsg);
-    }
-
 
     /**
      * execute shell commands
@@ -209,34 +137,6 @@ public class ShellHookUtils {
                 : successMsg.toString(), errorMsg == null ? null
                 : errorMsg.toString());
     }
-
-    public static int execRootCmdSilent(String cmd) {
-        int result = -1;
-        DataOutputStream dos = null;
-        try {
-            Process p = Runtime.getRuntime().exec("su");
-            dos = new DataOutputStream(p.getOutputStream());
-            Log.i("TAG", cmd);
-            dos.writeBytes(cmd + "\n");
-            dos.flush();
-            dos.writeBytes("exit\n");
-            dos.flush();
-            p.waitFor();
-            result = p.exitValue();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (dos != null) {
-                try {
-                    dos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return result;
-    }
-
 
     /**
      * 运行结果

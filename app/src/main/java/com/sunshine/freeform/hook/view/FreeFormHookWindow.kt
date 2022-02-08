@@ -2,8 +2,6 @@ package com.sunshine.freeform.hook.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Matrix
 import android.graphics.PixelFormat
 import android.graphics.Point
@@ -21,15 +19,12 @@ import android.widget.Space
 import com.sunshine.freeform.R
 import com.sunshine.freeform.hook.utils.FreeFormHookUtils
 import com.sunshine.freeform.hook.utils.HookFailException
-import com.sunshine.freeform.hook.utils.ShellHookUtils
-import com.sunshine.freeform.utils.FreeFormUtils
 import java.io.DataOutputStream
 import kotlin.jvm.Throws
 
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
-import kotlin.system.exitProcess
 
 /**
  * @author sunshine

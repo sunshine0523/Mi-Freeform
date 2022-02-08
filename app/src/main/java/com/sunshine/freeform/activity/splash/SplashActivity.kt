@@ -1,11 +1,9 @@
 package com.sunshine.freeform.activity.splash
 
-import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
-import android.graphics.Rect
 import android.os.Bundle
 import android.text.Html
 import android.text.SpannableString
@@ -20,7 +18,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.sunshine.freeform.BuildConfig
 import com.sunshine.freeform.R
 import com.sunshine.freeform.activity.main.MainActivity
-import com.sunshine.freeform.base.BaseActivity
+import com.sunshine.freeform.activity.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_splash_setup.*
 
 class SplashActivity : BaseActivity() {
@@ -48,7 +46,7 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun toSetup() {
-        setTitle(getString(R.string.welcome_title))
+        setTitle(getString(R.string.welcome_label))
 
         textview_setup.apply {
             text = setPermissionTextLink()
@@ -109,9 +107,5 @@ class SplashActivity : BaseActivity() {
         spannableString.setSpan(ForegroundColorSpan(Color.BLUE), 160, 169, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         return spannableString
-    }
-
-    companion object {
-        private const val TAG = "SplashActivity"
     }
 }

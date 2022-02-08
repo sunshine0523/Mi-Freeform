@@ -63,7 +63,7 @@ class MiFreeFormService : IMiFreeFormService.Stub() {
                 0
             )
         } catch (e: HookFailException) {
-            println("startWithMiFreeForm:$e")
+
         }
     }
 

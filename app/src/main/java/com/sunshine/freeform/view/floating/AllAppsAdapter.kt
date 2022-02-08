@@ -19,6 +19,11 @@ import com.bumptech.glide.Glide
 import com.github.promeg.pinyinhelper.Pinyin
 import com.sunshine.freeform.R
 import com.sunshine.freeform.callback.ClickListener
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import me.zhanghai.android.appiconloader.AppIconLoader
 import java.lang.reflect.Method
 import java.util.*
 import kotlin.Comparator
@@ -29,6 +34,7 @@ import kotlin.collections.HashMap
  * @author sunshine
  * @date 2021/3/7
  */
+@DelicateCoroutinesApi
 class AllAppsAdapter(
     private val context: Context,
     private val callback: ClickListener
@@ -39,6 +45,8 @@ class AllAppsAdapter(
     private var resolveInfoList: MutableList<ResolveInfo>
     //使用拼音排序
     private var appsPinyinMap = HashMap<String, String>()
+
+    private var appIconLoader: AppIconLoader
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val icon: ImageView = itemView.findViewById(R.id.imageView_icon)
@@ -61,13 +69,14 @@ class AllAppsAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val packageName = allAppsList[position].applicationInfo.packageName
+        val applicationInfo = allAppsList[position].applicationInfo
+        val packageName = applicationInfo.packageName
         var activityName = ""
         resolveInfoList.forEach {
-            if (it.activityInfo.applicationInfo.packageName == packageName) activityName = it.activityInfo.name
+            if (applicationInfo.packageName == packageName) activityName = it.activityInfo.name
         }
         try {
-            Glide.with(context).load(allAppsList[position].getBadgedIcon(0)).into(holder.icon)
+            holder.icon.setImageBitmap(appIconLoader.loadIcon(applicationInfo))
             holder.appName.text = allAppsList[position].label
             holder.click.setOnClickListener {
                 val command = "am start -n ${packageName}/${activityName} --display "
@@ -114,14 +123,18 @@ class AllAppsAdapter(
         userManager = context.getSystemService(Context.USER_SERVICE) as UserManager
         val launcherApps = context.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
 
-        userManager.userProfiles.forEach {
-            allAppsList.addAll(launcherApps.getActivityList(null, it))
+        GlobalScope.launch(Dispatchers.IO) {
+            userManager.userProfiles.forEach {
+                allAppsList.addAll(launcherApps.getActivityList(null, it))
+            }
+
+            allAppsList.forEach {
+                appsPinyinMap[it.label.toString()] = Pinyin.toPinyin(it.label[0])
+            }
+            Collections.sort(allAppsList, PinyinComparable())
         }
 
-        allAppsList.forEach {
-            appsPinyinMap[it.label.toString()] = Pinyin.toPinyin(it.label[0])
-        }
-        Collections.sort(allAppsList, PinyinComparable())
+        appIconLoader = AppIconLoader(context.resources.getDimensionPixelSize(android.R.dimen.app_icon_size), false, context)
     }
 
     inner class PinyinComparable : Comparator<LauncherActivityInfo>{

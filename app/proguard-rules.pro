@@ -21,20 +21,16 @@
 #-renamesourcefileattribute SourceFile
 
 # 混淆会导致序列化失败
--keep class com.sunshine.freeform.bean.EventData {*;}
 -keep class com.sunshine.freeform.bean.MotionEventBean {*;}
 -keep class com.sunshine.freeform.bean.KeyEventBean {*;}
 # 不混淆需要hook的类
 -keep class com.sunshine.freeform.hook.HookFramework {*;}
--keep class com.sunshine.freeform.utils.HookSystemUI {*;}
+-keep class com.sunshine.freeform.hook.HookSystemUI {*;}
 -keep class com.sunshine.freeform.utils.HookStartActivity {*;}
 -keep class com.sunshine.freeform.utils.HookTest {*;}
 -keep class com.sunshine.freeform.utils.HookFun {*;}
--keep class com.sunshine.freeform.utils.HookLauncher {*;}
+-keep class com.sunshine.freeform.hook.HookLauncher {*;}
 -keep class com.sunshine.freeform.hook.**{*;}
 
 #避免对AIDL混淆
 -keep class * implements android.os.IInterface {*;}
-
--dontwarn com.tencent.bugly.**
--keep public class com.tencent.bugly.**{*;}

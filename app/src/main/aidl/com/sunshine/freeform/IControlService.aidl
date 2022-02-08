@@ -8,14 +8,17 @@ import android.view.Surface;
 import android.os.IInterface;
 
 interface IControlService {
+    //初始化远程服务
     boolean init();
-    boolean startActivity(String command);
+    //点击指定屏幕的返回键
     void pressBack(int displayId);
+    //触摸指定屏幕
     void touch(in MotionEventBean motionEventBean);
+    //将屏幕显示内容移动到系统屏幕上
     boolean moveStack(int displayId);
+    //获取屏幕方向
     int getRotation();
+    //屏幕方向监听器
     boolean initRotationWatcher(in IOnRotationChangedListener callback);
-    String test(int displayId);
-    void setDisplaySurface(in Surface surface);
-    String test2();
+    boolean execShell(String command);
 }

@@ -1,40 +1,27 @@
 package com.sunshine.freeform.activity.main
 
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
 
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.sunshine.freeform.BaseViewModel
+import com.sunshine.freeform.MiFreeForm
 
 import com.sunshine.freeform.R
 import com.sunshine.freeform.activity.donation.DonationActivity
-import com.sunshine.freeform.activity.floating_view.FloatingViewActivity
 import com.sunshine.freeform.activity.mi_window_setting.MiWindowSettingActivity
-import com.sunshine.freeform.base.BaseActivity
-import com.sunshine.freeform.callback.SuiServerListener
+import com.sunshine.freeform.activity.base.BaseActivity
 import com.sunshine.freeform.hook.service.MiFreeFormService
-import com.sunshine.freeform.service.Floating2Service
-import com.sunshine.freeform.service.FloatingService
-import com.sunshine.freeform.service.ForegroundService
+import com.sunshine.freeform.service.CoreService
 import com.sunshine.freeform.service.NotificationService
-import com.sunshine.freeform.utils.FreeFormUtils
-import com.sunshine.freeform.utils.PermissionUtils
 import com.sunshine.freeform.utils.ServiceUtils
-import com.sunshine.freeform.utils.TagUtils
-import com.sunshine.freeform.view.floating.FreeFormHelper
-import com.sunshine.freeform.view.floating.FreeFormView
 
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.DelicateCoroutinesApi
-
-import rikka.shizuku.Shizuku
 
 /**
  * @author sunshine
@@ -47,41 +34,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         const val TAG = "MainActivity"
         const val MY_COOLAPK_PAGE = "http://www.coolapk.com/u/810697"
         const val COOLAPK_PACKAGE = "com.coolapk.market"
-        var listener: SuiServerListener? = null
     }
 
     private lateinit var viewModel: MainViewModel
-
-    private val onRequestPermissionResultListener =
-        Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
-            if (requestCode == TagUtils.SUI_CODE && grantResult == PERMISSION_GRANTED) {
-                checkSuiPermission()
-            }
-        }
-
-    private val binderReceivedListener = Shizuku.OnBinderReceivedListener {
-        FreeFormHelper.init(this, object : SuiServerListener() {
-            override fun onStart() {
-                try {
-                    imageView_service.setImageResource(R.drawable.ic_done_white)
-                    textView_service_info.text = getString(R.string.sui_start)
-                    textView_service_description.text = getString(R.string.sui_service_description)
-                    info_bg.setBackgroundColor(getColor(R.color.green))
-                }catch (e: Exception) {
-                    imageView_service.setImageResource(R.drawable.ic_error_white)
-                    textView_service_info.text = getString(R.string.no_start)
-                    textView_service_description.text = getString(R.string.no_service_description)
-                    info_bg.setBackgroundColor(getColor(R.color.red))
-                }
-            }
-            override fun onStop() {
-                imageView_service.setImageResource(R.drawable.ic_error_white)
-                textView_service_info.text = getString(R.string.no_start)
-                textView_service_description.text = getString(R.string.no_service_description)
-                info_bg.setBackgroundColor(getColor(R.color.red))
-            }
-        })
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,10 +49,12 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         initService()
 
         button_freeform_setting.setOnClickListener(this)
+        button_tell_me.setOnClickListener(this)
         button_donate.setOnClickListener(this)
         button_star.setOnClickListener(this)
         button_coolapk.setOnClickListener(this)
         button_qq_group.setOnClickListener(this)
+        button_qq_channel.setOnClickListener(this)
         button_telegram.setOnClickListener(this)
     }
 
@@ -108,33 +65,34 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     private fun initServiceInfo() {
         if (MiFreeFormService.getClient() != null) {
-            //if (viewModel.isStartForegroundService()) startForegroundService(Intent(this, ForegroundService::class.java))
             imageView_service.setImageResource(R.drawable.ic_done_white)
             textView_service_info.text = getString(R.string.xposed_start)
             textView_service_description.text = getString(R.string.xposed_service_description)
             info_bg.setBackgroundColor(getColor(R.color.green))
         } else {
-            //if (viewModel.isStartForegroundService()) startForegroundService(Intent(this, ForegroundService::class.java))
-
-            Shizuku.addBinderReceivedListenerSticky(binderReceivedListener)
-            try {
-                if (Shizuku.checkSelfPermission() != PERMISSION_GRANTED) {
-                    Shizuku.addRequestPermissionResultListener(onRequestPermissionResultListener)
-                    Shizuku.requestPermission(TagUtils.SUI_CODE)
-                } else {
+            if (!MiFreeForm.baseViewModel.isRunning.value!!) {
+                MiFreeForm.baseViewModel.initShizuku()
+            }
+            MiFreeForm.baseViewModel.isRunning.observe(this, { isRunning ->
+                if (isRunning) {
                     imageView_service.setImageResource(R.drawable.ic_done_white)
                     textView_service_info.text = getString(R.string.sui_start)
                     textView_service_description.text = getString(R.string.sui_service_description)
                     info_bg.setBackgroundColor(getColor(R.color.green))
+                } else {
+                    imageView_service.setImageResource(R.drawable.ic_error_white)
+                    textView_service_info.text = getString(R.string.no_start)
+                    textView_service_description.text = getString(R.string.no_service_description)
+                    info_bg.setBackgroundColor(getColor(R.color.red))
                 }
-            }catch (e: Exception) {
-                Toast.makeText(this, getString(R.string.shizuku_not_running), Toast.LENGTH_SHORT).show()
-            }
+            })
+
+            BaseViewModel.get()
         }
     }
 
     private fun initService() {
-        if (viewModel.isShowFloating() && !ServiceUtils.isServiceWork(this, "$packageName.service.Floating2Service")) startService(Intent(applicationContext, Floating2Service::class.java))
+        if (!ServiceUtils.isServiceWork(this, "$packageName.service.CoreService")) startService(Intent(applicationContext, CoreService::class.java))
 
         if (viewModel.isNotification()) {
             if (!ServiceUtils.isServiceWork(this, "$packageName.service.notification.NotificationService")) startService(Intent(applicationContext, NotificationService::class.java))
@@ -145,36 +103,15 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-    private fun checkSuiPermission() {
-        if (Shizuku.checkSelfPermission() == PERMISSION_GRANTED) {
-            FreeFormHelper.init(this, object : SuiServerListener() {
-                override fun onStart() {
-                    try {
-                        imageView_service.setImageResource(R.drawable.ic_done_white)
-                        textView_service_info.text = getString(R.string.sui_start)
-                        textView_service_description.text = getString(R.string.sui_service_description)
-                        info_bg.setBackgroundColor(getColor(R.color.green))
-                    }catch (e: Exception) {
-                        imageView_service.setImageResource(R.drawable.ic_error_white)
-                        textView_service_info.text = getString(R.string.no_start)
-                        textView_service_description.text = getString(R.string.no_service_description)
-                        info_bg.setBackgroundColor(getColor(R.color.red))
-                    }
-                }
-                override fun onStop() {}
-            })
-        } else {
-            imageView_service.setImageResource(R.drawable.ic_error_white)
-            textView_service_info.text = getString(R.string.no_start)
-            textView_service_description.text = getString(R.string.no_service_description)
-            info_bg.setBackgroundColor(getColor(R.color.red))
-        }
-    }
-
     override fun onClick(v: View?) {
         when(v?.id) {
             R.id.button_freeform_setting -> {
                 startActivity(Intent(this, MiWindowSettingActivity::class.java))
+            }
+            R.id.button_tell_me -> {
+                val uri = Uri.parse("https://docs.qq.com/form/page/DRE1RTWtCV2dRb1dk")
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(intent)
             }
             R.id.button_donate -> {
                 startActivity(Intent(this, DonationActivity::class.java))
@@ -219,17 +156,16 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                     Toast.makeText(this, getString(R.string.start_qq_fail), Toast.LENGTH_SHORT).show()
                 }
             }
+            R.id.button_qq_channel -> {
+                val uri = Uri.parse("https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&inviteCode=XKL1t&from=246610&biz=ka")
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(intent)
+            }
             R.id.button_telegram -> {
                 val uri = Uri.parse("https://t.me/mi_freeform")
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Shizuku.removeRequestPermissionResultListener(onRequestPermissionResultListener)
-        Shizuku.removeBinderReceivedListener(binderReceivedListener)
     }
 }

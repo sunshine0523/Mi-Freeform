@@ -34,9 +34,6 @@ class AppsRecyclerAdapter<T>(
         private val context: Context
 ) : RecyclerView.Adapter<AppsRecyclerAdapter.ViewHolder>() {
 
-    //用于存储到sp中
-    //private var freeFormAppsSet = freeFormAppsMap.keys.toMutableSet()
-
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val view: View = itemView.findViewById(R.id.view_app_click)
         val icon: ImageView = itemView.findViewById(R.id.imageView_app_icon)
@@ -49,15 +46,11 @@ class AppsRecyclerAdapter<T>(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        //加载icon为费时操作，可能导致ui卡顿
-        //holder.icon.setImageDrawable(allAppsList[position].getBadgedIcon(0))
 
         //2022.01.02 使用glide减少掉帧
         holder.icon.let {
             Glide.with(context).load(allAppsList[position].getBadgedIcon(0)).into(it)
         }
-//        //使用glide+协程加载图片
-//        holder.icon.load(allAppsList[position].getBadgedIcon(0))
 
         holder.name.text = allAppsList[position].label
         if (type == 1) {
@@ -65,10 +58,6 @@ class AppsRecyclerAdapter<T>(
         } else {
             holder.switch.isChecked = contains(NotificationAppsEntity(allAppsList[position].applicationInfo.packageName, UserHandle.getUserId(allAppsList[position].user, allAppsList[position].applicationInfo.uid)))
         }
-//        println(freeFormAppsSet)
-//        println(packages[position].activityInfo.applicationInfo.packageName)
-//        println(holder.switch.isChecked)
-//        println("---------")
 
         //点击对应改变数据库
         holder.view.setOnClickListener {
@@ -161,30 +150,4 @@ class AppsRecyclerAdapter<T>(
 
         appsList.remove(toBeRemovedItem)
     }
-
-    //来源 https://juejin.cn/post/6942276625090215943
-    val View.viewScope: CoroutineScope
-        get() {
-            // 获取现有 viewScope 对象
-            val key = "ViewScope".hashCode()
-            var scope = getTag(key) as? CoroutineScope
-            // 若不存在则新建 viewScope 对象
-            if (scope == null) {
-                scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-                // 将 viewScope 对象缓存为 View 的 tag
-                setTag(key,scope)
-                val listener = object : View.OnAttachStateChangeListener {
-                    override fun onViewAttachedToWindow(v: View?) {
-                    }
-
-                    override fun onViewDetachedFromWindow(v: View?) {
-                        // 当 view detach 时 取消协程的任务
-                        scope.cancel()
-                    }
-
-                }
-                addOnAttachStateChangeListener(listener)
-            }
-            return scope
-        }
 }

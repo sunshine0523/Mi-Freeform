@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="FreeForm.CardViewStyle" parent="Widget.Material3.CardView.Elevated">
-<!--        <item name="cardBackgroundColor">@color/color_surface</item>-->
         <item name="cardCornerRadius">@dimen/card_corner_radius</item>
-<!--        <item name="cardElevation">0dp</item>-->
-<!--        &lt;!&ndash;描边&ndash;&gt;-->
-<!--        <item name="strokeColor">@color/mtrl_btn_stroke_color_selector</item>-->
-<!--        <item name="strokeWidth">@dimen/mtrl_btn_stroke_size</item>-->
     </style>
 
     <style name="FreeForm.ButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">

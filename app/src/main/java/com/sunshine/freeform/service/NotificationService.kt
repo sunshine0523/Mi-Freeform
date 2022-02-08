@@ -12,7 +12,6 @@ import android.service.notification.StatusBarNotification
 import android.widget.RemoteViews
 import com.sunshine.freeform.R
 import com.sunshine.freeform.room.NotificationAppsEntity
-import com.sunshine.freeform.utils.PermissionUtils
 
 /**
  * 监听通知类
@@ -21,7 +20,6 @@ class NotificationService : NotificationListenerService() {
 
     companion object {
         var notificationApps: List<NotificationAppsEntity>? = null
-        var compatibleApps: List<String>? = null
         const val CHANNEL_ID = "CHANNEL_ID_SUNSHINE_FREEFORM_NOTIFICATION"
         //仅在横屏启动
         var onlyEnableLandscape = false
@@ -36,23 +34,10 @@ class NotificationService : NotificationListenerService() {
      */
     override fun onListenerConnected() {
         super.onListenerConnected()
-        if (PermissionUtils.notificationStateListener != null) {
-            PermissionUtils.notificationStateListener!!.onStart()
-        }
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         sp = application.getSharedPreferences("com.sunshine.freeform_preferences", Context.MODE_PRIVATE)
         orientation = resources.configuration.orientation
         onlyEnableLandscape = sp?.getBoolean("switch_preference_only_enable_landscape", false)!!
-    }
-
-    /**
-     * 服务关闭
-     */
-    override fun onDestroy() {
-        super.onDestroy()
-        if (PermissionUtils.notificationStateListener != null) {
-            PermissionUtils.notificationStateListener!!.onStop()
-        }
     }
 
     private var lastNotificationTime = 0L
@@ -69,17 +54,14 @@ class NotificationService : NotificationListenerService() {
                     if (!sbn.isClearable) return
                     //如果和上次时间一样，那么判断为是一条通知，不知道为什么，cancel就会出两条通知，只能这样了
                     if (sbn.postTime == lastNotificationTime) return
+                    //发出自定义通知
                     bubbleNotification(sbn)
+                    //清除源应用通知
                     cancelNotification(sbn.key)
                     lastNotificationTime = sbn.postTime
                 }
             }
-
         }
-    }
-
-    override fun onNotificationRemoved(sbn: StatusBarNotification?) {
-        //super.onNotificationRemoved(sbn)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -92,7 +74,7 @@ class NotificationService : NotificationListenerService() {
      * 应该指定一个默认显示的时间，时间过了就不显示了
      * 并且不能显示过多的气泡
      */
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @SuppressLint("UseCompatLoadingForDrawables", "UnspecifiedImmutableFlag")
     private fun bubbleNotification(sbn: StatusBarNotification) {
         val extras = sbn.notification?.extras
         val title = extras?.getString(Notification.EXTRA_TITLE)
@@ -106,16 +88,16 @@ class NotificationService : NotificationListenerService() {
         //创建通知渠道
         val channel = NotificationChannel(
             CHANNEL_ID,
-                "小窗应用通知",
+                getString(R.string.freeform_channel_id),
                 NotificationManager.IMPORTANCE_HIGH
         )
         notificationManager!!.createNotificationChannel(channel)
 
         val intent = Intent(this, NotificationIntentService::class.java)
         intent.putExtra("package", sbn.packageName)
-        val pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        val pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
-        val freeFormButton = Notification.Action.Builder(smallIcon, "小窗打开", pendingIntent).build()
+        val freeFormButton = Notification.Action.Builder(smallIcon, getString(R.string.open_by_freeform), pendingIntent).build()
 
         //设置通知
         val notificationBuilder = Notification.Builder(this,

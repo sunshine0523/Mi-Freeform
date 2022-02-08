@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sunshine.freeform.R
-import com.sunshine.freeform.base.BaseActivity
+import com.sunshine.freeform.activity.base.BaseActivity
 import com.sunshine.freeform.room.FreeFormAppsEntity
 import com.sunshine.freeform.utils.PackageUtils
 import kotlinx.android.synthetic.main.activity_choose_free_form_apps.*
@@ -53,7 +53,7 @@ class FloatingAppsSortActivity : BaseActivity() {
 
                     recycler_apps.layoutManager = LinearLayoutManager(this)
                     recycler_apps.adapter = null
-                    recycler_apps.adapter = AppsSortRecyclerAdapter(packageManager, viewModel, appsList)
+                    recycler_apps.adapter = AppsSortRecyclerAdapter(packageManager, appsList)
 
                     val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
                         override fun getMovementFlags(

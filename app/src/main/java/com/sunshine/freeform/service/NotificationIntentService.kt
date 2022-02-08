@@ -6,8 +6,10 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.IBinder
-import com.sunshine.freeform.activity.floating_view.FreeFormWindow
+import com.sunshine.freeform.MiFreeForm
+import com.sunshine.freeform.view.floating.FreeFormView
 import java.lang.reflect.Method
 
 /**
@@ -46,7 +48,7 @@ class NotificationIntentService : Service() {
                 }
             }
             val command = "am start -n ${targetPackage}/${activityName} --display "
-            FreeFormWindow(this, command, targetPackage)
+            FreeFormView(this, command, targetPackage)
             stopSelf()
         } catch (e: PackageManager.NameNotFoundException) {
             stopSelf()
@@ -54,16 +56,19 @@ class NotificationIntentService : Service() {
     }
 
     @SuppressLint("WrongConstant")
-    fun collapseStatusBar() {
-        val service = getSystemService("statusbar") ?: return
-        try {
-            val clazz = Class.forName("android.app.StatusBarManager")
-            var collapse: Method? = null
-            collapse = clazz.getMethod("collapsePanels")
-            collapse.isAccessible = true
-            collapse.invoke(service)
-        } catch (e: Exception) {
-            e.printStackTrace()
+    private fun collapseStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            MiFreeForm.baseViewModel.getControlService()?.execShell("cmd statusbar collapse")
+        } else {
+            val service = getSystemService("statusbar") ?: return
+            try {
+                val clazz = Class.forName("android.app.StatusBarManager")
+                val collapse: Method? = clazz.getMethod("collapsePanels")
+                collapse?.isAccessible = true
+                collapse?.invoke(service)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ package com.sunshine.freeform.activity.floating_setting
 
 import android.os.Bundle
 import com.sunshine.freeform.R
-import com.sunshine.freeform.base.BaseActivity
+import com.sunshine.freeform.activity.base.BaseActivity
 
 class FloatingSettingActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

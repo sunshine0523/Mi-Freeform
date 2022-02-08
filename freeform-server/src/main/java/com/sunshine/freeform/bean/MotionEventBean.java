@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * @author sunshine
@@ -13,15 +12,13 @@ import java.util.Arrays;
 public class MotionEventBean implements Parcelable, Serializable {
 
     private static final long serialVersionUID = -7373576824258678549L;
+
+    //
     private int action;
 
     private float[] xArray;
 
     private float[] yArray;
-
-    private int flags;
-
-    private int source;
 
     private int displayId;
 
@@ -35,8 +32,6 @@ public class MotionEventBean implements Parcelable, Serializable {
         dest.writeInt(this.action);
         dest.writeFloatArray(this.xArray);
         dest.writeFloatArray(this.yArray);
-        dest.writeInt(this.flags);
-        dest.writeInt(this.source);
         dest.writeInt(this.displayId);
     }
 
@@ -44,21 +39,20 @@ public class MotionEventBean implements Parcelable, Serializable {
         this.action = source.readInt();
         this.xArray = source.createFloatArray();
         this.yArray = source.createFloatArray();
-        this.flags = source.readInt();
-        this.source = source.readInt();
         this.displayId = source.readInt();
     }
 
-    public MotionEventBean() {
-
+    public MotionEventBean(int action, float[] xArray, float[] yArray, int displayId) {
+        this.action = action;
+        this.xArray = xArray;
+        this.yArray = yArray;
+        this.displayId = displayId;
     }
 
     protected MotionEventBean(Parcel in) {
         this.action = in.readInt();
         this.xArray = in.createFloatArray();
         this.yArray = in.createFloatArray();
-        this.flags = in.readInt();
-        this.source = in.readInt();
         this.displayId = in.readInt();
     }
 
@@ -98,22 +92,6 @@ public class MotionEventBean implements Parcelable, Serializable {
         this.yArray = yArray;
     }
 
-    public int getFlags() {
-        return flags;
-    }
-
-    public void setFlags(int flags) {
-        this.flags = flags;
-    }
-
-    public int getSource() {
-        return source;
-    }
-
-    public void setSource(int source) {
-        this.source = source;
-    }
-
     public int getDisplayId() {
         return displayId;
     }
@@ -122,15 +100,5 @@ public class MotionEventBean implements Parcelable, Serializable {
         this.displayId = displayId;
     }
 
-    @Override
-    public String toString() {
-        return "MotionEventBean{" +
-                "action=" + action +
-                ", xArray=" + Arrays.toString(xArray) +
-                ", yArray=" + Arrays.toString(yArray) +
-                ", flags=" + flags +
-                ", source=" + source +
-                ", displayId=" + displayId +
-                '}';
-    }
+
 }

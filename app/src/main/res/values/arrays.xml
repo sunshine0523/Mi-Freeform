@@ -2,18 +2,7 @@
 <resources>
     <string-array name="xposedscope">
         <item>com.android.systemui</item>
-        <item>com.google.android.apps.nexuslauncher</item>
-        <item>com.android.launcher3</item>
-        <item>ch.deletescape.lawnchair.ci</item>
-        <item>net.oneplus.launcher</item>
         <item>android</item>
-    </string-array>
-    
-    <string-array name="control_mode_text">
-        <item>使用底部小白条</item>
-        <item>使用右上角按钮</item>
-        <item>全部显示</item>
-        <item>都不显示，但是保留底部小白条功能</item>
     </string-array>
     
     <string-array name="control_mode_values">

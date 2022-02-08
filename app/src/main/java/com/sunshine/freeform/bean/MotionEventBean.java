@@ -13,6 +13,7 @@ public class MotionEventBean implements Parcelable, Serializable {
 
     private static final long serialVersionUID = -7373576824258678549L;
 
+    //
     private int action;
 
     private float[] xArray;

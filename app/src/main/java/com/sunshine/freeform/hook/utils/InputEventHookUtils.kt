@@ -1,16 +1,7 @@
 package com.sunshine.freeform.hook.utils
 
 import android.hardware.input.InputManager
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import android.view.InputEvent
-import android.view.KeyEvent
-import android.view.MotionEvent
-
-import com.sunshine.freeform.bean.KeyEventBean
-import com.sunshine.freeform.bean.MotionEventBean
-import java.io.ObjectOutputStream
 
 import java.lang.reflect.Method
 

@@ -1,7 +1,0 @@
-allow system_server default_android_service service_manager add
-allow system_server shell_exec file execute
-allow system_server shell_exec file read
-allow system_server shell_exec file open
-allow system_server shell_exec file execute_no_trans
-allow system_server shell_exec file getattr
-allow system_server system_file file execute_no_trans

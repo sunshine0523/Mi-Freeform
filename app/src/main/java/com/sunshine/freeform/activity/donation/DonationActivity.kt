@@ -6,7 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import com.sunshine.freeform.R
-import com.sunshine.freeform.base.BaseActivity
+import com.sunshine.freeform.activity.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_donation.*
 
 
@@ -15,7 +15,7 @@ class DonationActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_donation)
 
-        setTitle(getString(R.string.donation_title))
+        setTitle(getString(R.string.donation_label))
 
         button_alipay.setOnClickListener {
             try {
@@ -27,7 +27,7 @@ class DonationActivity : BaseActivity() {
                 startActivity(intent)
             }
             catch (e: Exception) {
-                Snackbar.make(button_alipay, "跳转到支付宝失败", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(button_alipay, getString(R.string.open_alipay_fail), Snackbar.LENGTH_SHORT).show()
             }
         }
 

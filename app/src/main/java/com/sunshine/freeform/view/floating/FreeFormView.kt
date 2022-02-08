@@ -15,9 +15,9 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import com.sunshine.freeform.R
 import com.sunshine.freeform.callback.OrientationChangedListener
-import com.sunshine.freeform.callback.SuiServerListener
-import com.sunshine.freeform.utils.FreeFormUtils
-import com.sunshine.freeform.utils.InputEventUtils
+import com.sunshine.freeform.MiFreeForm
+import com.sunshine.freeform.utils.RemoteServiceUtils
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlin.math.*
 
 
@@ -25,6 +25,7 @@ import kotlin.math.*
  * @author sunshine
  * @date 2022/1/6
  */
+@DelicateCoroutinesApi
 class FreeFormView(
     private val context: Context,
     val command: String,
@@ -50,29 +51,28 @@ class FreeFormView(
             }
         }
 
-        //注入输入类
-        private val inputEventUtils = InputEventUtils()
-
         //控制栏滑动方向
-        const val CHANGE_LEFT = 0
-        const val CHANGE_RIGHT = 1
-        const val BACK = 2
-        const val CLOSE = 3
-        const val MAX = 4
-        const val MOVE = 5
-        const val DOUBLE = 6
+        private const val CHANGE_LEFT = 0
+        private const val CHANGE_RIGHT = 1
+        private const val BACK = 2
+        private const val CLOSE = 3
+        private const val MAX = 4
+        private const val MOVE = 5
+        private const val DOUBLE = 6
         private var curEvent = -1
 
-        const val DPI = 300
+        const val DPI = "freeform_dpi"
+        const val DEFAULT_DPI = 300
 
         //小窗可以关闭和最大化滑动距离
-        const val CAN_CLOSE = 300
-        const val CAN_MAX = 200
+        private const val CAN_CLOSE = 300
+        private const val CAN_MAX = 200
 
-        const val SUSPEND_DPI = 200
-        const val SUSPEND_DISTANCE = 50
+        private const val SUSPEND_DPI = 100
+        private const val SUSPEND_DISTANCE = 50
     }
 
+    private val viewModel = MiFreeForm.baseViewModel
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     private lateinit var freeFormRootView: CardView
     private lateinit var virtualDisplay: VirtualDisplay
@@ -80,6 +80,8 @@ class FreeFormView(
     private var textureView: TextureView? = null
     private lateinit var displayManager: DisplayManager
     private val touchListener = TouchListener()
+    private var dpi = DEFAULT_DPI
+    private var suspendDPI = SUSPEND_DPI
 
     private var freeFormWidth = 0
     private var freeFormHeight = 0
@@ -139,31 +141,19 @@ class FreeFormView(
     private val gestureDetector = GestureDetector(context, myGestureListener)
 
     init {
-        if (FreeFormHelper.hasFreeFormWindow(packageName)) {
+        if (FreeFormHelper.hasFreeFormWindow(command)) {
             Toast.makeText(context, context.getString(R.string.already_show), Toast.LENGTH_SHORT).show()
         }else{
-            FreeFormHelper.init(
-                context,
-                object : SuiServerListener() {
-                    override fun onStart() {
-                        initView()
-                        initBar()
-                    }
-
-                    override fun onStop() {
-
-                    }
-
-                    override fun onFailBind() {
-                        Toast.makeText(context, "服务没有运行：发生在FreeFormView", Toast.LENGTH_SHORT).show()
-                    }
-
-                }
-            )
+            if (MiFreeForm.baseViewModel.isRunning.value!!) {
+                dpi = viewModel.getIntFromSP(DPI, DEFAULT_DPI)
+                initView()
+                initBar()
+            } else {
+                Toast.makeText(context, context.getString(R.string.shizuku_not_running), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-    //务必做到一点：简洁！
     private fun initView() {
         val rootLayout = LayoutInflater.from(context).inflate(R.layout.view_freeform_view, null, false)
         freeFormRootView = rootLayout.findViewById(R.id.freeform_root_view)
@@ -220,17 +210,25 @@ class FreeFormView(
             freeFormHeight = (screenHeight * FREEFORM_DEFAULT_PROPORTION).roundToInt()
             freeFormWidth = freeFormHeight / 16 * 9
         }
+
+        //SB qq如果当前dpi与默认dpi不同不能显示
+        if (command.contains("com.tencent.mobileqq")) {
+            dpi = dm.densityDpi
+            suspendDPI = dpi
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initTextureView() {
+        //获取DisplayManager服务
         displayManager = context.getSystemService(DisplayManager::class.java) as DisplayManager
         displayManager.registerDisplayListener(displayListener, null)
+        //创建VirtualDisplay
         virtualDisplay = displayManager.createVirtualDisplay(
             "mi-freeform-display-$this",
             freeFormWidth,
             freeFormHeight,
-            DPI,
+            dpi,
             null,
             DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION
         )
@@ -241,6 +239,7 @@ class FreeFormView(
 
         textureView?.setOnTouchListener(touchListener)
 
+        //监听TextureView是否初始化完成
         textureView?.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
             override fun onSurfaceTextureSizeChanged(
                 surface: SurfaceTexture,
@@ -265,16 +264,16 @@ class FreeFormView(
                 width: Int,
                 height: Int
             ) {
+                //将VirtualDisplay的surface对象设置为TextureView的Surface，即可在该TextureView上展示内容
                 virtualDisplay.surface = Surface(surface)
 
                 if (firstStart) {
                     FreeFormHelper.freeFormViewSet.add(this@FreeFormView)
                     FreeFormHelper.displayIdStackSet.push(displayId)
 
-                    if (FreeFormHelper.getControlService() != null && FreeFormHelper.getControlService()!!.startActivity(command + displayId)) {
+                    if (MiFreeForm.baseViewModel.getControlService() != null && MiFreeForm.baseViewModel.getControlService()!!.execShell(command + displayId)) {
                         firstStart = false
                     } else {
-                        Log.e(TAG, "${FreeFormHelper.getControlService()}")
                         Toast.makeText(context, "命令执行失败，可能的原因：远程服务没有启动、打开的程序不存在或已经停用", Toast.LENGTH_SHORT).show()
                         destroy()
                     }
@@ -360,7 +359,7 @@ class FreeFormView(
                 width: Int,
                 height: Int
             ) {
-                virtualDisplay.resize(freeFormWidth, freeFormHeight, if (isSuspend) SUSPEND_DPI else DPI)
+                virtualDisplay.resize(freeFormWidth, freeFormHeight, if (isSuspend) suspendDPI else dpi)
                 virtualDisplay.surface = Surface(surface)
             }
         }
@@ -419,7 +418,7 @@ class FreeFormView(
         freeFormWidth = freeFormHeight
         freeFormHeight = temp
 
-        virtualDisplay.resize(freeFormWidth, freeFormHeight, if (isSuspend) SUSPEND_DPI else DPI)
+        virtualDisplay.resize(freeFormWidth, freeFormHeight, if (isSuspend) suspendDPI else dpi)
 
         windowLayoutParams.apply {
             width = freeFormWidth
@@ -514,7 +513,7 @@ class FreeFormView(
             } else {
                 when(v?.id) {
                     R.id.texture_view -> {
-                        inputEventUtils.rootInjectMotionEvent(event, displayId, scale)
+                        RemoteServiceUtils.remoteInjectMotionEvent(event, displayId, scale)
                     }
                     //上滑：关闭；下滑：最大化；左右角滑：缩放
                     R.id.bar_layout-> {
@@ -678,7 +677,7 @@ class FreeFormView(
                                         }
                                     }
                                     BACK -> {
-                                        inputEventUtils.shizukuPressBack(displayId)
+                                        RemoteServiceUtils.remotePressBack(displayId)
                                     }
                                     MOVE -> {
 
@@ -737,7 +736,7 @@ class FreeFormView(
             val distance =
                 sqrt((y2 - y1).toDouble().pow(2.0) + (x2 - x1).toDouble().pow(2.0))
                     .toInt()
-            if (distance < 80) { //小于一定距离则忽略掉
+            if (distance < 80) {
                 return true
             }
             if (distanceX > 0) { //向右
@@ -746,26 +745,21 @@ class FreeFormView(
                 val absY = abs(distanceY).toDouble()
                 when {
                     absY < y3 -> { //向右滑
-                        Log.i(TAG, "向右滑,速率：$velocity")
                         curEvent = if (orientation == Configuration.ORIENTATION_LANDSCAPE) MAX
                         else BACK
                     }
                     absY < y4 -> {
                         curEvent = if (distanceY > 0) { //向右下滑
-                            Log.i(TAG, "向右下滑,速率：$velocity")
                             CHANGE_LEFT
                         } else { //向右上滑
-                            Log.i(TAG, "向右上滑,速率：$velocity")
                             CHANGE_RIGHT
                         }
                     }
                     else -> {
                         curEvent = if (distanceY > 0) { //向下滑
-                            Log.i(TAG, "向下滑,速率：$velocity")
                             if (orientation == Configuration.ORIENTATION_LANDSCAPE) BACK
                             else MAX
                         } else { //向上滑
-                            Log.i(TAG, "向上滑,速率：$velocity")
                             if (orientation == Configuration.ORIENTATION_LANDSCAPE) BACK
                             else CLOSE
                         }
@@ -777,26 +771,21 @@ class FreeFormView(
                 val absY = abs(distanceY).toDouble()
                 when {
                     absY < y3 -> { //向左滑
-                        Log.i(TAG, "向左滑,速率：$velocity")
                         curEvent = if (orientation == Configuration.ORIENTATION_LANDSCAPE) CLOSE
                         else BACK
                     }
                     absY < y4 -> {
                         curEvent = if (distanceY > 0) { //向左下滑
-                            Log.i(TAG, "向左下滑,速率：$velocity")
                             CHANGE_RIGHT
                         } else { //向左上滑
-                            Log.i(TAG, "向左上滑,速率：$velocity")
                             CHANGE_LEFT
                         }
                     }
                     else -> {
                         curEvent = if (distanceY > 0) { //向下滑
-                            Log.i(TAG, "向下滑,速率：$velocity")
                             if (orientation == Configuration.ORIENTATION_LANDSCAPE) BACK
                             else MAX
                         } else { //向上滑
-                            Log.i(TAG, "向上滑,速率：$velocity")
                             if (orientation == Configuration.ORIENTATION_LANDSCAPE) BACK
                             else CLOSE
                         }

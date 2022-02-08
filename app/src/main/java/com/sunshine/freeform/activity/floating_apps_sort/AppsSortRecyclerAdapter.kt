@@ -1,8 +1,6 @@
 package com.sunshine.freeform.activity.floating_apps_sort
 
-import android.content.Context
 import android.content.pm.PackageManager
-import android.content.pm.ResolveInfo
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +18,6 @@ import com.sunshine.freeform.room.FreeFormAppsEntity
  */
 class AppsSortRecyclerAdapter(
         private val pm: PackageManager,
-        private val viewModel: FloatingAppsSortModel,
         private val appsList: ArrayList<FreeFormAppsEntity>
 ) : RecyclerView.Adapter<AppsSortRecyclerAdapter.ViewHolder>() {
 

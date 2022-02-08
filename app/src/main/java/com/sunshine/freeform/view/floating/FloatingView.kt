@@ -42,7 +42,7 @@ import kotlin.math.roundToInt
 @DelicateCoroutinesApi
 class FloatingView(
     private val context: Context,
-    private val showPosition: Int
+    private val showLocation: Int
 ) {
 
     private val floatingViewViewModel = FloatingViewViewModel(context)
@@ -146,7 +146,7 @@ class FloatingView(
         val recyclerView: RecyclerView = recyclerAppsLayout.findViewById(R.id.recycler_view)
 
         //添加到界面
-        if (showPosition == -1)
+        if (showLocation == -1)
             floatingView?.findViewById<LinearLayout>(R.id.recycler_view_contain_left)?.addView(recyclerAppsLayout)
         else floatingView?.findViewById<LinearLayout>(R.id.recycler_view_contain_right)?.addView(recyclerAppsLayout)
 
