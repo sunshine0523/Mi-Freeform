@@ -15,9 +15,10 @@
 - 使发送通知的APP以小窗模式打开
 
 ## 下载
-[![酷安](images/coolapk.png =25x25)](https://www.coolapk.com/apk/com.sunshine.freeform)
+[![酷安](images/coolapk.png)](https://www.coolapk.com/apk/com.sunshine.freeform)
 
 ## 截图
 <img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/images/screenshot_1.jpg" width="500"/>
 <img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/images/screenshot_2.jpg" width="500"/>
+
 ## License
