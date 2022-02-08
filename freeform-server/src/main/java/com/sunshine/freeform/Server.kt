@@ -8,6 +8,7 @@ import android.os.Looper
 /**
  * @author sunshine
  * @date 2022/1/29
+ * WARNING:THIS CLASS NOT USED NOW!
  */
 object Server {
     @SuppressLint("PrivateApi", "DiscouragedPrivateApi")
@@ -22,8 +23,6 @@ object Server {
         val serverClass = systemContext.classLoader.loadClass("com.sunshine.freeform.ControlService")
         service = serverClass.newInstance() as IControlService
         service.init()
-        //println(service.startActivity("am start -n com.android.chrome/com.google.android.apps.chrome.Main"))
-        println(service.rotation)
         Looper.loop()
     }
 }
