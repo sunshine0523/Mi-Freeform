@@ -17,6 +17,9 @@
 ## 下载
 [![酷安](images/coolapk.png)](https://www.coolapk.com/apk/com.sunshine.freeform)
 
+[Release](https://github.com/sunshine0523/Mi-FreeForm/releases/)
+
+
 ## 截图
 <img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/images/screenshot_1.jpg" width="500"/>
 <img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/images/screenshot_2.jpg" width="500"/>
