@@ -10,15 +10,6 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
-
-    signingConfigs {
-        release {
-            storeFile file('D:\\daima\\Android\\AndroidStudioProjects\\sunshinekey.jks')
-            storePassword 'androidhas1'
-            keyAlias = 'demo'
-            keyPassword 'androidhas1'
-        }
-    }
     compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
