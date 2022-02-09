@@ -23,10 +23,15 @@ Mi-FreeForm is an APP that is activated through Shizuku/Sui and can display most
 
 ## Library
 [AppIconLoader](https://github.com/zhanghai/AppIconLoader)
+
 [Glide](https://github.com/bumptech/glide)
+
 [RikkaX](https://github.com/RikkaApps/RikkaX)
+
 [Shizuku](https://github.com/RikkaApps/Shizuku)
+
 [TinyPinyin](https://github.com/promeG/TinyPinyin)
+
 [Xposed](https://github.com/rovo89/Xposed)
 
 ## License
