@@ -9,7 +9,7 @@
 <img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/app/src/main/res/mipmap/ic_launcher.png" width="100"/>
 
 Mi-FreeForm is an APP that is activated through Shizuku/Sui and can display most apps in the form of freeform. Current support:
-- Open the favorites app in freeform mode through the global sidebar
+- Open the favorites app in small window mode through the global sidebar
 - Open the favorites app with resident notifications
 - Open the favorites app with a tile
 - Make the APP that sends notifications open in freeform mode
@@ -23,15 +23,10 @@ Mi-FreeForm is an APP that is activated through Shizuku/Sui and can display most
 
 ## Library
 [AppIconLoader](https://github.com/zhanghai/AppIconLoader)
-
 [Glide](https://github.com/bumptech/glide)
-
 [RikkaX](https://github.com/RikkaApps/RikkaX)
-
 [Shizuku](https://github.com/RikkaApps/Shizuku)
-
 [TinyPinyin](https://github.com/promeG/TinyPinyin)
-
 [Xposed](https://github.com/rovo89/Xposed)
 
 ## License
