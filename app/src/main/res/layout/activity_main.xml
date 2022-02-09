@@ -118,88 +118,88 @@
                     style="@style/FreeForm.ButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_height"
+                    android:padding="@dimen/card_view_child_padding"
                     android:text="@string/feedback"
                     app:icon="@drawable/ic_question"
-                    app:iconSize="@dimen/icon_size"
                     app:iconPadding="@dimen/icon_padding"
-                    android:padding="@dimen/card_view_child_padding"/>
+                    app:iconSize="@dimen/icon_size" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_donate"
                     style="@style/FreeForm.ButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_height"
+                    android:padding="@dimen/card_view_child_padding"
                     android:text="@string/donate"
                     app:icon="@drawable/ic_money"
-                    app:iconSize="@dimen/icon_size"
                     app:iconPadding="@dimen/icon_padding"
-                    android:padding="@dimen/card_view_child_padding"/>
+                    app:iconSize="@dimen/icon_size" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_star"
                     style="@style/FreeForm.ButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_height"
+                    android:padding="@dimen/card_view_child_padding"
                     android:text="@string/rate"
                     app:icon="@drawable/ic_star"
-                    app:iconSize="@dimen/icon_size"
                     app:iconPadding="@dimen/icon_padding"
-                    android:padding="@dimen/card_view_child_padding"/>
+                    app:iconSize="@dimen/icon_size" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_coolapk"
                     style="@style/FreeForm.ButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_height"
+                    android:padding="@dimen/card_view_child_padding"
                     android:text="@string/coolapk_my_name"
                     app:icon="@drawable/ic_coolapk"
-                    app:iconSize="@dimen/icon_size"
                     app:iconPadding="@dimen/icon_padding"
-                    android:padding="@dimen/card_view_child_padding"/>
+                    app:iconSize="@dimen/icon_size" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_qq_group"
                     style="@style/FreeForm.ButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_height"
+                    android:padding="@dimen/card_view_child_padding"
                     android:text="@string/add_qq_group"
                     app:icon="@drawable/ic_qq"
-                    app:iconSize="@dimen/icon_size"
                     app:iconPadding="@dimen/icon_padding"
-                    android:padding="@dimen/card_view_child_padding"/>
+                    app:iconSize="@dimen/icon_size" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_qq_channel"
                     style="@style/FreeForm.ButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_height"
+                    android:padding="@dimen/card_view_child_padding"
                     android:text="@string/add_qq_channel"
                     app:icon="@drawable/ic_qq"
-                    app:iconSize="@dimen/icon_size"
                     app:iconPadding="@dimen/icon_padding"
-                    android:padding="@dimen/card_view_child_padding"/>
+                    app:iconSize="@dimen/icon_size" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_telegram"
                     style="@style/FreeForm.ButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_height"
+                    android:padding="@dimen/card_view_child_padding"
                     android:text="@string/add_telegram"
                     app:icon="@drawable/ic_telegram"
-                    app:iconSize="@dimen/icon_size"
                     app:iconPadding="@dimen/icon_padding"
-                    android:padding="@dimen/card_view_child_padding"/>
+                    app:iconSize="@dimen/icon_size" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_open_source"
                     style="@style/FreeForm.ButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_height"
+                    android:padding="@dimen/card_view_child_padding"
                     android:text="@string/open_source"
                     app:icon="@drawable/ic_github"
-                    app:iconSize="@dimen/icon_size"
                     app:iconPadding="@dimen/icon_padding"
-                    android:padding="@dimen/card_view_child_padding"/>
+                    app:iconSize="@dimen/icon_size" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
