@@ -21,6 +21,14 @@
 <img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/images/screenshot_1.jpg" width="500"/>
 <img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/images/screenshot_2.jpg" width="500"/>
 
+## 开源库
+[AppIconLoader](https://github.com/zhanghai/AppIconLoader)
+[Glide](https://github.com/bumptech/glide)
+[RikkaX](https://github.com/RikkaApps/RikkaX)
+[Shizuku](https://github.com/RikkaApps/Shizuku)
+[TinyPinyin](https://github.com/promeG/TinyPinyin)
+[Xposed](https://github.com/rovo89/Xposed)
+
 ## License
 ```
 Copyright (C) 2021-2022  sunshine0523
