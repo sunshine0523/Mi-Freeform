@@ -34,6 +34,11 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         const val TAG = "MainActivity"
         const val MY_COOLAPK_PAGE = "http://www.coolapk.com/u/810697"
         const val COOLAPK_PACKAGE = "com.coolapk.market"
+        const val FEEDBACK_URL = "https://docs.qq.com/form/page/DRE1RTWtCV2dRb1dk"
+        const val MARKET_ID = "market://details?id=com.sunshine.freeform"
+        const val QQ_GROUP = "https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&inviteCode=XKL1t&from=246610&biz=ka"
+        const val TELEGRAM_URL = "https://t.me/mi_freeform"
+        const val OPEN_SOURCE_URL = "https://github.com/sunshine0523/Mi-FreeForm"
     }
 
     private lateinit var viewModel: MainViewModel
@@ -56,6 +61,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         button_qq_group.setOnClickListener(this)
         button_qq_channel.setOnClickListener(this)
         button_telegram.setOnClickListener(this)
+        button_open_source.setOnClickListener(this)
     }
 
     override fun onResume() {
@@ -109,7 +115,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 startActivity(Intent(this, MiWindowSettingActivity::class.java))
             }
             R.id.button_tell_me -> {
-                val uri = Uri.parse("https://docs.qq.com/form/page/DRE1RTWtCV2dRb1dk")
+                val uri = Uri.parse(FEEDBACK_URL)
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
             }
@@ -118,15 +124,13 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             }
             R.id.button_star -> {
                 try {
-                    val str = "market://details?id=com.sunshine.freeform"
-                    val localIntent = Intent(Intent.ACTION_VIEW, Uri.parse(str))
+                    val localIntent = Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_ID))
                     localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    localIntent.`package` = "com.coolapk.market"
+                    localIntent.`package` = COOLAPK_PACKAGE
                     startActivity(localIntent)
                 } catch (e: Exception) {
                     try {
-                        val str = "market://details?id=com.sunshine.freeform"
-                        val localIntent = Intent(Intent.ACTION_VIEW, Uri.parse(str))
+                        val localIntent = Intent(Intent.ACTION_VIEW, Uri.parse(MARKET_ID))
                         localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(localIntent)
                     }catch (e : Exception){
@@ -157,12 +161,17 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 }
             }
             R.id.button_qq_channel -> {
-                val uri = Uri.parse("https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&inviteCode=XKL1t&from=246610&biz=ka")
+                val uri = Uri.parse(QQ_GROUP)
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
             }
             R.id.button_telegram -> {
-                val uri = Uri.parse("https://t.me/mi_freeform")
+                val uri = Uri.parse(TELEGRAM_URL)
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(intent)
+            }
+            R.id.button_open_source -> {
+                val uri = Uri.parse(OPEN_SOURCE_URL)
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 startActivity(intent)
             }

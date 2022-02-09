@@ -27,6 +27,7 @@
     <string name="add_qq_group">加入QQ交流群</string>
     <string name="add_qq_channel">加入QQ频道</string>
     <string name="add_telegram">Telegram 频道 @Mi-FreeForm</string>
+    <string name="open_source">开放源代码</string>
 
     <!--activity_splash_setup.xml-->
     <string name="read_statement_done">我已经阅读并同意上方所示的《权限声明》和《服务及免责声明》</string>

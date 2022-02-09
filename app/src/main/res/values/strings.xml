@@ -27,6 +27,7 @@
     <string name="add_qq_group">Join QQ Group</string>
     <string name="add_qq_channel">Add QQ Channel</string>
     <string name="add_telegram">Telegram @Mi-FreeForm</string>
+    <string name="open_source">Open Source Code</string>
 
     <!--activity_splash_setup.xml-->
     <string name="read_statement_done">I have read and agree to the Rights Statement and The Services and Disclaimer shown above.</string>

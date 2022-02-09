@@ -189,6 +189,17 @@
                     app:iconSize="@dimen/icon_size"
                     app:iconPadding="@dimen/icon_padding"
                     android:padding="@dimen/card_view_child_padding"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_open_source"
+                    style="@style/FreeForm.ButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:text="@string/open_source"
+                    app:icon="@drawable/ic_github"
+                    app:iconSize="@dimen/icon_size"
+                    app:iconPadding="@dimen/icon_padding"
+                    android:padding="@dimen/card_view_child_padding"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
