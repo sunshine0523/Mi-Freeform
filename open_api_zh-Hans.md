@@ -11,6 +11,9 @@
 除上述方式外，米窗还提供广播方式接收外部应用发送的打开小窗指令。具体例子如下：
 
 ```kotlin
+val packageName: String = "com.sunshine.freeform"
+val activityName: String = "com.sunshine.freeform.ui.main.MainActivity"
+val userId: Int = 0
 val intent = Intent("com.sunshine.freeform.start_freeform").apply {
                     setPackage("com.sunshine.freeform")
                     //要启动小窗程序的包名：如com.sunshine.freeform
