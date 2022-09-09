@@ -16,7 +16,7 @@ The activity provided by the Mi-Freeform to open the application selection inter
 
 
 
-## 2. Directly open the small window interface provided by meter window
+## 2. Directly open the small window interface provided by Mi-Freeform
 
 In addition to the above methods, Mi-Freeform also provides a broadcast mode to receive the instruction to open a freeform sent by an external application. Specific examples are as follows:
 
