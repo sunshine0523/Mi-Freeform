@@ -1,6 +1,6 @@
 # 米窗开放API（持续更新）
 
-[English](https://github.com/sunshine0523/Mi-FreeForm/edit/master/open_api.md)
+[English](https://github.com/sunshine0523/Mi-FreeForm/blob/master/open_api.md)
 
 米窗调用接口现已对外开放，你可以选择以下方式启动米窗提供的小窗：
 
