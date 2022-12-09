@@ -1,23 +1,25 @@
 package com.sunshine.freeform.hook
 
+import android.app.Activity
+import android.app.AndroidAppHelper
 import android.app.Application
+import android.app.PendingIntent
+import android.app.RemoteAction
 import android.content.ComponentName
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
+import android.graphics.drawable.Icon
 import android.os.Build
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.*
-import androidx.core.view.get
 import com.sunshine.freeform.R
 import com.sunshine.freeform.app.MiFreeform
-import com.sunshine.freeform.hook.utils.XLog
 import de.robv.android.xposed.IXposedHookLoadPackage
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.callbacks.XC_LoadPackage
+
 
 class HookLauncher : IXposedHookLoadPackage {
 
@@ -30,52 +32,52 @@ class HookLauncher : IXposedHookLoadPackage {
         }
     }
 
-    //优化 多任务打开米窗的方式更改为点击应用图标后发现
     private fun hookLauncherAfterQ(classLoader: ClassLoader) {
-        val taskMenuViewClass = XposedHelpers.findClass("com.android.quickstep.views.TaskMenuView", classLoader)
+        XposedBridge.hookAllMethods(XposedHelpers.findClass("com.android.quickstep.TaskOverlayFactory", classLoader), "getEnabledShortcuts", object : XC_MethodHook() {
+            override fun afterHookedMethod(param: MethodHookParam) {
+                val taskView = param.args[0] as View
+                val shortcuts = param.result as MutableList<Any>
+                val itemInfo = XposedHelpers.getObjectField(shortcuts[0], "mItemInfo")
+                val topComponent = XposedHelpers.callMethod(itemInfo, "getTargetComponent") as ComponentName
+                val activity = taskView.getActivity()
 
-        XposedBridge.hookAllMethods(
-            taskMenuViewClass,
-            "addMenuOptions",
-            object : XC_MethodHook() {
-                override fun afterHookedMethod(param: MethodHookParam) {
-                    val taskMenuViewObj = param.thisObject as ViewGroup
-                    val mOptionLayout = XposedHelpers.getObjectField(taskMenuViewObj, "mOptionLayout") as LinearLayout
-                    val o = mOptionLayout[mOptionLayout.childCount - 1] as ViewGroup
-                    val bg = o.background
-                    val textColor = (o[1] as TextView).textColors
-                    val menuOptionView = LayoutInflater.from(getUserContext()).inflate(R.layout.task_view_menu_option, taskMenuViewObj, false) as ViewGroup
-                    menuOptionView.background = bg
-                    menuOptionView[0].backgroundTintList = textColor
-                    (menuOptionView[1] as TextView).setTextColor(textColor)
-                    mOptionLayout.addView(menuOptionView)
+                val task = XposedHelpers.callMethod(taskView, "getTask")
+                val key = XposedHelpers.getObjectField(task, "key")
+                val userId = XposedHelpers.getIntField(key, "userId")
 
-                    addFreeformFunctionAfterQ(taskMenuViewObj, menuOptionView)
-                }
-            }
-        )
-    }
-
-    private fun addFreeformFunctionAfterQ(paramObj: Any, menuOptionView: View) {
-        try {
-            val taskView = XposedHelpers.getObjectField(paramObj, "mTaskView") as FrameLayout
-            val taskObj = XposedHelpers.callMethod(taskView, "getTask")
-            val taskKeyObj = XposedHelpers.getObjectField(taskObj, "key")
-            val userId = XposedHelpers.getIntField(taskKeyObj, "userId")
-            val topComponent = XposedHelpers.callMethod(taskObj, "getTopComponent") as ComponentName
-
-            menuOptionView.setOnClickListener {
+                val class_RemoteActionShortcut = XposedHelpers.findClass("com.android.launcher3.popup.RemoteActionShortcut", classLoader)
                 val intent = Intent("com.sunshine.freeform.start_freeform").apply {
                     setPackage("com.sunshine.freeform")
                     putExtra("packageName", topComponent.packageName)
                     putExtra("activityName", topComponent.className)
                     putExtra("userId", userId)
                 }
-                taskView.context.sendBroadcast(intent)
+                val action = RemoteAction(
+                    Icon.createWithResource(getUserContext(), R.drawable.tile_icon),
+                    getUserContext().getString(R.string.recent_open_by_freeform),
+                    "",
+                    PendingIntent.getBroadcast(
+                        AndroidAppHelper.currentApplication(),
+                        0,
+                        intent,
+                        PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+                    )
+                )
+                val c = class_RemoteActionShortcut.constructors[0]
+                val shortcut = when (c.parameterCount) {
+                    4 -> c.newInstance(action, activity, itemInfo, null)
+                    3 -> c.newInstance(action, activity, itemInfo)
+                    else -> {
+                        XposedBridge.log("Mi-Freeform: unknown RemoteActionShortcut constructor: ${c.toGenericString()}")
+                        null
+                    }
+                }
+
+                if (shortcut != null) {
+                    shortcuts.add(shortcut)
+                }
             }
-        } catch (e: Exception) {
-            XLog.d("HookLauncher $e")
-        }
+        })
     }
 
     private fun getUserContext(): Context {
@@ -87,5 +89,16 @@ class HookLauncher : IXposedHookLoadPackage {
             mUserContext = application.createPackageContext(MiFreeform.PACKAGE_NAME, Context.CONTEXT_INCLUDE_CODE or Context.CONTEXT_IGNORE_SECURITY)
             mUserContext!!
         }
+    }
+
+    fun View.getActivity(): Activity? {
+        var context = context
+        while (context is ContextWrapper) {
+            if (context is Activity) {
+                return context
+            }
+            context = context.baseContext
+        }
+        return null
     }
 }
