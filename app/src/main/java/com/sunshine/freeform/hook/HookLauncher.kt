@@ -1,6 +1,5 @@
 package com.sunshine.freeform.hook
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.ComponentName
 import android.content.Context
@@ -10,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.view.get
 import com.sunshine.freeform.R
 import com.sunshine.freeform.app.MiFreeform
 import com.sunshine.freeform.hook.utils.XLog
@@ -41,8 +41,13 @@ class HookLauncher : IXposedHookLoadPackage {
                 override fun afterHookedMethod(param: MethodHookParam) {
                     val taskMenuViewObj = param.thisObject as ViewGroup
                     val mOptionLayout = XposedHelpers.getObjectField(taskMenuViewObj, "mOptionLayout") as LinearLayout
-
-                    val menuOptionView = LayoutInflater.from(getUserContext()).inflate(R.layout.task_view_menu_option, taskMenuViewObj, false)
+                    val o = mOptionLayout[mOptionLayout.childCount - 1] as ViewGroup
+                    val bg = o.background
+                    val textColor = (o[1] as TextView).textColors
+                    val menuOptionView = LayoutInflater.from(getUserContext()).inflate(R.layout.task_view_menu_option, taskMenuViewObj, false) as ViewGroup
+                    menuOptionView.background = bg
+                    menuOptionView[0].backgroundTintList = textColor
+                    (menuOptionView[1] as TextView).setTextColor(textColor)
                     mOptionLayout.addView(menuOptionView)
 
                     addFreeformFunctionAfterQ(taskMenuViewObj, menuOptionView)

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2018 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2018 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,14 +13,12 @@
      limitations under the License.
 -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingTop="@dimen/task_card_menu_option_vertical_padding"
-    android:paddingBottom="@dimen/task_card_menu_option_vertical_padding"
-    android:background="@drawable/task_menu_item_bg">
+    android:paddingBottom="@dimen/task_card_menu_option_vertical_padding">
 
     <View
         android:id="@+id/icon"
@@ -29,17 +26,15 @@
         android:layout_height="@dimen/system_shortcut_icon_size"
         android:layout_gravity="center_horizontal"
         android:layout_marginStart="@dimen/task_menu_option_start_margin"
-        android:background="@drawable/tile_icon"
-        android:backgroundTint="@color/color_text" />
+        android:background="@drawable/tile_icon" />
 
     <TextView
         android:id="@+id/text"
-        android:text="@string/recent_open_by_freeform"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/task_menu_option_start_margin"
-        android:textSize="14sp"
-        android:textColor="@color/color_text"
-        android:focusable="false" />
+        android:focusable="false"
+        android:text="@string/recent_open_by_freeform"
+        android:textSize="14sp" />
 
 </LinearLayout>
