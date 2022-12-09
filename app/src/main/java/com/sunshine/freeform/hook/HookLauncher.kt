@@ -39,7 +39,7 @@ class HookLauncher : IXposedHookLoadPackage {
                 val shortcuts = param.result as MutableList<Any>
                 val itemInfo = XposedHelpers.getObjectField(shortcuts[0], "mItemInfo")
                 val topComponent = XposedHelpers.callMethod(itemInfo, "getTargetComponent") as ComponentName
-                val activity = taskView.getActivity()
+                val activity = taskView.context.getActivity()
 
                 val task = XposedHelpers.callMethod(taskView, "getTask")
                 val key = XposedHelpers.getObjectField(task, "key")
@@ -91,14 +91,9 @@ class HookLauncher : IXposedHookLoadPackage {
         }
     }
 
-    fun View.getActivity(): Activity? {
-        var context = context
-        while (context is ContextWrapper) {
-            if (context is Activity) {
-                return context
-            }
-            context = context.baseContext
-        }
+    fun Context.getActivity(): Activity? {
+        if (this is Activity) return this
+        if (this is ContextWrapper) return this.baseContext.getActivity()
         return null
     }
 }
