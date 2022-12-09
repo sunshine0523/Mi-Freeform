@@ -1,0 +1,112 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'kotlin-android-extensions'
+    id 'stringfog'
+}
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "com.sunshine.freeform"
+        minSdk 27
+        targetSdk 32
+        versionCode 2518
+        versionName "2.5.18"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            // 设置支持的SO库架构
+            abiFilters 'arm64-v8a','armeabi-v7a' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('D:\\code\\Android\\AndroidStudioProjects\\sunshinekey.jks')
+            storePassword 'androidhas1'
+            keyAlias = 'demo'
+            keyPassword 'androidhas1'
+        }
+    }
+
+    buildTypes {
+        release {
+            zipAlignEnabled true
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+configurations.all {
+    exclude group: 'androidx.appcompat', module: 'appcompat'
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.appcompat:appcompat:1.5.0'
+    implementation 'com.google.android.material:material:1.7.0-alpha03'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+
+    compileOnly files('libs/XposedBridgeAPI-89.jar')
+
+    implementation("dev.rikka.rikkax.appcompat:appcompat:1.5.0.1")
+    implementation("dev.rikka.rikkax.widget:borderview:1.1.0")
+    implementation("dev.rikka.rikkax.recyclerview:recyclerview-ktx:1.3.1")
+
+    def shizuku_version = '12.1.0'
+    implementation "dev.rikka.shizuku:api:$shizuku_version"
+    implementation "dev.rikka.shizuku:provider:$shizuku_version"
+
+    def room_version = "2.4.3"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+
+    def preference_version = "1.2.0"
+    implementation "androidx.preference:preference-ktx:$preference_version"
+    implementation 'dev.rikka.rikkax.preference:simplemenu-preference:1.0.3'
+
+    implementation 'io.github.biezhi:TinyPinyin:2.0.3.RELEASE'
+
+    implementation 'com.airbnb.android:lottie:5.2.0'
+
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
+
+    implementation 'org.lsposed.hiddenapibypass:hiddenapibypass:4.3'
+
+    implementation 'com.tencent.bugly:crashreport:latest.release'
+
+    implementation 'com.github.megatronking.stringfog:xor:3.0.0'
+}
+
+stringfog {
+    // 必要：加解密库的实现类路径，需和上面配置的加解密算法库一致。
+    implementation 'com.github.megatronking.stringfog.xor.StringFogImpl'
+    // 可选：加密开关，默认开启。
+    enable true
+    // 可选：指定需加密的代码包路径，可配置多个，未指定将默认全部加密。
+    fogPackages = ['com.sunshine.freeform']
+}

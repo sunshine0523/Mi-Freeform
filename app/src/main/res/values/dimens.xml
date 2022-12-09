@@ -1,0 +1,53 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="scale_view_size">32dp</dimen>
+    <dimen name="top_bar_height">0dp</dimen>
+    <dimen name="bottom_bar_height">24dp</dimen>
+    <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="hang_up_tip_size">96dp</dimen>
+
+    <dimen name="card_view_margin">16dp</dimen>
+    <dimen name="card_view_child_padding">16dp</dimen>
+    <dimen name="button_height">64dp</dimen>
+    <dimen name="button_text_size">16sp</dimen>
+    <dimen name="icon_size">24dp</dimen>
+    <dimen name="icon_padding">12dp</dimen>
+
+    <dimen name="floating_item_size">50dp</dimen>
+    <dimen name="floating_item_width">70dp</dimen>
+    <dimen name="floating_text_size">10sp</dimen>
+    <dimen name="floating_circle_bg_size">24dp</dimen>
+    <dimen name="info_card_height">80dp</dimen>
+    <dimen name="info_image_size">32dp</dimen>
+    <dimen name="info_image_margin">16dp</dimen>
+    <dimen name="info_text_margin_left_right">16dp</dimen>
+    <dimen name="info_text_margin_up_down">24dp</dimen>
+    <dimen name="info_text_size">16sp</dimen>
+    <dimen name="item_app_card_height">75dp</dimen>
+
+    <dimen name="textSize_sidebar">10sp</dimen>
+    <dimen name="large_textSize_sidebar">32sp</dimen>
+    <dimen name="textSize_sidebar_choose">12sp</dimen>
+    <dimen name="textSize_sidebar_padding">20sp</dimen>
+    <dimen name="radius_sidebar">20dp</dimen>
+    <dimen name="ball_radius_sidebar">24dp</dimen>
+
+    <dimen name="wave_sidebar_width">32dp</dimen>
+    <dimen name="freeform_bar_width">128dp</dimen>
+    <dimen name="freeform_control_bar_height">24dp</dimen>
+    <dimen name="freeform_swing_bar_height">16dp</dimen>
+    <dimen name="freeform_card_corner_radius">16dp</dimen>
+    <dimen name="freeform_shadow">4dp</dimen>
+    <dimen name="freeform_shadow_height">8dp</dimen>
+
+    <dimen name="floating_button_height">64dp</dimen>
+    <dimen name="floating_button_width">32dp</dimen>
+
+    <!--hook launcher-->
+    <dimen name="task_card_menu_option_vertical_padding">16dp</dimen>
+    <dimen name="task_menu_option_start_margin">18dp</dimen>
+    <dimen name="system_shortcut_icon_size">16dp</dimen>
+    <dimen name="task_menu_item_corner_radius">4dp</dimen>
+
+</resources>

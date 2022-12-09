@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:title="@string/category_base"
+        app:iconSpaceReserved="false">
+        <SwitchPreference
+            android:key="hide_from_recent"
+            android:title="@string/switch_hide_recent"
+            android:summary="@string/switch_hide_recent_summary"
+            app:iconSpaceReserved="false"/>
+        <com.sunshine.freeform.ui.view.IntegerSimpleMenuPreference
+            app:entries="@array/service_type"
+            app:entryValues="@array/service_type_value"
+            android:key="service_type"
+            android:title="@string/service_type_title"
+            android:summary="@string/service_type_summary"
+            app:iconSpaceReserved="false"/>
+        <Preference
+            android:key="reset_overlay_setting"
+            app:title="@string/preference_reset_overlay_setting"
+            android:summary="@string/preference_reset_overlay_setting_summary"
+            app:iconSpaceReserved="false"/>
+        <Preference
+            android:title="@string/preference_start_by_recent_view_title"
+            android:summary="@string/preference_start_by_recent_view_summary"
+            app:iconSpaceReserved="false"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/category_freeform"
+        app:iconSpaceReserved="false">
+
+        <SeekBarPreference
+            android:key="freeform_scale_portrait"
+            android:title="@string/setting_freeform_dpi_title"
+            app:iconSpaceReserved="false"
+            app:defaultValue="0"
+            app:min="-500"
+            android:max="500"
+            app:showSeekBarValue="true"/>
+        <SeekBarPreference
+            android:key="freeform_scale_landscape"
+            android:title="@string/setting_freeform_landscape_dpi_title"
+            app:iconSpaceReserved="false"
+            app:defaultValue="0"
+            app:min="-500"
+            android:max="500"
+            app:showSeekBarValue="true" />
+
+        <SwitchPreference
+            android:key="remember_freeform_position"
+            android:title="@string/remember_position_title"
+            android:summary="@string/remember_position_summary"
+            app:iconSpaceReserved="false"/>
+
+        <SwitchPreference
+            android:key="change_dpi"
+            android:title="@string/change_dpi_title"
+            android:summary="@string/change_dpi_summary"
+            app:iconSpaceReserved="false"/>
+
+        <SwitchPreference
+            android:key="use_sui_refuse_to_fullscreen"
+            android:title="@string/use_sui_refuse_to_fullscreen_title"
+            android:summary="@string/use_sui_refuse_to_fullscreen_summary"
+            app:iconSpaceReserved="false"/>
+
+        <SwitchPreference
+            android:key="manual_adjust_freeform_rotation"
+            android:title="@string/manual_adjust_freeform_rotation_title"
+            android:summary="@string/manual_adjust_freeform_rotation_summary"
+            app:iconSpaceReserved="false"/>
+
+        <SwitchPreference
+            android:key="auto_scale"
+            android:title="@string/auto_scale_title"
+            android:summary="@string/auto_scale_summary"
+            app:iconSpaceReserved="false"/>
+
+<!--        <SwitchPreference-->
+<!--            android:key="compatible_mode"-->
+<!--            android:title="@string/compatible_title"-->
+<!--            android:summary="@string/compatible_summary"-->
+<!--            app:iconSpaceReserved="false"/>-->
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/category_floating"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreference
+            android:key="show_floating"
+            android:title="@string/switch_floating"
+            android:summary="@string/switch_floating_summary"
+            app:iconSpaceReserved="false"/>
+
+        <com.sunshine.freeform.ui.view.IntegerSimpleMenuPreference
+            app:entries="@array/floating_show_position"
+            app:entryValues="@array/floating_show_position_value"
+            android:key="floating_position_x"
+            android:title="@string/menu_floating_position"
+            app:iconSpaceReserved="false"/>
+
+        <Preference
+            android:key="quick_floating_app"
+            app:title="@string/preference_quick_floating_app"
+            android:summary="@string/preference_quick_floating_app_summary"
+            app:iconSpaceReserved="false"/>
+
+        <SeekBarPreference
+            android:key="floating_alpha"
+            android:title="@string/floating_alpha_title"
+            app:iconSpaceReserved="false"
+            app:defaultValue="10"
+            app:min="0"
+            android:max="10"
+            app:showSeekBarValue="true"/>
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/category_notify"
+        app:iconSpaceReserved="false">
+
+        <SwitchPreference
+            android:key="notify_freeform"
+            android:title="@string/switch_notify_freeform"
+            android:summary="@string/switch_notify_freeform_summary"
+            app:iconSpaceReserved="false"/>
+
+        <Preference
+            android:key="notification_freeform_apps"
+            app:title="@string/preference_notification_apps"
+            android:summary="@string/preference_notification_apps_summary"
+            app:iconSpaceReserved="false"/>
+
+    </PreferenceCategory>
+</PreferenceScreen>

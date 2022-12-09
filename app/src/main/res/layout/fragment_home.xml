@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.HomeFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView_xposed_info"
+            style="@style/FreeForm.CardViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/info_card_height"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/info_xposed_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/warn_color">
+
+                <ImageView
+                    android:id="@+id/imageView_xposed_service"
+                    android:layout_width="@dimen/info_image_size"
+                    android:layout_height="@dimen/info_image_size"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_error_white" />
+
+                <com.sunshine.freeform.ui.view.MTextView
+                    android:id="@+id/textView_xposed_service_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/xposed_no_start"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/info_text_size"
+                    android:textStyle="bold"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView_xposed_service"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView_shizuku_info"
+            style="@style/FreeForm.CardViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/info_card_height"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/materialCardView_xposed_info"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/info_shizuku_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/warn_color">
+
+                <ImageView
+                    android:id="@+id/imageView_shizuku_service"
+                    android:layout_width="@dimen/info_image_size"
+                    android:layout_height="@dimen/info_image_size"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_error_white" />
+
+                <com.sunshine.freeform.ui.view.MTextView
+                    android:id="@+id/textView_shizuku_service_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/shizuku_no_start"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/info_text_size"
+                    android:textStyle="bold"
+                    android:ellipsize="marquee"
+                    android:singleLine="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView_shizuku_service"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView_accessibility_info"
+            style="@style/FreeForm.CardViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/info_card_height"
+            android:layout_marginTop="@dimen/card_view_margin"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView_shizuku_info">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/info_accessibility_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/warn_color">
+
+                <ImageView
+                    android:id="@+id/imageView_accessibility_service"
+                    android:layout_width="@dimen/info_image_size"
+                    android:layout_height="@dimen/info_image_size"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_error_white" />
+
+                <com.sunshine.freeform.ui.view.MTextView
+                    android:id="@+id/textView_accessibility_service_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:text="@string/accessibility_no_start_home"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/info_text_size"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView_accessibility_service"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView_guide"
+            style="@style/FreeForm.CardViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="@dimen/card_view_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView_accessibility_info">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textView_guide"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/guide_help"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView_guide">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_guide"
+                        style="@style/FreeForm.ButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/card_view_child_padding"
+                        android:text="@string/guide"
+                        android:textColor="@color/color_text"
+                        app:icon="@drawable/ic_guide"
+                        app:iconPadding="@dimen/icon_padding"
+                        app:iconSize="@dimen/icon_size"
+                        app:iconTint="@color/color_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_question"
+                        style="@style/FreeForm.ButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/card_view_child_padding"
+                        android:text="@string/question"
+                        android:textColor="@color/color_text"
+                        android:visibility="visible"
+                        app:icon="@drawable/ic_question"
+                        app:iconPadding="@dimen/icon_padding"
+                        app:iconSize="@dimen/icon_size"
+                        app:iconTint="@color/color_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_open_api"
+                        style="@style/FreeForm.ButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/card_view_child_padding"
+                        android:text="@string/open_api"
+                        android:textColor="@color/color_text"
+                        android:visibility="visible"
+                        app:icon="@drawable/ic_api"
+                        app:iconPadding="@dimen/icon_padding"
+                        app:iconSize="@dimen/icon_size"
+                        app:iconTint="@color/color_text" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView_donate"
+            style="@style/FreeForm.CardViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="@dimen/card_view_margin"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView_guide">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textView_donate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/donate"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView_donate_message"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="24dp"
+                    android:text="@string/donate_message"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView_donate" />
+
+                <ImageButton
+                    android:id="@+id/button_donate_alipay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/card_view_margin"
+                    android:background="@drawable/ic_alipay"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline6"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView_donate_message" />
+
+                <ImageButton
+                    android:id="@+id/button_donate_wechat_pay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/card_view_margin"
+                    android:background="@drawable/ic_wechat_pay"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline7"
+                    app:layout_constraintStart_toStartOf="@+id/guideline6"
+                    app:layout_constraintTop_toBottomOf="@+id/textView_donate_message" />
+
+                <ImageButton
+                    android:id="@+id/button_donate_paypal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/card_view_margin"
+                    android:background="@drawable/ic_paypal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/guideline7"
+                    app:layout_constraintTop_toBottomOf="@+id/textView_donate_message" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.33" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.6721763" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView_exchange"
+            style="@style/FreeForm.CardViewStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="@dimen/card_view_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView_donate">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView_exchange"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/exchange"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView_exchange">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_star"
+                        style="@style/FreeForm.ButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/card_view_child_padding"
+                        android:text="@string/rate"
+                        android:textColor="@color/color_text"
+                        app:icon="@drawable/ic_star"
+                        app:iconPadding="@dimen/icon_padding"
+                        app:iconSize="@dimen/icon_size"
+                        app:iconTint="@color/color_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_coolapk"
+                        style="@style/FreeForm.ButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/card_view_child_padding"
+                        android:text="@string/coolapk_my_name"
+                        android:textColor="@color/color_text"
+                        app:icon="@drawable/ic_coolapk"
+                        app:iconPadding="@dimen/icon_padding"
+                        app:iconSize="@dimen/icon_size"
+                        app:iconTint="@color/color_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_qq_group"
+                        style="@style/FreeForm.ButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/card_view_child_padding"
+                        android:text="@string/add_qq_group"
+                        android:textColor="@color/color_text"
+                        app:icon="@drawable/ic_qq"
+                        app:iconPadding="@dimen/icon_padding"
+                        app:iconSize="@dimen/icon_size"
+                        app:iconTint="@color/color_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_qq_group2"
+                        style="@style/FreeForm.ButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/card_view_child_padding"
+                        android:text="@string/add_qq_group2"
+                        android:textColor="@color/color_text"
+                        app:icon="@drawable/ic_qq"
+                        app:iconPadding="@dimen/icon_padding"
+                        app:iconSize="@dimen/icon_size"
+                        app:iconTint="@color/color_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_qq_channel"
+                        style="@style/FreeForm.ButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/card_view_child_padding"
+                        android:text="@string/add_qq_channel"
+                        android:textColor="@color/color_text"
+                        app:icon="@drawable/ic_qq"
+                        app:iconPadding="@dimen/icon_padding"
+                        app:iconSize="@dimen/icon_size"
+                        app:iconTint="@color/color_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_telegram"
+                        style="@style/FreeForm.ButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/card_view_child_padding"
+                        android:text="@string/add_telegram"
+                        android:textColor="@color/color_text"
+                        app:icon="@drawable/ic_telegram"
+                        app:iconPadding="@dimen/icon_padding"
+                        app:iconSize="@dimen/icon_size"
+                        app:iconTint="@color/color_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/button_open_source"
+                        style="@style/FreeForm.ButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/button_height"
+                        android:padding="@dimen/card_view_child_padding"
+                        android:text="@string/open_source"
+                        android:textColor="@color/color_text"
+                        app:icon="@drawable/ic_github"
+                        app:iconPadding="@dimen/icon_padding"
+                        app:iconSize="@dimen/icon_size"
+                        app:iconTint="@color/color_text" />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="0dp"
+            android:layout_height="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView_exchange" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
