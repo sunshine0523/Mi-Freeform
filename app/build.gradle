@@ -24,14 +24,14 @@ android {
         }
     }
 
-    signingConfigs {
-        release {
-            storeFile file('D:\\code\\Android\\AndroidStudioProjects\\sunshinekey.jks')
-            storePassword 'androidhas1'
-            keyAlias = 'demo'
-            keyPassword 'androidhas1'
-        }
-    }
+//    signingConfigs {
+//        release {
+//            storeFile file('D:\\code\\Android\\AndroidStudioProjects\\sunshinekey.jks')
+//            storePassword 'androidhas1'
+//            keyAlias = 'demo'
+//            keyPassword 'androidhas1'
+//        }
+//    }
 
     buildTypes {
         release {
@@ -39,7 +39,7 @@ android {
             shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.release
         }
     }
     compileOptions {
