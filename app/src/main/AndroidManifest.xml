@@ -40,7 +40,13 @@
             android:exported="true"
             android:label="@string/floating_label"
             android:taskAffinity=":floating"
-            android:theme="@style/ActivityDialogTheme" />
+            android:theme="@style/ActivityDialogTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.ASSIST" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.recent.RecentActivity"
             android:exported="true"
@@ -120,14 +126,7 @@
 
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
-        </receiver> <!-- <receiver -->
-        <!-- android:name=".broadcast.StartFreeformReceiver" -->
-        <!-- android:enabled="true" -->
-        <!-- android:exported="true"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="com.sunshine.freeform.start_freeform" /> -->
-        <!-- </intent-filter> -->
-        <!-- </receiver> -->
+        </receiver>
         <meta-data
             android:name="xposedmodule"
             android:value="true" />
