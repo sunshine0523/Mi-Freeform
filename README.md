@@ -1,10 +1,10 @@
 # Mi-FreeForm
 
-![GitHub](https://img.shields.io/github/license/sunshine0523/Mi-FreeForm)
+![GitHub](https://img.shields.io/github/license/sunshine0523/Mi-FreeForm) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/sunshine0523/Mi-FreeForm)
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/sunshine0523/Mi-FreeForm)
+Developer is looking for a better way to implement Mi-Freeform. Due to academic limitations, progress may not be fast. Thank you for your understanding!
 
-[简体中文](README.zh-Hans.md)
+开发者正在寻找一种更加好的方式去实现小窗功能，限于学业限制进度可能不会很快，谢谢理解！
 
 <img src="https://raw.githubusercontent.com/sunshine0523/Mi-FreeForm/master/app/src/main/res/mipmap/ic_launcher.png" width="100"/>
 
