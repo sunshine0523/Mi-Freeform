@@ -1,7 +1,54 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
+import com.android.build.api.dsl.ApplicationDefaultConfig
+import com.android.build.api.dsl.CommonExtension
+import com.android.build.gradle.api.AndroidBasePlugin
+
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.kotlinAndroid) apply false
+    alias(libs.plugins.androidLibrary) apply false
+    alias(libs.plugins.zygoteLoader) apply false
+    alias(libs.plugins.hiddenApiRefine) apply false
+    alias(libs.plugins.ksp) apply false
 }
-true // Needed to make the Suppress annotation work for the plugins block
+
+val androidTargetSdkVersion by extra(34)
+val androidMinSdkVersion by extra(29)
+val androidBuildToolsVersion by extra("34.0.0-rc3")
+val androidCompileSdkVersion by extra(34)
+val androidSourceCompatibility by extra(JavaVersion.VERSION_17)
+val androidTargetCompatibility by extra(JavaVersion.VERSION_17)
+
+subprojects {
+    plugins.withType(AndroidBasePlugin::class.java) {
+        extensions.configure(CommonExtension::class.java) {
+            compileSdk = androidCompileSdkVersion
+            buildToolsVersion = androidBuildToolsVersion
+
+            defaultConfig {
+                minSdk = androidMinSdkVersion
+                if (this is ApplicationDefaultConfig) {
+                    targetSdk = androidTargetSdkVersion
+                    versionCode = 1
+                    versionName = "1.0"
+                }
+            }
+
+            lint {
+                abortOnError = true
+                checkReleaseBuilds = false
+            }
+
+            compileOptions {
+                sourceCompatibility = androidSourceCompatibility
+                targetCompatibility = androidTargetCompatibility
+            }
+        }
+    }
+    plugins.withType(JavaPlugin::class.java) {
+        extensions.configure(JavaPluginExtension::class.java) {
+            sourceCompatibility = androidSourceCompatibility
+            targetCompatibility = androidTargetCompatibility
+        }
+    }
+}

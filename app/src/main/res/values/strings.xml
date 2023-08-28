@@ -1,3 +1,28 @@
 <resources>
     <string name="app_name">Mi-Freeform</string>
+    <string name="xposed_description">A Freeform App</string>
+
+    <!--HomeView-->
+    <string name="service_running">Mi-Freeform Service is Running</string>
+    <string name="service_not_running">Mi-Freeform Service is not Running</string>
+
+    <!--FloatingActivity-->
+    <string name="title_activity_floating">FloatingActivity</string>
+
+    <!--ChooseAppFloatingAdapter-->
+    <string name="all_apps">All apps</string>
+    <string name="edit_apps">Edit</string>
+
+    <!--AppList-->
+    <string name="title_activity_app_list">AppListActivity</string>
+    <string name="search_app">Search APPs</string>
+
+    <!--SettingView-->
+    <string name="sidebar">SideBar</string>
+    <string name="sidebar_message">Slide up or down on both sides of the screen to activate the sidebar</string>
+    <string name="sidebar_height">SideBar Height</string>
+    <string name="freeform_width">Freeform Width</string>
+    <string name="freeform_height">Freeform Height</string>
+    <string name="freeform_dpi">Freeform DPI</string>
+    <string name="freeform_width_height_warn">Freeform`s height must bigger than width</string>
 </resources>

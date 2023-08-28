@@ -1,21 +1,41 @@
 [versions]
-agp = "8.2.0-alpha10"
+agp = "8.1.1"
 kotlin = "1.8.10"
-core-ktx = "1.9.0"
+zygote-loader = "3.0"
+core-ktx = "1.10.1"
+ksp = "1.8.10-1.0.9"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 lifecycle-runtime-ktx = "2.6.1"
 activity-compose = "1.7.0"
 compose-bom = "2023.03.00"
+androidx-appcompat-appcompat = "1.6.1"
+constraintlayout = "2.1.4"
+com-google-android-material-material = "1.9.0"
+hidden-api-bypass = "4.3"
+magic-library = "1.5"
+hidden-api-refine = "4.3.0"
+foundation = "1.4.0"
+systemuicontroller = "0.33.0-alpha"
+gson = "2.10.1"
+room = "2.5.1"
+glide = "4.16.0"
+drawablepainter = "0.32.0"
+compose-livedata = "1.4.3"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
+appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat-appcompat" }
+
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
+
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
@@ -23,11 +43,37 @@ ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation"}
+compose-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "compose-livedata" }
 
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room"}
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room"}
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room"}
+
+material = { group = "com.google.android.material", name = "material", version.ref = "com-google-android-material-material" }
+
+systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "systemuicontroller"}
+
+hiddenapibypass = { module = "org.lsposed.hiddenapibypass:hiddenapibypass", version.ref = "hidden-api-bypass" }
+
+magic-library = { group = "com.github.kr328.magic", name = "library", version.ref = "magic-library"}
+
+hiddenapirefineannotationprocessor = { group = "dev.rikka.tools.refine", name = "annotation-processor", version.ref = "hidden-api-refine"}
+hiddenapirefineannotation = { group = "dev.rikka.tools.refine", name = "annotation", version.ref = "hidden-api-refine"}
+
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+
+drawablepainter = { group = "com.google.accompanist", name = "accompanist-drawablepainter", version.ref = "drawablepainter" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+hiddenApiRefine = { id = "dev.rikka.tools.refine", version.ref = "hidden-api-refine" }
+zygoteLoader = { id = "com.github.kr328.gradle.zygote", version.ref = "zygote-loader"}
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 [bundles]
 

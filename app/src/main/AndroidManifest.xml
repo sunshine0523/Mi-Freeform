@@ -2,7 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <application
+        android:name=".MiFreeform"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,9 +19,26 @@
         android:theme="@style/Theme.MiFreeform"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.app_list.AppListActivity"
             android:exported="true"
-            android:label="@string/app_name"
+            android:taskAffinity=":applist"
+            android:label="@string/title_activity_app_list"
+            android:theme="@style/Theme.MiFreeform" />
+        <activity
+            android:name=".ui.floating.FloatingActivity"
+            android:exported="true"
+            android:label="@string/title_activity_floating"
+            android:taskAffinity=":floating"
+            android:theme="@style/ActivityDialogTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.ASSIST" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="true"
             android:theme="@style/Theme.MiFreeform">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,6 +46,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="@string/xposed_description" />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="53" />
+        <meta-data
+            android:name="xposedscope"
+            android:resource="@array/xposedscope" />
     </application>
 
 </manifest>

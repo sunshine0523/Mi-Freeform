@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">米窗</string>
+    <string name="xposed_description">Test</string>
+    <string name="service_running">米窗服务正在运行</string>
+    <string name="service_not_running">米窗服务没有运行</string>
+    <string name="title_activity_floating">侧边栏</string>
+    <string name="all_apps">所有应用</string>
+    <string name="edit_apps">编辑</string>
+    <string name="title_activity_app_list">应用列表</string>
+    <string name="search_app">搜索应用</string>
+    <string name="sidebar">侧边栏</string>
+    <string name="sidebar_message">屏幕两侧边缘上滑或下滑启动侧边栏</string>
+    <string name="sidebar_height">侧边栏高度</string>
+    <string name="freeform_width">小窗宽度</string>
+    <string name="freeform_height">小窗高度</string>
+    <string name="freeform_dpi">小窗分辨率</string>
+    <string name="freeform_width_height_warn">小窗高度必须大于宽度</string>
+</resources>
