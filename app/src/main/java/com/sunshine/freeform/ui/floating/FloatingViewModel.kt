@@ -28,6 +28,7 @@ class FloatingViewModel(context: Context) {
     }
 
     fun getIntSp(name: String, defaultValue: Int): Int {
+        if (sp.contains(name).not()) sp.edit().putInt(name, defaultValue).apply()
         return sp.getInt(name, defaultValue)
     }
 }

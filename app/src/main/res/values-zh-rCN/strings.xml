@@ -16,4 +16,5 @@
     <string name="freeform_height">小窗高度</string>
     <string name="freeform_dpi">小窗分辨率</string>
     <string name="freeform_width_height_warn">小窗高度必须大于宽度</string>
+    <string name="title_activity_freeform_app">选择小窗应用</string>
 </resources>

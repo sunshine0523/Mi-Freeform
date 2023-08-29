@@ -19,10 +19,15 @@
         android:theme="@style/Theme.MiFreeform"
         tools:targetApi="31">
         <activity
+            android:name=".ui.app_list.FreeformAppActivity"
+            android:exported="false"
+            android:label="@string/title_activity_freeform_app"
+            android:theme="@style/Theme.MiFreeform" />
+        <activity
             android:name=".ui.app_list.AppListActivity"
             android:exported="true"
-            android:taskAffinity=":applist"
             android:label="@string/title_activity_app_list"
+            android:taskAffinity=":applist"
             android:theme="@style/Theme.MiFreeform" />
         <activity
             android:name=".ui.floating.FloatingActivity"

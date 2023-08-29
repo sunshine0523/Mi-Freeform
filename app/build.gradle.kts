@@ -53,6 +53,8 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.room.runtime)
     implementation(platform(libs.compose.bom))
+    implementation(platform(libs.compose.bom))
+    androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(platform(libs.compose.bom))
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)

@@ -137,8 +137,10 @@ fun AppListItem(appInfo: AppInfo, viewModel: AppListViewModel) {
                 MiFreeformServiceManager.createDisplay(
                     appInfo.componentName,
                     appInfo.userId,
-                    viewModel.getIntSp("freeform_width", (viewModel.screenWidth * 0.8).roundToInt()),
-                    viewModel.getIntSp("freeform_height", (viewModel.screenHeight * 0.5).roundToInt()),
+                    // I think AppListActivity must open in Freeform.
+                    // So this `screen` is Freeform. I do not need scale. 0.8x 0.5x
+                    viewModel.getIntSp("freeform_width", viewModel.screenWidth),
+                    viewModel.getIntSp("freeform_height", viewModel.screenHeight),
                     viewModel.getIntSp("freeform_dpi", viewModel.screenDensityDpi),
                 )
                 viewModel.closeActivity()

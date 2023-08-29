@@ -38,12 +38,13 @@ object MiFreeformServiceManager {
     }
 
     fun createDisplay(componentName: ComponentName, userId: Int, width: Int, height: Int, densityDpi: Int) {
+        Log.i(TAG, "$width $height $densityDpi")
         iMiFreeformService?.startAppInFreeform(
             componentName,
             userId,
-            1000,
-            1400,
-            320,
+            width,
+            height,
+            densityDpi,
             120.0f,
             true,
             true,

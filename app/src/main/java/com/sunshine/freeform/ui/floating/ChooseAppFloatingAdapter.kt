@@ -21,6 +21,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.sunshine.freeform.MiFreeformServiceManager
 import com.sunshine.freeform.R
 import com.sunshine.freeform.room.FreeFormAppsEntity
+import com.sunshine.freeform.ui.app_list.FreeformAppActivity
 import kotlin.math.roundToInt
 
 /**
@@ -88,7 +89,13 @@ class ChooseAppFloatingAdapter(
                 holder.icon.setImageResource(R.drawable.ic_add)
                 holder.appName.text = context.getString(R.string.edit_apps)
                 holder.click.setOnClickListener {
-                    //context.startActivity(Intent(context, ChooseAppsActivity::class.java).apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) })
+                    MiFreeformServiceManager.createDisplay(
+                        ComponentName("com.sunshine.freeform", "com.sunshine.freeform.ui.app_list.FreeformAppActivity"),
+                        0,
+                        viewModel.getIntSp("freeform_width", (viewModel.screenWidth * 0.8).roundToInt()),
+                        viewModel.getIntSp("freeform_height", (viewModel.screenHeight * 0.5).roundToInt()),
+                        viewModel.getIntSp("freeform_dpi", viewModel.screenDensityDpi),
+                    )
                     callback.onClick()
                 }
             }
