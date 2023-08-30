@@ -7,5 +7,7 @@ data class AppInfo(
     val label: String,
     val icon: Drawable,
     val componentName: ComponentName,
-    val userId: Int
+    val userId: Int,
+    // is add to freeform app, use for FreeformAppActivity
+    var isFreeformApp: Boolean = false
 )

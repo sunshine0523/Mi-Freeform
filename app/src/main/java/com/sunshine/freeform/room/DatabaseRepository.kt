@@ -13,16 +13,15 @@ import java.lang.Exception
 class DatabaseRepository(context: Context) {
 
     private val freeFormAppsDao: FreeFormAppsDao
-    private val notificationAppsDao: NotificationAppsDao
 
-    fun insertFreeForm(packageName: String, userId: Int) {
+    fun insertFreeForm(packageName: String, activityName: String, userId: Int) {
         try {
-            freeFormAppsDao.insert(packageName, userId)
+            freeFormAppsDao.insert(packageName, activityName, userId)
         }catch (e: Exception) { }
     }
 
-    fun deleteFreeForm(packageName: String, userId: Int) {
-        freeFormAppsDao.delete(packageName, userId)
+    fun deleteFreeForm(packageName: String, activityName: String, userId: Int) {
+        freeFormAppsDao.delete(packageName, activityName, userId)
     }
 
     fun getAllFreeFormName(): LiveData<List<String>?> {
@@ -45,7 +44,7 @@ class DatabaseRepository(context: Context) {
         freeFormAppsDao.update(entity)
     }
 
-    fun getAllFreeFormWithoutLiveData() : List<String>? {
+    fun getAllFreeFormWithoutLiveData() : List<FreeFormAppsEntity>? {
         return freeFormAppsDao.getAllWithoutLiveData()
     }
 
@@ -57,32 +56,8 @@ class DatabaseRepository(context: Context) {
         freeFormAppsDao.deleteList(freeFormAppsEntityList)
     }
 
-    fun insertNotification(packageName: String, userId: Int) {
-        try {
-            notificationAppsDao.insert(packageName, userId)
-        }catch (e: Exception) {}
-
-    }
-
-    fun deleteNotification(packageName: String, userId: Int) {
-        notificationAppsDao.delete(packageName, userId)
-    }
-
-    fun getAllNotification(): LiveData<List<NotificationAppsEntity>?> {
-        return notificationAppsDao.getAll()
-    }
-
-    fun getAllNotificationByFlow(): Flow<List<NotificationAppsEntity>?> {
-        return notificationAppsDao.getAllByFlow()
-    }
-
-    fun deleteAllNotification() {
-        notificationAppsDao.deleteAll()
-    }
-
     init {
         val database = getDatabase(context)
         freeFormAppsDao = database.freeFormAppsDao
-        notificationAppsDao = database.notificationAppsDao
     }
 }

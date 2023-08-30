@@ -26,7 +26,7 @@ import kotlin.math.roundToInt
 class FreeformWindow(
     val uiHandler: Handler,
     val context: Context,
-    val appConfig: AppConfig,
+    private val appConfig: AppConfig,
     val freeformConfig: FreeformConfig,
     private val uiConfig: UIConfig,
 ): TextureView.SurfaceTextureListener, IMiFreeformDisplayCallback.Stub(), View.OnTouchListener {

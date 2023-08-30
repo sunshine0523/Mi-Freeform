@@ -42,4 +42,16 @@ object DataHelper {
             dataFile.writeText(gson.toJson(settings))
         }
     }
+
+    fun saveSettings(settings: String, listener: DataChangeListener) {
+        runCatching {
+            this.settings = gson.fromJson(settings, Settings::class.java) ?: this.settings
+            dataFile.writeText(settings)
+            listener.onChanged()
+        }
+    }
+}
+
+interface DataChangeListener {
+    fun onChanged()
 }

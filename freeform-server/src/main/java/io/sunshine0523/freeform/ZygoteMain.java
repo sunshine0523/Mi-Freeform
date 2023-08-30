@@ -24,7 +24,6 @@ public class ZygoteMain {
             ServiceManagerProxy.install(new ServiceManagerProxy.Interceptor() {
                 @Override
                 public Binder addService(final String name, final Binder service) {
-                    Log.e(TAG, name + " " + service);
                     if (name.equals(DISPLAY)) {
                         Log.i(TAG, "find display service: " + service);
                         try {

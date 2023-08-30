@@ -104,12 +104,8 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
     }
 
     @Override
-    public void setSideBarStatus(boolean show) {
-        sideBarService.setSideBarStatus(show);
+    public void setSettings(String settings) {
+        DataHelper.INSTANCE.saveSettings(settings, this.sideBarService);
     }
 
-    @Override
-    public void updateSideBarColor(int color) {
-
-    }
 }

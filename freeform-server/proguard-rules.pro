@@ -23,3 +23,5 @@
 -keepclasseswithmembers class com.sunshine.freeform.Main {
     public static void main(java.lang.String[]);
 }
+
+-keep class io.sunshine0523.freeform.util.Settings {*;}

@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.os.UserHandle
 import android.os.UserManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -110,7 +111,7 @@ class ChooseAppFloatingAdapter(
                     holder.appName.text = getLabel(appInfo, apps[position - 1].userId)
                     holder.click.setOnClickListener {
                         MiFreeformServiceManager.createDisplay(
-                            ComponentName(appInfo.packageName, appInfo.className),
+                            ComponentName(apps[position - 1].packageName, apps[position - 1].activityName),
                             apps[position - 1].userId,
                             viewModel.getIntSp("freeform_width", (viewModel.screenWidth * 0.8).roundToInt()),
                             viewModel.getIntSp("freeform_height", (viewModel.screenHeight * 0.5).roundToInt()),

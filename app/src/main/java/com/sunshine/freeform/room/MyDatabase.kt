@@ -11,10 +11,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase
  * @author sunshine
  * @date 2021/1/31
  */
-@Database(entities = [FreeFormAppsEntity::class, NotificationAppsEntity::class], version = 5, exportSchema = false)
+@Database(entities = [FreeFormAppsEntity::class], version = 5, exportSchema = false)
 abstract class MyDatabase : RoomDatabase() {
     abstract val freeFormAppsDao: FreeFormAppsDao
-    abstract val notificationAppsDao: NotificationAppsDao
 
     companion object {
         private var database: MyDatabase? = null

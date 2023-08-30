@@ -23,6 +23,7 @@ class SettingViewModel(private val application: Application) : AndroidViewModel(
     val screenHeight = max(application.resources.displayMetrics.widthPixels, application.resources.displayMetrics.heightPixels)
     val screenDensityDpi = application.resources.displayMetrics.densityDpi
 
+    private val remoteSetting = Gson().fromJson(MiFreeformServiceManager.getSetting(), RemoteSettings::class.java) ?: RemoteSettings()
     private val _enableSideBar = MutableLiveData<Boolean>()
     val enableSideBar: LiveData<Boolean> get() = _enableSideBar
     private val _freeformWidth = MutableLiveData<Int>()
@@ -33,7 +34,7 @@ class SettingViewModel(private val application: Application) : AndroidViewModel(
     val freeformDensityDpi: LiveData<Int> get() = _freeformDensityDpi
 
     init {
-        val remoteSetting = Gson().fromJson(MiFreeformServiceManager.getSetting(), RemoteSettings::class.java) ?: RemoteSettings()
+
         _enableSideBar.postValue(remoteSetting.enableSideBar)
         _freeformWidth.postValue(sp.getInt("freeform_width", (screenWidth * 0.8).roundToInt()))
         _freeformHeight.postValue(sp.getInt("freeform_height", (screenHeight * 0.5).roundToInt()))
@@ -42,9 +43,8 @@ class SettingViewModel(private val application: Application) : AndroidViewModel(
 
     fun saveRemoteSidebar(enableSideBar: Boolean) {
         _enableSideBar.postValue(enableSideBar)
-        if (enableSideBar) {
-            MiFreeformServiceManager
-        }
+        remoteSetting.enableSideBar = enableSideBar
+        MiFreeformServiceManager.setSetting(remoteSetting)
     }
 
     fun setFreeformWidth(width: Int) {

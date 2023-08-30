@@ -15,7 +15,7 @@ class FreeFormAppsEntity(
     @PrimaryKey(autoGenerate = true)
     val sortNum: Int,
     var packageName: String,
-    //20210604新增用户标识
+    var activityName: String,
     var userId: Int = 0
 ) {
     override fun toString(): String {

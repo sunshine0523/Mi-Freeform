@@ -77,43 +77,6 @@ class AppListActivity : ComponentActivity() {
 }
 
 @Composable
-fun SearchWidget(textStyle: TextStyle = TextStyle.Default, viewModel: AppListViewModel) {
-    var text by remember { mutableStateOf("")}
-    Box {
-        BasicTextField(
-            value = text,
-            onValueChange = {
-                text = it
-                viewModel.filterApp(text)
-            },
-            textStyle = textStyle,
-            modifier = Modifier
-                .padding(20.dp)
-                .background(MaterialTheme.colorScheme.primaryContainer, CircleShape)
-                .height(60.dp)
-                .fillMaxWidth(),
-            decorationBox = {
-                Row(verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 8.dp)) {
-                    Box(modifier = Modifier
-                        .padding(horizontal = 10.dp)
-                        .weight(1f),
-                        contentAlignment = Alignment.CenterStart) {
-                        if (text.isEmpty()) {
-                            Text(
-                                text = stringResource(id = R.string.search_app),
-                                style = textStyle
-                            )
-                        }
-                        it()
-                    }
-                }
-            }
-        )
-    }
-}
-
-@Composable
 fun ListWidget(viewModel: AppListViewModel) {
     val appList by viewModel.appListLiveData.observeAsState(ArrayList())
     LazyVerticalGrid(
