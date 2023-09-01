@@ -3,7 +3,6 @@ package com.android.server.display;
 import static com.android.server.display.DisplayDeviceInfo.FLAG_TRUSTED;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -23,9 +22,9 @@ public abstract class MiFreeformDisplayAdapter extends DisplayAdapter {
     // Unique id prefix for freeform displays.
     protected static final String UNIQUE_ID_PREFIX = "mi-freeform:";
 
-    protected final ArrayMap<IBinder, MiFreeformTDisplayAdapter.FreeformDisplayDevice> mFreeformDisplayDevices =
+    protected final ArrayMap<IBinder, FreeformDisplayDevice> mFreeformDisplayDevices =
             new ArrayMap<>();
-    protected final ArrayMap<MiFreeformTDisplayAdapter.FreeformDisplayDevice, IMiFreeformDisplayCallback> miFreeformDisplayCallbackArrayMap =
+    protected final ArrayMap<FreeformDisplayDevice, IMiFreeformDisplayCallback> miFreeformDisplayCallbackArrayMap =
             new ArrayMap<>();
 
     protected final Handler mHandler;
@@ -57,15 +56,17 @@ public abstract class MiFreeformDisplayAdapter extends DisplayAdapter {
 
     public void resizeFreeform(IBinder appToken,
                                int width, int height, int densityDpi) {
-        MiFreeformTDisplayAdapter.FreeformDisplayDevice device = mFreeformDisplayDevices.get(appToken);
-        if (device != null) {
-            device.resizeLocked(width, height, densityDpi);
-            //MLog.i(TAG, "resize freeform display: " + appToken);
+        synchronized (getSyncRoot()) {
+            FreeformDisplayDevice device = mFreeformDisplayDevices.get(appToken);
+            if (device != null) {
+                device.resizeLocked(width, height, densityDpi);
+                MLog.i(TAG, "resize freeform display: " + appToken);
+            }
         }
     }
 
     public void releaseFreeform(IBinder appToken) {
-        MiFreeformTDisplayAdapter.FreeformDisplayDevice device = mFreeformDisplayDevices.remove(appToken);
+        FreeformDisplayDevice device = mFreeformDisplayDevices.remove(appToken);
         if (device != null) {
             miFreeformDisplayCallbackArrayMap.remove(device);
 

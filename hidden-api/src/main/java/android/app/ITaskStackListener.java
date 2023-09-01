@@ -125,6 +125,11 @@ public interface ITaskStackListener extends IInterface {
     void onTaskSnapshotChanged(int taskId, TaskSnapshot snapshot);
 
     /**
+     * Called when a task snapshot got updated.
+     */
+    void onTaskSnapshotChanged(int taskId, ActivityManagerHidden.TaskSnapshot snapshot);
+
+    /**
      * Reports that an Activity received a back key press when there were no additional activities
      * on the back stack.
      *

@@ -54,8 +54,9 @@ public final class MiFreeformRDisplayAdapter extends MiFreeformDisplayAdapter {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    int count = 10;
                     LogicalDisplay display = findLogicalDisplayForDevice(device);
-                    while (display == null) {
+                    while (count-- > 0 && display == null) {
                         display = findLogicalDisplayForDevice(device);
                     }
                     try {
@@ -78,7 +79,6 @@ public final class MiFreeformRDisplayAdapter extends MiFreeformDisplayAdapter {
             final int count = mLogicalDisplays.size();
             for (int i = 0; i < count; i++) {
                 LogicalDisplay display = mLogicalDisplays.valueAt(i);
-                Log.i(TAG, display.toString());
                 if (display.getPrimaryDisplayDeviceLocked() == device) {
                     return display;
                 }
