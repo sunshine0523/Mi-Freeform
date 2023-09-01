@@ -8,6 +8,8 @@ import android.view.IWindowManager;
 import com.android.server.am.ActivityManagerService;
 import com.android.server.input.InputManagerService;
 
+import io.sunshine0523.freeform.util.MLog;
+
 public class SystemServiceHolder {
 
     private static final String TAG = "Mi-Freeform/SystemServiceHolder";
@@ -32,7 +34,7 @@ public class SystemServiceHolder {
         try {
             while (null == ServiceManager.getService(name)) {
                 Thread.sleep(1000);
-                Log.i(TAG, name + " not start, wait 1s");
+                MLog.i(TAG, name + " not start, wait 1s");
             }
         } catch (Exception ignored) { }
     }

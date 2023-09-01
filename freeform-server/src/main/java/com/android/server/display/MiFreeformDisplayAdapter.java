@@ -3,58 +3,38 @@ package com.android.server.display;
 import static com.android.server.display.DisplayDeviceInfo.FLAG_TRUSTED;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
 import android.util.ArrayMap;
-import android.util.Log;
-//@RefineAs(Display.class)
 import android.view.DisplayHidden;
 import android.view.Surface;
-//@RefineAs(SurfaceControl.class)
 import android.view.SurfaceControlHidden;
 
 import java.io.PrintWriter;
 
 import io.sunshine0523.freeform.IMiFreeformDisplayCallback;
+import io.sunshine0523.freeform.util.MLog;
 
-/**
- * A display adapter that provides freeform displays on behalf of applications.
- * <p>
- * Display adapters are guarded by the {@link DisplayManagerService.SyncRoot} lock.
- * </p>
- */
-public final class MiFreeformDisplayAdapter extends DisplayAdapter {
-
-    static final String TAG = "Mi-Freeform/MiFreeformDisplayAdapter";
-
+public abstract class MiFreeformDisplayAdapter extends DisplayAdapter {
+    protected static final String TAG = "Mi-Freeform/MiFreeformDisplayAdapter";
     // Unique id prefix for freeform displays.
-    private static final String UNIQUE_ID_PREFIX = "mi-freeform:";
+    protected static final String UNIQUE_ID_PREFIX = "mi-freeform:";
 
-    private final ArrayMap<IBinder, FreeformDisplayDevice> mFreeformDisplayDevices =
+    protected final ArrayMap<IBinder, MiFreeformTDisplayAdapter.FreeformDisplayDevice> mFreeformDisplayDevices =
             new ArrayMap<>();
-    private final ArrayMap<FreeformDisplayDevice, IMiFreeformDisplayCallback> miFreeformDisplayCallbackArrayMap =
+    protected final ArrayMap<MiFreeformTDisplayAdapter.FreeformDisplayDevice, IMiFreeformDisplayCallback> miFreeformDisplayCallbackArrayMap =
             new ArrayMap<>();
 
-    private final Handler mHandler;
-    private final LogicalDisplayMapper mLogicalDisplayMapper;
-    private final Handler mUiHandler;
+    protected final Handler mHandler;
+    protected final Handler mUiHandler;
 
-    public MiFreeformDisplayAdapter(
-            DisplayManagerService.SyncRoot syncRoot,
-            Context context,
-            Handler handler,
-            DisplayDeviceRepository listener,
-            LogicalDisplayMapper logicalDisplayMapper,
-            Handler uiHandler
-    ) {
-        super(syncRoot, context, handler, listener, TAG);
+    public MiFreeformDisplayAdapter(DisplayManagerService.SyncRoot syncRoot, Context context, Handler handler, Listener listener, Handler uiHandler, String name) {
+        super(syncRoot, context, handler, listener, name);
         mHandler = handler;
-        mLogicalDisplayMapper = logicalDisplayMapper;
         mUiHandler = uiHandler;
-
-        addListener(listener);
     }
 
     @Override
@@ -68,53 +48,35 @@ public final class MiFreeformDisplayAdapter extends DisplayAdapter {
     }
 
     /**
-     * @return displayId
+     * Create a freeform DisplayDevice
      */
-    public void createFreeformLocked(String name, IMiFreeformDisplayCallback callback,
-                                    int width, int height, int densityDpi,
-                                    boolean secure, boolean ownContentOnly, boolean shouldShowSystemDecorations,
-                                    Surface surface, float refreshRate, long presentationDeadlineNanos) {
-        synchronized (getSyncRoot()) {
-            IBinder appToken = callback.asBinder();
-            FreeformFlags flags = new FreeformFlags(secure, ownContentOnly, shouldShowSystemDecorations);
-            IBinder displayToken = SurfaceControlHidden.createDisplay(UNIQUE_ID_PREFIX + name, flags.mSecure);
-            FreeformDisplayDevice device = new FreeformDisplayDevice(displayToken, UNIQUE_ID_PREFIX + name, width, height, densityDpi,
-                    refreshRate, presentationDeadlineNanos,
-                    flags, surface, new Callback(callback, mHandler), callback.asBinder());
-
-            sendDisplayDeviceEventLocked(device, DISPLAY_DEVICE_EVENT_ADDED);
-            mFreeformDisplayDevices.put(appToken, device);
-            miFreeformDisplayCallbackArrayMap.put(device, callback);
-
-            try {
-                appToken.linkToDeath(device, 0);
-            } catch (RemoteException ex) {
-                mFreeformDisplayDevices.remove(appToken);
-                device.destroyLocked(false);
-            }
-
-            Log.i(TAG, "createFreeformLocked");
-        }
-    }
+    public abstract void createFreeformLocked(String name, IMiFreeformDisplayCallback callback,
+                                     int width, int height, int densityDpi,
+                                     boolean secure, boolean ownContentOnly, boolean shouldShowSystemDecorations,
+                                     Surface surface, float refreshRate, long presentationDeadlineNanos);
 
     public void resizeFreeform(IBinder appToken,
                                int width, int height, int densityDpi) {
-        FreeformDisplayDevice device = mFreeformDisplayDevices.get(appToken);
+        MiFreeformTDisplayAdapter.FreeformDisplayDevice device = mFreeformDisplayDevices.get(appToken);
         if (device != null) {
             device.resizeLocked(width, height, densityDpi);
-            Log.i(TAG, "resize freeform display: " + appToken);
+            //MLog.i(TAG, "resize freeform display: " + appToken);
         }
     }
 
     public void releaseFreeform(IBinder appToken) {
-        FreeformDisplayDevice device = mFreeformDisplayDevices.remove(appToken);
+        MiFreeformTDisplayAdapter.FreeformDisplayDevice device = mFreeformDisplayDevices.remove(appToken);
         if (device != null) {
             miFreeformDisplayCallbackArrayMap.remove(device);
 
             device.destroyLocked(true);
             appToken.unlinkToDeath(device, 0);
-            Log.i(TAG, "release freeform display: " + appToken);
+            MLog.i(TAG, "release freeform display: " + appToken);
         }
+    }
+
+    public Handler getUiHandler() {
+        return mUiHandler;
     }
 
     private void handleBinderDiedLocked(IBinder appToken) {
@@ -122,46 +84,6 @@ public final class MiFreeformDisplayAdapter extends DisplayAdapter {
         if (device != null) {
             miFreeformDisplayCallbackArrayMap.remove(device);
         }
-    }
-
-    /**
-     * 添加监听，在添加好屏幕后，给用户回调
-     */
-    public void addListener(DisplayDeviceRepository listener) {
-        listener.addListener(new DisplayDeviceRepository.Listener() {
-            @Override
-            public void onDisplayDeviceEventLocked(DisplayDevice device, int event) {
-                synchronized (getSyncRoot()) {
-                    if (device instanceof FreeformDisplayDevice) {
-                        Log.i(TAG, "onDisplayDeviceEvent received: " + device + " " + event);
-                        if (event == DISPLAY_DEVICE_EVENT_ADDED) {
-                            final LogicalDisplay display = mLogicalDisplayMapper.getDisplayLocked(device);
-                            if (display != null) {
-                                IMiFreeformDisplayCallback callback =
-                                        miFreeformDisplayCallbackArrayMap.get(device);
-                                try {
-                                    if (null != callback) {
-                                        Log.i(TAG, "create freeform display: " + display);
-                                        callback.onDisplayAdd(display.getDisplayIdLocked());
-                                    }
-                                } catch (RemoteException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onTraversalRequested() {
-
-            }
-        });
-    }
-
-    public Handler getUiHandler() {
-        return mUiHandler;
     }
 
     public class FreeformDisplayDevice extends DisplayDevice implements IBinder.DeathRecipient {
@@ -184,13 +106,40 @@ public final class MiFreeformDisplayAdapter extends DisplayAdapter {
 
         private int mPendingChanges;
 
+        /**
+         * called for Android S,T
+         */
         FreeformDisplayDevice(IBinder displayToken, String uniqueId,
                               int width, int height, int density,
                               float refreshRate, long presentationDeadlineNanos,
                               FreeformFlags flags,
                               Surface surface, Callback callback, IBinder appToken) {
+
             super(MiFreeformDisplayAdapter.this, displayToken, uniqueId,
                     getContext());
+            mName = uniqueId;
+            mRefreshRate = refreshRate;
+            mDisplayPresentationDeadlineNanos = presentationDeadlineNanos;
+            mFlags = flags;
+            mSurface = surface;
+            mWidth = width;
+            mHeight = height;
+            mDensityDpi = density;
+            mMode = createMode(mWidth, mHeight, refreshRate);
+            mCallback = callback;
+            mAppToken = appToken;
+            mPendingChanges |= PENDING_SURFACE_CHANGE;
+        }
+
+        /**
+         * @param onR called for Android Q,R
+         */
+        FreeformDisplayDevice(IBinder displayToken, String uniqueId,
+                              int width, int height, int density,
+                              float refreshRate, long presentationDeadlineNanos,
+                              FreeformFlags flags,
+                              Surface surface, Callback callback, IBinder appToken, boolean onR) {
+            super(MiFreeformDisplayAdapter.this, displayToken, uniqueId);
             mName = uniqueId;
             mRefreshRate = refreshRate;
             mDisplayPresentationDeadlineNanos = presentationDeadlineNanos;
@@ -248,7 +197,7 @@ public final class MiFreeformDisplayAdapter extends DisplayAdapter {
         public void binderDied() {
             synchronized (getSyncRoot()) {
                 handleBinderDiedLocked(mAppToken);
-                Log.i(TAG, "Freeform display device released because application token died: "
+                MLog.i(TAG, "Freeform display device released because application token died: "
                         + mAppToken);
                 destroyLocked(false);
                 sendDisplayDeviceEventLocked(this, DISPLAY_DEVICE_EVENT_REMOVED);
@@ -291,7 +240,7 @@ public final class MiFreeformDisplayAdapter extends DisplayAdapter {
     }
 
     /** Represents the flags of the freeform display. */
-    private static final class FreeformFlags {
+    protected static final class FreeformFlags {
         final boolean mSecure;
 
         final boolean mOwnContentOnly;
@@ -318,7 +267,7 @@ public final class MiFreeformDisplayAdapter extends DisplayAdapter {
         }
     }
 
-    private static class Callback extends Handler{
+    protected static class Callback extends Handler{
         private static final int MSG_ON_DISPLAY_PAUSED = 0;
         private static final int MSG_ON_DISPLAY_RESUMED = 1;
         private static final int MSG_ON_DISPLAY_STOPPED = 2;
@@ -345,7 +294,7 @@ public final class MiFreeformDisplayAdapter extends DisplayAdapter {
                         break;
                 }
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed to notify listener of freeform display event.", e);
+                MLog.w(TAG, "Failed to notify listener of freeform display event." + e);
             }
         }
 

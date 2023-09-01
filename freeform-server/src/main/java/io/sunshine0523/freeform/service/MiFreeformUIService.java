@@ -4,10 +4,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.Surface;
 
 import com.android.server.display.MiFreeformDisplayAdapter;
@@ -17,6 +15,7 @@ import java.util.Map;
 import io.sunshine0523.freeform.IMiFreeformDisplayCallback;
 import io.sunshine0523.freeform.IMiFreeformUIService;
 import io.sunshine0523.freeform.util.DataHelper;
+import io.sunshine0523.freeform.util.MLog;
 import io.sunshine0523.freeform.util.Settings;
 
 public class MiFreeformUIService extends IMiFreeformUIService.Stub {
@@ -44,7 +43,7 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
             Map<String, IBinder> cache = new ArrayMap<>();
             cache.put("mi_freeform", this);
             ServiceManager.initServiceCache(cache);
-            Log.i(TAG, "add mi_freeform SystemService: " + this);
+            MLog.i(TAG, "add mi_freeform SystemService: " + this);
         });
     }
 
@@ -54,7 +53,7 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
             int width, int height, int densityDpi, float refreshRate,
             boolean secure, boolean ownContentOnly, boolean shouldShowSystemDecorations,
             String resPkg, String layoutName) {
-        Log.i(TAG, "startAppInFreeform");
+        MLog.i(TAG, "startAppInFreeform");
         FreeformWindowManager.addWindow(
                 uiHandler, systemContext,
                 componentName, userId,

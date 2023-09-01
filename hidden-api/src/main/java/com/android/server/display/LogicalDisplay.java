@@ -9,4 +9,8 @@ final class LogicalDisplay {
     public int getDisplayIdLocked() {
         throw new RuntimeException("Stub!");
     }
+
+    public DisplayDevice getPrimaryDisplayDeviceLocked() {
+        throw new RuntimeException("Stub!");
+    }
 }

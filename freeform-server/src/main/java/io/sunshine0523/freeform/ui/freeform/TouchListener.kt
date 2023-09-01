@@ -71,10 +71,13 @@ class LeftViewLongClickListener(private val window: FreeformWindow): View.OnLong
 class RightViewLongClickListener(private val window: FreeformWindow): View.OnLongClickListener {
     override fun onLongClick(v: View): Boolean {
         window.uiHandler.post {
-            val tmp = window.freeformConfig.width
-            window.freeformConfig.width = window.freeformConfig.height
-            window.freeformConfig.height = tmp
-            window.changeOrientation()
+//            // change orientation
+//            val tmp = window.freeformConfig.width
+//            window.freeformConfig.width = window.freeformConfig.height
+//            window.freeformConfig.height = tmp
+//            window.changeOrientation()
+            // hangup
+            window.handleHangUp()
         }
         return true
     }

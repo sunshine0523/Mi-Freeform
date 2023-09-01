@@ -37,7 +37,7 @@ zygote {
     val moduleName = "Mi-Freeform"
     val moduleDescription = "Mi-Freeform"
     val moduleAuthor = "KindBrave"
-    val moduleEntrypoint = "com.sunshine.freeform.ZygoteMain"
+    val moduleEntrypoint = "io.sunshine0523.freeform.ZygoteMain"
 
     packages(ZygoteLoader.PACKAGE_SYSTEM_SERVER)
 

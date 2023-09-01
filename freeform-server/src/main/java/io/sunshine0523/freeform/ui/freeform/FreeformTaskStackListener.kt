@@ -6,6 +6,7 @@ import android.content.ComponentName
 import android.util.Log
 import android.view.Surface
 import android.window.TaskSnapshot
+import io.sunshine0523.freeform.util.MLog
 import kotlin.math.max
 import kotlin.math.min
 
@@ -72,12 +73,12 @@ class FreeformTaskStackListener(
     }
 
     override fun onTaskRemoved(taskId: Int) {
-        Log.i(TAG, "onTaskRemoved $taskId")
+        MLog.i(TAG, "onTaskRemoved $taskId")
         if (this.taskId == taskId) window.destroy(false)
     }
 
     override fun onTaskMovedToFront(taskInfo: ActivityManager.RunningTaskInfo) {
-        Log.i(TAG, "onTaskMovedToFront $taskInfo")
+        MLog.i(TAG, "onTaskMovedToFront $taskInfo")
         val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
         if (this.displayId == displayId) taskId = taskInfo.taskId
     }
@@ -87,7 +88,7 @@ class FreeformTaskStackListener(
     }
 
     override fun onActivityRequestedOrientationChanged(taskId: Int, requestedOrientation: Int) {
-        Log.i(TAG, "onActivityRequestedOrientationChanged $taskId $requestedOrientation")
+        MLog.i(TAG, "onActivityRequestedOrientationChanged $taskId $requestedOrientation")
 
     }
 
@@ -100,7 +101,7 @@ class FreeformTaskStackListener(
     }
 
     override fun onTaskSnapshotChanged(taskId: Int, snapshot: TaskSnapshot?) {
-        Log.i(TAG, "onTaskSnapshotChanged $taskId $snapshot")
+        MLog.i(TAG, "onTaskSnapshotChanged $taskId $snapshot")
     }
 
     override fun onBackPressedOnTaskRoot(taskInfo: ActivityManager.RunningTaskInfo?) {
@@ -120,14 +121,14 @@ class FreeformTaskStackListener(
     }
 
     override fun onTaskFocusChanged(taskId: Int, focused: Boolean) {
-        Log.i(TAG, "onTaskFocusChanged $taskId $focused")
+        MLog.i(TAG, "onTaskFocusChanged $taskId $focused")
         if (taskId == this.taskId && !focused && !window.freeformConfig.isHangUp) {
             window.uiHandler.post { window.handleHangUp() }
         }
     }
 
     override fun onTaskRequestedOrientationChanged(taskId: Int, requestedOrientation: Int) {
-        Log.i(TAG, "onTaskRequestedOrientationChanged $taskId $requestedOrientation")
+        MLog.i(TAG, "onTaskRequestedOrientationChanged $taskId $requestedOrientation")
         if (taskId == this.taskId) {
             val max = max(window.freeformConfig.width, window.freeformConfig.height)
             val min = min(window.freeformConfig.width, window.freeformConfig.height)
@@ -135,14 +136,14 @@ class FreeformTaskStackListener(
             val minHangUp = min(window.freeformConfig.hangUpWidth, window.freeformConfig.hangUpHeight)
             when (requestedOrientation) {
                 PORTRAIT -> {
-                    Log.i(TAG, "PORTRAIT")
+                    MLog.i(TAG, "PORTRAIT")
                     window.freeformConfig.width = min
                     window.freeformConfig.height = max
                     window.freeformConfig.hangUpWidth = minHangUp
                     window.freeformConfig.hangUpHeight = maxHangUp
                 }
                 LANDSCAPE_1, LANDSCAPE_2 -> {
-                    Log.i(TAG, "LANDSCAPE")
+                    MLog.i(TAG, "LANDSCAPE")
                     window.freeformConfig.width = max
                     window.freeformConfig.height = min
                     window.freeformConfig.hangUpWidth = maxHangUp
@@ -154,7 +155,7 @@ class FreeformTaskStackListener(
     }
 
     override fun onActivityRotation(displayId: Int) {
-        Log.i(TAG, "onActivityRotation display: $displayId")
+        MLog.i(TAG, "onActivityRotation display: $displayId")
         if (displayId == window.displayId) {
 
         }
@@ -162,7 +163,7 @@ class FreeformTaskStackListener(
     }
 
     override fun onTaskMovedToBack(taskInfo: ActivityManager.RunningTaskInfo?) {
-        Log.i(TAG, "onTaskMovedToBack $taskInfo")
+        MLog.i(TAG, "onTaskMovedToBack $taskInfo")
     }
 
     override fun onLockTaskModeChanged(mode: Int) {

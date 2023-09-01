@@ -35,6 +35,10 @@ abstract class DisplayDevice {
         throw new RuntimeException("Stub!");
     }
 
+    public DisplayDevice(DisplayAdapter displayAdapter, IBinder displayToken, String uniqueId) {
+        throw new RuntimeException("Stub!");
+    }
+
     /**
      * Gets the Surface Flinger display token for this display.
      *

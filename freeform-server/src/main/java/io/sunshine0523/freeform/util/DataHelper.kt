@@ -4,20 +4,30 @@ import android.os.Environment
 import android.util.Log
 import com.google.gson.Gson
 import java.io.File
+import java.lang.StringBuilder
 
 object DataHelper {
     private const val TAG = "MiFreeform/DataHelper"
     private val dataDir = File("${Environment.getDataDirectory()}/system/mi_freeform")
     private val dataFile = File(dataDir, "settings.json")
+    private val logFile = File(dataDir, "log.log")
     private val gson = Gson()
     private var settings: Settings? = null
+    private val logs = StringBuilder()
 
     init {
         runCatching {
             dataDir.mkdir()
             dataFile.createNewFile()
+            logFile.createNewFile()
+
+            Thread {
+                runCatching {
+                    logFile.writeText("")
+                }
+            }.start()
         }.onFailure {
-            Log.e(TAG, "$it")
+            MLog.e(TAG, "$it")
         }
     }
 
@@ -49,6 +59,19 @@ object DataHelper {
             dataFile.writeText(settings)
             listener.onChanged()
         }
+    }
+
+    fun getLog(): String {
+        return logs.toString()
+    }
+
+    fun appendLog(log: String) {
+        Thread {
+            runCatching {
+                logs.append(log).append("\n")
+                logFile.appendText("$log\n")
+            }
+        }.start()
     }
 }
 

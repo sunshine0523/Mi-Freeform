@@ -1,13 +1,15 @@
-package com.sunshine.freeform;
+package io.sunshine0523.freeform;
 
 import android.os.Binder;
-import android.util.Log;
+import android.os.Build;
 
 import com.github.kr328.magic.services.ServiceManagerProxy;
 import com.github.kr328.zloader.ZygoteLoader;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+
+import io.sunshine0523.freeform.util.MLog;
 
 public class ZygoteMain {
     private static final String TAG = "Mi-Freeform/ZygoteMain";
@@ -25,11 +27,11 @@ public class ZygoteMain {
                 @Override
                 public Binder addService(final String name, final Binder service) {
                     if (name.equals(DISPLAY)) {
-                        Log.i(TAG, "find display service: " + service);
+                        MLog.i(TAG, "find display service: " + service);
                         try {
                             instanceMFService(service);
                         } catch (Exception e) {
-                            Log.e(TAG, "instanceMiFreeformService failed: " + e);
+                            MLog.e(TAG, "instanceMiFreeformService failed: " + e);
                             throw new RuntimeException(e);
                         }
                     }
@@ -38,13 +40,14 @@ public class ZygoteMain {
                 }
             });
         } catch (final Exception e) {
-            Log.e(TAG, "Inject: " + e, e);
+            MLog.e(TAG, "Inject: " + e);
         }
     }
 
     private static void instanceMFService(Binder service) throws NoSuchFieldException, ClassNotFoundException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
         // get out class field
         Field field = service.getClass().getDeclaredField("this$0");
+        field.setAccessible(true);
         ClassLoader classLoader = service.getClass().getClassLoader();
         assert classLoader != null;
         //for find dms, we need service`s classloader
@@ -55,37 +58,54 @@ public class ZygoteMain {
         Field mSyncRootField = dmsClass.getDeclaredField("mSyncRoot");
         Field mContextField = dmsClass.getDeclaredField("mContext");
         Field mHandlerField = dmsClass.getDeclaredField("mHandler");
-        Field mDisplayDeviceRepoField = dmsClass.getDeclaredField("mDisplayDeviceRepo");
-        Field mLogicalDisplayMapperField = dmsClass.getDeclaredField("mLogicalDisplayMapper");
         Field mUiHandlerField = dmsClass.getDeclaredField("mUiHandler");
+
         mSyncRootField.setAccessible(true);
         mContextField.setAccessible(true);
         mHandlerField.setAccessible(true);
-        mDisplayDeviceRepoField.setAccessible(true);
-        mLogicalDisplayMapperField.setAccessible(true);
         mUiHandlerField.setAccessible(true);
         Object mSyncRoot = mSyncRootField.get(displayManagerServiceObj);
         Object mContext = mContextField.get(displayManagerServiceObj);
         Object mHandler = mHandlerField.get(displayManagerServiceObj);
-        Object mDisplayDeviceRepo = mDisplayDeviceRepoField.get(displayManagerServiceObj);
-        Object mLogicalDisplayMapper = mLogicalDisplayMapperField.get(displayManagerServiceObj);
         Object mUiHandler = mUiHandlerField.get(displayManagerServiceObj);
 
         //add MiFreeformServer dex to path
         classLoader.getClass().getMethod("addDexPath", String.class).invoke(classLoader, "/system/framework/freeform.dex");
 
-        Class<?> mfdaClass = classLoader.loadClass("com.android.server.display.MiFreeformDisplayAdapter");
-        Object miFreeformDisplayAdapterObj = mfdaClass.getConstructors()[0].newInstance(mSyncRoot, mContext, mHandler, mDisplayDeviceRepo, mLogicalDisplayMapper, mUiHandler);
-        mfdaClass.getMethod("registerLocked").invoke(miFreeformDisplayAdapterObj);
-        Log.i(TAG, "instance MiFreeformDisplayAdapter: " + miFreeformDisplayAdapterObj);
+        Object miFreeformDisplayAdapterObj;
+        // for Android S,T
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Field mDisplayDeviceRepoField = dmsClass.getDeclaredField("mDisplayDeviceRepo");
+            Field mLogicalDisplayMapperField = dmsClass.getDeclaredField("mLogicalDisplayMapper");
+            mDisplayDeviceRepoField.setAccessible(true);
+            mLogicalDisplayMapperField.setAccessible(true);
+            Object mDisplayDeviceRepo = mDisplayDeviceRepoField.get(displayManagerServiceObj);
+            Object mLogicalDisplayMapper = mLogicalDisplayMapperField.get(displayManagerServiceObj);
+            Class<?> mfdaClass = classLoader.loadClass("com.android.server.display.MiFreeformTDisplayAdapter");
+            miFreeformDisplayAdapterObj = mfdaClass.getConstructors()[0].newInstance(mSyncRoot, mContext, mHandler, mDisplayDeviceRepo, mLogicalDisplayMapper, mUiHandler);
+            mfdaClass.getMethod("registerLocked").invoke(miFreeformDisplayAdapterObj);
+        }
+        // for Android Q,R
+        else {
+            Field mListenerField = dmsClass.getDeclaredField("mDisplayAdapterListener");
+            Field mLogicalDisplaysField = dmsClass.getDeclaredField("mLogicalDisplays");
+            mListenerField.setAccessible(true);
+            mLogicalDisplaysField.setAccessible(true);
+            Object mListener = mListenerField.get(displayManagerServiceObj);
+            Object mLogicalDisplays = mLogicalDisplaysField.get(displayManagerServiceObj);
+            Class<?> mfdaClass = classLoader.loadClass("com.android.server.display.MiFreeformRDisplayAdapter");
+            miFreeformDisplayAdapterObj = mfdaClass.getConstructors()[0].newInstance(mSyncRoot, mContext, mHandler, mListener, mLogicalDisplays, mUiHandler);
+            mfdaClass.getMethod("registerLocked").invoke(miFreeformDisplayAdapterObj);
+        }
+        MLog.i(TAG, "instance MiFreeformDisplayAdapter: " + miFreeformDisplayAdapterObj);
 
         Class<?> mfsClass = classLoader.loadClass("io.sunshine0523.freeform.service.MiFreeformService");
         Object miFreeformServiceObj = mfsClass.getConstructors()[0].newInstance(miFreeformDisplayAdapterObj);
-        Log.i(TAG, "instance MiFreeformService: " + miFreeformServiceObj);
+        MLog.i(TAG, "instance MiFreeformService: " + miFreeformServiceObj);
 
         Class<?> mfuisClass = classLoader.loadClass("io.sunshine0523.freeform.service.MiFreeformUIService");
         Object miFreeformUIServiceObj = mfuisClass.getConstructors()[0].newInstance(mContext, miFreeformDisplayAdapterObj, miFreeformServiceObj, mUiHandler);
-        Log.i(TAG, "instance MiFreeformUIService: " + miFreeformUIServiceObj);
+        MLog.i(TAG, "instance MiFreeformUIService: " + miFreeformUIServiceObj);
 
         Class<?> mfsmClass = classLoader.loadClass("io.sunshine0523.freeform.service.MiFreeformServiceHolder");
         mfsmClass.getMethod("init", mfuisClass, mfsClass).invoke(null, miFreeformUIServiceObj, miFreeformServiceObj);

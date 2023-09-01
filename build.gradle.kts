@@ -29,8 +29,8 @@ subprojects {
                 minSdk = androidMinSdkVersion
                 if (this is ApplicationDefaultConfig) {
                     targetSdk = androidTargetSdkVersion
-                    versionCode = 1
-                    versionName = "1.0"
+                    versionCode = 3000
+                    versionName = "3.0.0-Preview"
                 }
             }
 

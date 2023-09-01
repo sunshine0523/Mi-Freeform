@@ -6,6 +6,7 @@ import android.content.Intent
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import io.sunshine0523.freeform.util.MLog
 
 /**
  * @author KindBrave
@@ -50,7 +51,7 @@ class SideBarTouchListener(private val sideBarWindow: SideBarWindow) {
                             addCategory(Intent.CATEGORY_LAUNCHER)
                             putExtra("isLeft", true)
                         }
-                        runCatching { sideBarWindow.context.startActivity(intent) }.onFailure { Log.e(TAG, "$it") }
+                        runCatching { sideBarWindow.context.startActivity(intent) }.onFailure { MLog.e(TAG, "$it") }
                     }
                     else -> { }
                 }
@@ -76,7 +77,7 @@ class SideBarTouchListener(private val sideBarWindow: SideBarWindow) {
                             addCategory(Intent.CATEGORY_LAUNCHER)
                             putExtra("isLeft", false)
                         }
-                        runCatching { sideBarWindow.context.startActivity(intent) }.onFailure { Log.e(TAG, "$it") }
+                        runCatching { sideBarWindow.context.startActivity(intent) }.onFailure { MLog.e(TAG, "$it") }
                     }
                     else -> { }
                 }

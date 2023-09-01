@@ -17,6 +17,7 @@ import android.view.Surface;
 import io.sunshine0523.freeform.IMiFreeformDisplayCallback;
 import io.sunshine0523.freeform.ui.freeform.AppConfig;
 import io.sunshine0523.freeform.ui.freeform.FreeformConfig;
+import io.sunshine0523.freeform.util.MLog;
 
 public class MiFreeformServiceHolder {
     private static final String TAG = "Mi-Freeform/MiFreeformServiceManager";
@@ -34,7 +35,7 @@ public class MiFreeformServiceHolder {
         try {
             return miFreeformUIService.ping();
         } catch (Exception e) {
-            Log.e(TAG, e.toString());
+            MLog.e(TAG, e.toString());
             return false;
         }
     }

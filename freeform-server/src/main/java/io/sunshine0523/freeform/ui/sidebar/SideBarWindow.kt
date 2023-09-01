@@ -10,6 +10,7 @@ import android.view.Display
 import android.view.IRotationWatcher
 import android.view.WindowManager
 import io.sunshine0523.freeform.service.SystemServiceHolder
+import io.sunshine0523.freeform.util.MLog
 
 /**
  * @author KindBrave
@@ -80,7 +81,7 @@ class SideBarWindow(
                         }.start()
                     }
                 }.onFailure {
-                    Log.e(TAG, "$it")
+                    MLog.e(TAG, "$it")
                 }
             }
         }

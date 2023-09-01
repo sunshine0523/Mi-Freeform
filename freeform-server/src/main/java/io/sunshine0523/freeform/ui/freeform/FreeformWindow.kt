@@ -20,6 +20,7 @@ import io.sunshine0523.freeform.IMiFreeformDisplayCallback
 import io.sunshine0523.freeform.service.FreeformWindowManager
 import io.sunshine0523.freeform.service.MiFreeformServiceHolder
 import io.sunshine0523.freeform.service.SystemServiceHolder
+import io.sunshine0523.freeform.util.MLog
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -51,7 +52,7 @@ class FreeformWindow(
 
     init {
         if (MiFreeformServiceHolder.ping()) {
-            Log.i(TAG, "FreeformWindow init")
+            MLog.i(TAG, "FreeformWindow init")
             uiHandler.post { if (!addFreeformView()) destroy() }
         } else {
             destroy()
@@ -72,12 +73,11 @@ class FreeformWindow(
     }
 
     override fun onSurfaceTextureAvailable(surfaceTexture: SurfaceTexture, width: Int, height: Int) {
-        Log.i(TAG, "onSurfaceTextureAvailable width:$width height:$height")
+        MLog.i(TAG, "onSurfaceTextureAvailable width:$width height:$height")
         MiFreeformServiceHolder.createDisplay(freeformConfig, appConfig, Surface(surfaceTexture), this)
     }
 
     override fun onSurfaceTextureSizeChanged(surfaceTexture: SurfaceTexture, width: Int, height: Int) {
-        Log.i(TAG, "onSurfaceTextureSizeChanged $width $height")
         if (freeformConfig.isHangUp) {
             surfaceTexture.setDefaultBufferSize(freeformConfig.width, freeformConfig.height)
         } else {
@@ -85,6 +85,7 @@ class FreeformWindow(
             freeformConfig.height = height
         }
         if (!freeformConfig.isScaling) {
+            MLog.i(TAG, "onSurfaceTextureSizeChanged $width $height")
             uiHandler.post { makeSureFreeformInScreen() }
             MiFreeformServiceHolder.resizeFreeform(this, freeformConfig.width, freeformConfig.height, freeformConfig.densityDpi)
         }
@@ -99,27 +100,21 @@ class FreeformWindow(
     }
 
     override fun onDisplayAdd(displayId: Int) {
-        Log.i(TAG, "onDisplayAdd displayId $displayId")
+        MLog.i(TAG, "onDisplayAdd displayId $displayId")
         uiHandler.post {
             this.displayId = displayId
             freeformTaskStackListener = FreeformTaskStackListener(displayId, this)
             SystemServiceHolder.activityTaskManager.registerTaskStackListener(freeformTaskStackListener)
             MiFreeformServiceHolder.startApp(context, appConfig, displayId)
-            val leftView = resourceHolder.getLayoutChildViewByTag<View>(freeformLayout, "leftView")
+
             val rightView = resourceHolder.getLayoutChildViewByTag<View>(freeformLayout, "rightView")
-            val leftScaleView = resourceHolder.getLayoutChildViewByTag<View>(freeformLayout, "leftScaleView")
-            val rightScaleView = resourceHolder.getLayoutChildViewByTag<View>(freeformLayout, "rightScaleView")
-            if (null == leftView || null == leftScaleView || null == rightView || null == rightScaleView) {
-                Log.e(TAG, "onDisplayAdd view is null")
+            if (null == rightView) {
+                MLog.e(TAG, "left&leftScale&rightScale view is null")
                 destroy()
                 return@post
             }
-            leftView.setOnClickListener(LeftViewClickListener(this))
-            leftView.setOnLongClickListener(LeftViewLongClickListener(this))
             rightView.setOnClickListener(RightViewClickListener(displayId))
             rightView.setOnLongClickListener(RightViewLongClickListener(this))
-            leftScaleView.setOnTouchListener(RightScaleTouchListener(this))
-            rightScaleView.setOnTouchListener(RightScaleTouchListener(this))
         }
     }
 
@@ -134,7 +129,7 @@ class FreeformWindow(
      */
     @SuppressLint("WrongConstant")
     private fun addFreeformView(): Boolean {
-        Log.i(TAG, "addFreeformView")
+        MLog.i(TAG, "addFreeformView")
         val tmpFreeformLayout = resourceHolder.getLayout(uiConfig.layoutName) ?: return false
         freeformLayout = tmpFreeformLayout
         val freeformRootView = resourceHolder.getLayoutChildViewByTag<FrameLayout>(freeformLayout, "freeform_root") ?: return false
@@ -144,6 +139,19 @@ class FreeformWindow(
         val moveTouchListener = MoveTouchListener(this)
         topBarView.setOnTouchListener(moveTouchListener)
         middleView.setOnTouchListener(moveTouchListener)
+        val leftView = resourceHolder.getLayoutChildViewByTag<View>(freeformLayout, "leftView")
+        val leftScaleView = resourceHolder.getLayoutChildViewByTag<View>(freeformLayout, "leftScaleView")
+        val rightScaleView = resourceHolder.getLayoutChildViewByTag<View>(freeformLayout, "rightScaleView")
+        if (null == leftView || null == leftScaleView || null == rightScaleView) {
+            MLog.e(TAG, "left&leftScale&rightScale view is null")
+            destroy()
+            return false
+        }
+        leftView.setOnClickListener(LeftViewClickListener(this))
+        leftView.setOnLongClickListener(LeftViewLongClickListener(this))
+        leftScaleView.setOnTouchListener(RightScaleTouchListener(this))
+        rightScaleView.setOnTouchListener(RightScaleTouchListener(this))
+
         freeformView = TextureView(context).apply {
             setOnTouchListener(this@FreeformWindow)
             surfaceTextureListener = this@FreeformWindow
@@ -164,7 +172,7 @@ class FreeformWindow(
         runCatching {
             windowManager.addView(freeformLayout, windowParams)
         }.onFailure {
-            Log.e(TAG, "addView failed: $it")
+            MLog.e(TAG, "addView failed: $it")
             return false
         }
         return true
@@ -189,7 +197,6 @@ class FreeformWindow(
             topBarView.visibility = View.VISIBLE
             bottomBarView.visibility = View.VISIBLE
             freeformConfig.isHangUp = false
-            //makeSureFreeformInScreen()
             freeformView.setOnTouchListener(this)
         } else {
             freeformConfig.notInHangUpX = windowParams.x
@@ -201,7 +208,7 @@ class FreeformWindow(
             val gestureDetector = GestureDetector(context, hangUpGestureListener)
             freeformView.setOnTouchListener { _, event ->
                 gestureDetector.onTouchEvent(event)
-                //if (event.action == MotionEvent.ACTION_UP) makeSureFreeformInScreen()
+                if (event.action == MotionEvent.ACTION_UP) makeSureFreeformInScreen()
                 true
             }
         }
@@ -220,7 +227,7 @@ class FreeformWindow(
             width = freeformConfig.hangUpWidth
             height = freeformConfig.hangUpHeight
         }
-        runCatching { windowManager.updateViewLayout(freeformLayout, windowParams) }.onFailure { Log.e(TAG, "$it") }
+        runCatching { windowManager.updateViewLayout(freeformLayout, windowParams) }.onFailure { MLog.e(TAG, "$it") }
     }
 
     /**
@@ -254,14 +261,14 @@ class FreeformWindow(
     }
 
     fun destroy(removeTask: Boolean = true) {
-        Log.i(TAG, "destroy $this")
+        MLog.i(TAG, "destroy $this")
         uiHandler.post {
-            runCatching { windowManager.removeViewImmediate(freeformLayout) }.onFailure { exception -> Log.e(TAG, "removeView failed $exception") }
+            runCatching { windowManager.removeViewImmediate(freeformLayout) }.onFailure { exception -> MLog.e(TAG, "removeView failed $exception") }
             SystemServiceHolder.activityTaskManager.unregisterTaskStackListener(freeformTaskStackListener)
             SystemServiceHolder.windowManager.removeRotationWatcher(rotationWatcher)
             MiFreeformServiceHolder.releaseFreeform(this)
             FreeformWindowManager.removeWindow("${appConfig.componentName.packageName},${appConfig.componentName.className},${appConfig.userId}")
-            if (removeTask) runCatching { SystemServiceHolder.activityTaskManager.removeTask(freeformTaskStackListener!!.taskId) }.onFailure { exception -> Log.e(TAG, "removeTask failed $exception") }
+            if (removeTask) runCatching { SystemServiceHolder.activityTaskManager.removeTask(freeformTaskStackListener!!.taskId) }.onFailure { exception -> MLog.e(TAG, "removeTask failed $exception") }
         }
     }
 }
