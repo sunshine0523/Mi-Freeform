@@ -51,7 +51,7 @@ class SideBarWindow(
             rightView.setBackgroundColor(Color.TRANSPARENT)
             SideBarTouchListener(this)
             leftWindowParams.apply {
-                type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                type = 2017
                 width = 50
                 height = screenHeight / 5
                 x = -screenWidth / 2
@@ -60,7 +60,7 @@ class SideBarWindow(
                 format = PixelFormat.RGBA_8888
             }
             rightWindowParams.apply {
-                type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                type = 2017
                 width = 50
                 height = screenHeight / 5
                 x = screenWidth / 2
