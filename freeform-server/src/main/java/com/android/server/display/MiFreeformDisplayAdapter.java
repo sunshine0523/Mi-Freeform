@@ -60,7 +60,7 @@ public abstract class MiFreeformDisplayAdapter extends DisplayAdapter {
             FreeformDisplayDevice device = mFreeformDisplayDevices.get(appToken);
             if (device != null) {
                 device.resizeLocked(width, height, densityDpi);
-                MLog.i(TAG, "resize freeform display: " + appToken);
+                MLog.i(TAG, "resize freeform display: " + appToken + " " + width + " " + height + " " + densityDpi);
             }
         }
     }

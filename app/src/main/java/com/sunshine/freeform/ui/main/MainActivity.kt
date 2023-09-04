@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -54,6 +55,7 @@ class MainActivity : ComponentActivity() {
 fun ScaffoldWidget(settingViewModel: SettingViewModel) {
     val items = mutableListOf("Home")
     if (MiFreeformServiceManager.ping()) items.add("Setting")
+    items.add("Log")
 
     var selectedItem by remember {
         mutableStateOf("Home")
@@ -81,6 +83,7 @@ fun ScaffoldWidget(settingViewModel: SettingViewModel) {
             when (selectedItem) {
                 "Home" -> HomeWidget()
                 "Setting" -> SettingWidget(settingViewModel)
+                "Log" -> LogWidget()
             }
         }
     }
@@ -100,6 +103,7 @@ private fun getNavigationIcon(index: Int): ImageVector {
     return when (index) {
         0 -> Icons.Filled.Home
         1 -> Icons.Filled.Settings
+        2 -> Icons.Filled.List
         else -> Icons.Filled.Home
     }
 }

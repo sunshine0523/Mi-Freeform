@@ -23,4 +23,6 @@ interface IMiFreeformUIService {
     boolean ping() = 5;
     String getSettings() = 6;
     void setSettings(String settings) = 7;
+    String getLog() = 8;
+    void clearLog() = 9;
 }

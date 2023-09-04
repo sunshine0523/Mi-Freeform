@@ -73,6 +73,15 @@ object DataHelper {
             }
         }.start()
     }
+
+    fun clearLog() {
+        Thread {
+            runCatching {
+                logs.clear()
+                logFile.writeText("")
+            }
+        }.start()
+    }
 }
 
 interface DataChangeListener {

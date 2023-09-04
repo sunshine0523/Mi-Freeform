@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.util.ArrayMap;
 import android.view.Surface;
@@ -105,6 +106,16 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
     @Override
     public void setSettings(String settings) {
         DataHelper.INSTANCE.saveSettings(settings, this.sideBarService);
+    }
+
+    @Override
+    public String getLog() {
+        return DataHelper.INSTANCE.getLog();
+    }
+
+    @Override
+    public void clearLog() {
+        DataHelper.INSTANCE.clearLog();
     }
 
 }

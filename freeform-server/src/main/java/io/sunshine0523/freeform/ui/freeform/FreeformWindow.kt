@@ -2,18 +2,21 @@ package io.sunshine0523.freeform.ui.freeform
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Matrix
 import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
-import android.hardware.display.DisplayManager
 import android.os.Handler
 import android.util.Log
 import android.view.Display
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.Surface
+import android.view.SurfaceHolder
+import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.WindowManager
 import android.widget.FrameLayout
 import io.sunshine0523.freeform.IMiFreeformDisplayCallback
@@ -21,6 +24,7 @@ import io.sunshine0523.freeform.service.FreeformWindowManager
 import io.sunshine0523.freeform.service.MiFreeformServiceHolder
 import io.sunshine0523.freeform.service.SystemServiceHolder
 import io.sunshine0523.freeform.util.MLog
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -40,7 +44,7 @@ class FreeformWindow(
     lateinit var freeformView: TextureView
     private lateinit var topBarView: View
     private lateinit var bottomBarView: View
-    var displayId = Display.INVALID_DISPLAY
+    private var displayId = Display.INVALID_DISPLAY
     var defaultDisplayWidth = context.resources.displayMetrics.widthPixels
     var defaultDisplayHeight = context.resources.displayMetrics.heightPixels
     private val rotationWatcher = RotationWatcher(this)
@@ -51,6 +55,7 @@ class FreeformWindow(
     }
 
     init {
+        updateScale()
         if (MiFreeformServiceHolder.ping()) {
             MLog.i(TAG, "FreeformWindow init")
             uiHandler.post { if (!addFreeformView()) destroy() }
@@ -74,21 +79,22 @@ class FreeformWindow(
 
     override fun onSurfaceTextureAvailable(surfaceTexture: SurfaceTexture, width: Int, height: Int) {
         MLog.i(TAG, "onSurfaceTextureAvailable width:$width height:$height")
+        surfaceTexture.setDefaultBufferSize(freeformConfig.freeformWidth, freeformConfig.freeformHeight)
         MiFreeformServiceHolder.createDisplay(freeformConfig, appConfig, Surface(surfaceTexture), this)
     }
 
     override fun onSurfaceTextureSizeChanged(surfaceTexture: SurfaceTexture, width: Int, height: Int) {
-        if (freeformConfig.isHangUp) {
-            surfaceTexture.setDefaultBufferSize(freeformConfig.width, freeformConfig.height)
-        } else {
-            freeformConfig.width = width
-            freeformConfig.height = height
-        }
-        if (!freeformConfig.isScaling) {
-            MLog.i(TAG, "onSurfaceTextureSizeChanged $width $height")
-            uiHandler.post { makeSureFreeformInScreen() }
-            MiFreeformServiceHolder.resizeFreeform(this, freeformConfig.width, freeformConfig.height, freeformConfig.densityDpi)
-        }
+        freeformConfig.width = width
+        freeformConfig.height = height
+        updateScale()
+        uiHandler.post { makeSureFreeformInScreen() }
+        MiFreeformServiceHolder.resizeFreeform(
+            this,
+            freeformConfig.freeformWidth,
+            freeformConfig.freeformHeight,
+            freeformConfig.densityDpi
+        )
+        surfaceTexture.setDefaultBufferSize(freeformConfig.freeformWidth, freeformConfig.freeformHeight)
     }
 
     override fun onSurfaceTextureDestroyed(surfaceTexture: SurfaceTexture): Boolean {
@@ -122,6 +128,19 @@ class FreeformWindow(
     override fun onTouch(view: View, event: MotionEvent): Boolean {
         MiFreeformServiceHolder.touch(event, displayId)
         return true
+    }
+
+    /**
+     * get freeform view dimen and freeform dimen scale
+     */
+    fun updateScale() {
+        Log.e(TAG, "$defaultDisplayHeight $defaultDisplayWidth")
+        val scaleX = min(defaultDisplayHeight, defaultDisplayWidth) * 1.0f / freeformConfig.width
+        val scaleY = max(defaultDisplayHeight, defaultDisplayWidth) * 1.0f / freeformConfig.height
+        val scale = min(scaleX, scaleY)
+        Log.e(TAG, "$scaleX $scaleY")
+        freeformConfig.freeformWidth = (freeformConfig.width * scale).roundToInt()
+        freeformConfig.freeformHeight = (freeformConfig.height * scale).roundToInt()
     }
 
     /**

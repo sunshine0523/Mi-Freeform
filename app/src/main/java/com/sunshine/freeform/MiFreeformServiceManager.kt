@@ -65,4 +65,12 @@ object MiFreeformServiceManager {
     fun removeFreeform(freeformId: String) {
         iMiFreeformService?.removeFreeform(freeformId)
     }
+
+    fun getLog(): String? {
+        return iMiFreeformService?.log
+    }
+
+    fun clearLog() {
+        iMiFreeformService?.clearLog()
+    }
 }

@@ -1,6 +1,7 @@
 package io.sunshine0523.freeform.ui.freeform
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.Display
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
@@ -8,7 +9,6 @@ import android.view.View
 import io.sunshine0523.freeform.service.MiFreeformServiceHolder
 import io.sunshine0523.freeform.service.SystemServiceHolder
 import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.roundToInt
 
 class MoveTouchListener(
@@ -110,8 +110,18 @@ class RightScaleTouchListener(private val window: FreeformWindow): View.OnTouchL
             }
             MotionEvent.ACTION_UP -> {
                 window.freeformConfig.isScaling = false
-                MiFreeformServiceHolder.resizeFreeform(window, window.freeformConfig.width, window.freeformConfig.height, window.freeformConfig.densityDpi)
-                //window.makeSureFreeformInScreen()
+//                window.onSurfaceTextureSizeChanged(
+//                    window.freeformView.surfaceTexture!!,
+//                    window.freeformView.width,
+//                    window.freeformView.height
+//                )
+                //window.uiHandler.post { window.makeSureFreeformInScreen() }
+//                MiFreeformServiceHolder.resizeFreeform(
+//                    window,
+//                    window.freeformConfig.freeformWidth,
+//                    window.freeformConfig.freeformHeight,
+//                    window.freeformConfig.densityDpi
+//                )
             }
         }
         return true

@@ -5,20 +5,29 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="16dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <FrameLayout
+            android:id="@+id/freeform_root"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="freeform_root"
+            app:layout_constraintBottom_toTopOf="@+id/bottomBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topBarView" />
+
         <LinearLayout
             android:id="@+id/topBarView"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="@dimen/top_bar_height"
+            android:background="@drawable/color_background"
             android:gravity="center"
             android:orientation="horizontal"
             android:tag="topBarView"
-            android:background="@drawable/color_background"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -29,23 +38,13 @@
                 android:background="@drawable/bar_corners_bg" />
         </LinearLayout>
 
-        <FrameLayout
-            android:id="@+id/freeform_root"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:tag="freeform_root"
-            app:layout_constraintBottom_toTopOf="@+id/bottomBar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/topBar" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottomBar"
-            android:tag="bottomBarView"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="@dimen/bottom_bar_height"
             android:background="@drawable/color_background"
             android:gravity="center"
+            android:tag="bottomBarView"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -153,6 +152,7 @@
                 app:layout_constraintGuide_percent="0.67" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
