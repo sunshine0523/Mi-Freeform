@@ -121,7 +121,6 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
     @Override
     public void collapseStatusBar() {
         uiHandler.post(() -> SystemServiceHolder.statusBarService.collapsePanels());
-
     }
 
 }

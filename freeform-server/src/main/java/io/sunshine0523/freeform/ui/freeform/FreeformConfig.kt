@@ -14,12 +14,13 @@ data class FreeformConfig(
     // 记录挂起前的位置，以便恢复
     var notInHangUpX: Int = 0,
     var notInHangUpY: Int = 0,
-    var isScaling: Boolean = false,
     //小窗屏幕宽高，与view的比例
     var freeformWidth: Int,
-    var freeformHeight: Int
+    var freeformHeight: Int,
+    //小窗屏幕尺寸/小窗界面尺寸
+    var scale: Float
 ) {
-    constructor(width: Int, height: Int, densityDpi: Int, secure: Boolean, ownContentOnly: Boolean, shouldShowSystemDecorations: Boolean, refreshRate: Float) : this(width, height, densityDpi, secure, ownContentOnly, shouldShowSystemDecorations, refreshRate, 300, 400, false, 0, 0, false, 1080, 1920) {
+    constructor(width: Int, height: Int, densityDpi: Int, secure: Boolean, ownContentOnly: Boolean, shouldShowSystemDecorations: Boolean, refreshRate: Float) : this(width, height, densityDpi, secure, ownContentOnly, shouldShowSystemDecorations, refreshRate, 300, 400, false, 0, 0, 1080, 1920, 1.0f) {
 
     }
 }

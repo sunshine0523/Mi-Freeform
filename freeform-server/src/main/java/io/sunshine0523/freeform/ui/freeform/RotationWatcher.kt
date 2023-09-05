@@ -12,7 +12,7 @@ class RotationWatcher(private val window: FreeformWindow): IRotationWatcher.Stub
         window.defaultDisplayHeight = window.context.resources.displayMetrics.heightPixels
         window.uiHandler.post {
             if (window.freeformConfig.isHangUp) window.toHangUp()
-            //else window.makeSureFreeformInScreen()
+            else window.makeSureFreeformInScreen()
         }
     }
 }

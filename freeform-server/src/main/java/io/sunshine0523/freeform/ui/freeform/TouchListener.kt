@@ -88,7 +88,7 @@ class RightViewClickListener(private val displayId: Int) : View.OnClickListener 
     }
 }
 
-class RightScaleTouchListener(private val window: FreeformWindow): View.OnTouchListener {
+class ScaleTouchListener(private val window: FreeformWindow, private val isRight: Boolean = true): View.OnTouchListener {
     private var startX = 0.0f
     private var startY = 0.0f
     @SuppressLint("ClickableViewAccessibility")
@@ -97,29 +97,28 @@ class RightScaleTouchListener(private val window: FreeformWindow): View.OnTouchL
             MotionEvent.ACTION_DOWN -> {
                 startX = event.rawX
                 startY = event.rawY
-                window.freeformConfig.isScaling = true
             }
             MotionEvent.ACTION_MOVE -> {
                 window.freeformRootView.layoutParams = window.freeformRootView.layoutParams.apply {
-                    width = max(25, (window.freeformRootView.width + event.rawX - startX).roundToInt())
+                    width = max(25, (window.freeformRootView.width + if (isRight) (event.rawX - startX) else (startX - event.rawX)).roundToInt())
                     height = max(25, (window.freeformRootView.height + event.rawY - startY).roundToInt())
                 }
                 startX = event.rawX
                 startY = event.rawY
             }
             MotionEvent.ACTION_UP -> {
-                window.freeformConfig.isScaling = false
                 if (window.freeformView.surfaceTexture != null) {
                     window.freeformConfig.width = window.freeformRootView.layoutParams.width
                     window.freeformConfig.height = window.freeformRootView.layoutParams.height
                     window.uiHandler.post { window.makeSureFreeformInScreen() }
-//                    MiFreeformServiceHolder.resizeFreeform(
-//                        window,
-//                        window.freeformConfig.width,
-//                        window.freeformConfig.height,
-//                        window.freeformConfig.densityDpi
-//                    )
-                    window.freeformView.surfaceTexture!!.setDefaultBufferSize(window.freeformConfig.width, window.freeformConfig.height)
+                    window.measureScale()
+                    MiFreeformServiceHolder.resizeFreeform(
+                        window,
+                        window.freeformConfig.freeformWidth,
+                        window.freeformConfig.freeformHeight,
+                        window.freeformConfig.densityDpi
+                    )
+                    window.freeformView.surfaceTexture!!.setDefaultBufferSize(window.freeformConfig.freeformWidth, window.freeformConfig.freeformHeight)
                 }
             }
         }
