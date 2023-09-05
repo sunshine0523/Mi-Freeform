@@ -4,16 +4,17 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -23,26 +24,51 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.sunshine.freeform.MiFreeformServiceManager
 import com.sunshine.freeform.R
 import com.sunshine.freeform.ui.theme.MiFreeformTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.io.OutputStream
+import java.util.concurrent.CompletableFuture
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val settingViewModel = SettingViewModel(application)
+        val mainViewModel = MainViewModel(application)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        val saveLogsLauncher: ActivityResultLauncher<String> = registerForActivityResult(
+            ActivityResultContracts.CreateDocument("text/plain")
+        ) { uri ->
+            if (uri == null) return@registerForActivityResult
+            GlobalScope.launch(Dispatchers.IO) {
+                val context = this@MainActivity
+                val cr = context.contentResolver
+                try {
+                    val outputStream: OutputStream? = cr.openOutputStream(uri)
+                    outputStream?.use { os ->
+                        os.write(mainViewModel.log.value?.toByteArray())
+                    }
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
+            }
+        }
+
         setContent {
             MiFreeformTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ScaffoldWidget(settingViewModel)
+                    ScaffoldWidget(mainViewModel, saveLogsLauncher)
                 }
             }
         }
@@ -52,25 +78,24 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldWidget(settingViewModel: SettingViewModel) {
+fun ScaffoldWidget(mainViewModel: MainViewModel, saveLogsLauncher: ActivityResultLauncher<String>) {
     val items = mutableListOf("Home")
     if (MiFreeformServiceManager.ping()) items.add("Setting")
     items.add("Log")
-
-    var selectedItem by remember {
-        mutableStateOf("Home")
+    var selectedIndex by remember {
+        mutableIntStateOf(0)
     }
 
     Scaffold(
         topBar = {
-            TopBarWidget()
+            TopBarWidget(selectedIndex, mainViewModel, saveLogsLauncher)
         },
         bottomBar = {
             NavigationBar {
                 items.forEachIndexed {index, item ->
                     NavigationBarItem(
-                        selected = selectedItem == item,
-                        onClick = { selectedItem = item },
+                        selected = selectedIndex == index,
+                        onClick = { selectedIndex = index },
                         icon = { Icon(getNavigationIcon(index), item) }
                     )
                 }
@@ -78,12 +103,12 @@ fun ScaffoldWidget(settingViewModel: SettingViewModel) {
         },
         contentWindowInsets = WindowInsets(0.dp, 0.dp, 0.dp, 0.dp)
     ) {
-        // 需要设置Modifier.padding()
+        // Need set Modifier.padding()
         Box(modifier = Modifier.padding(it)) {
-            when (selectedItem) {
-                "Home" -> HomeWidget()
-                "Setting" -> SettingWidget(settingViewModel)
-                "Log" -> LogWidget()
+            when (selectedIndex) {
+                0 -> HomeWidget()
+                1 -> SettingWidget(mainViewModel)
+                2 -> LogWidget(mainViewModel)
             }
         }
     }
@@ -91,19 +116,59 @@ fun ScaffoldWidget(settingViewModel: SettingViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarWidget() {
+fun TopBarWidget(
+    selectedIndex: Int,
+    viewModel: MainViewModel,
+    saveLogsLauncher: ActivityResultLauncher<String>
+) {
     TopAppBar(
         title = {
-            Text(text = stringResource(id = R.string.app_name))
+            Text(text = getTitle(index = selectedIndex))
         },
+        actions  = {
+            if (selectedIndex == 2) {
+                IconButton(
+                    onClick = {
+                        viewModel.setLogSoftWrap(viewModel.logSoftWrap.value?.not()?:true)
+                    }
+                ) {
+                    Icon(painter = painterResource(id = R.drawable.ic_wrap_text), contentDescription = null)
+                }
+                IconButton(
+                    onClick = {
+                        viewModel.clearLog()
+                    }
+                ) {
+                    Icon(imageVector = Icons.Filled.Delete, contentDescription = null)
+                }
+                IconButton(
+                    onClick = {
+                        saveLogsLauncher.launch("Mi-Freeform-Log.log")
+                    }
+                ) {
+                    Icon(painter = painterResource(id = R.drawable.ic_save), contentDescription = null)
+                }
+            }
+        }
     )
 }
 
-private fun getNavigationIcon(index: Int): ImageVector {
+@Composable
+private fun getTitle(index: Int): String {
     return when (index) {
-        0 -> Icons.Filled.Home
-        1 -> Icons.Filled.Settings
-        2 -> Icons.Filled.List
-        else -> Icons.Filled.Home
+        0 -> stringResource(id = R.string.app_name)
+        1 -> stringResource(id =R.string.setting)
+        2 -> stringResource(id = R.string.log)
+        else -> stringResource(id = R.string.app_name)
+    }
+}
+
+@Composable
+private fun getNavigationIcon(index: Int):  Painter{
+    return when (index) {
+        0 -> painterResource(id = R.drawable.ic_home)
+        1 -> painterResource(id = R.drawable.ic_setting)
+        2 -> painterResource(id = R.drawable.ic_log)
+        else -> painterResource(id = R.drawable.ic_home)
     }
 }

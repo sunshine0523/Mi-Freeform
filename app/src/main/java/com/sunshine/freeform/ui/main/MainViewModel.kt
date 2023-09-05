@@ -1,13 +1,18 @@
 package com.sunshine.freeform.ui.main
 
+import android.R
 import android.app.Application
 import android.content.Context
+import android.util.Log
+import androidx.activity.result.ActivityResultLauncher
+import androidx.core.content.ContentProviderCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.sunshine.freeform.MiFreeform
 import com.sunshine.freeform.MiFreeformServiceManager
+import java.util.concurrent.CompletableFuture
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -16,7 +21,7 @@ import kotlin.math.roundToInt
  * @author KindBrave
  * @since 2023/8/26
  */
-class SettingViewModel(private val application: Application) : AndroidViewModel(application) {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val sp = application.applicationContext.getSharedPreferences(MiFreeform.CONFIG, Context.MODE_PRIVATE)
 
     val screenWidth = min(application.resources.displayMetrics.widthPixels, application.resources.displayMetrics.heightPixels)
@@ -33,12 +38,18 @@ class SettingViewModel(private val application: Application) : AndroidViewModel(
     private val _freeformDensityDpi = MutableLiveData<Int>()
     val freeformDensityDpi: LiveData<Int> get() = _freeformDensityDpi
 
-    init {
+    private val _log = MutableLiveData<String>()
+    val log: LiveData<String> get() = _log
+    private val _logSoftWrap = MutableLiveData<Boolean>()
+    val logSoftWrap: LiveData<Boolean> get() = _logSoftWrap
 
+    init {
         _enableSideBar.postValue(remoteSetting.enableSideBar)
         _freeformWidth.postValue(sp.getInt("freeform_width", (screenWidth * 0.8).roundToInt()))
         _freeformHeight.postValue(sp.getInt("freeform_height", (screenHeight * 0.5).roundToInt()))
         _freeformDensityDpi.postValue(sp.getInt("freeform_dpi", screenDensityDpi))
+        _log.postValue(MiFreeformServiceManager.getLog())
+        _logSoftWrap.postValue(false)
     }
 
     fun saveRemoteSidebar(enableSideBar: Boolean) {
@@ -60,6 +71,15 @@ class SettingViewModel(private val application: Application) : AndroidViewModel(
     fun setFreeformDpi(dpi: Int) {
         setIntSp(dpi, "freeform_dpi")
         _freeformDensityDpi.postValue(dpi)
+    }
+
+    fun clearLog() {
+        _log.postValue("")
+        MiFreeformServiceManager.clearLog()
+    }
+
+    fun setLogSoftWrap(softWrap: Boolean) {
+        _logSoftWrap.postValue(softWrap)
     }
 
     private fun setIntSp(value: Int, name: String) {

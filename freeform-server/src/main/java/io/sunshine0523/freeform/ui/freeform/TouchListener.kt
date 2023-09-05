@@ -109,19 +109,18 @@ class RightScaleTouchListener(private val window: FreeformWindow): View.OnTouchL
             }
             MotionEvent.ACTION_UP -> {
                 window.freeformConfig.isScaling = false
-                MiFreeformServiceHolder.resizeFreeform(window, window.freeformConfig.width, window.freeformConfig.height, window.freeformConfig.densityDpi)
-//                window.onSurfaceTextureSizeChanged(
-//                    window.freeformView.surfaceTexture!!,
-//                    window.freeformView.width,
-//                    window.freeformView.height
-//                )
-                //window.uiHandler.post { window.makeSureFreeformInScreen() }
-//                MiFreeformServiceHolder.resizeFreeform(
-//                    window,
-//                    window.freeformConfig.freeformWidth,
-//                    window.freeformConfig.freeformHeight,
-//                    window.freeformConfig.densityDpi
-//                )
+                if (window.freeformView.surfaceTexture != null) {
+                    window.freeformConfig.width = window.freeformRootView.layoutParams.width
+                    window.freeformConfig.height = window.freeformRootView.layoutParams.height
+                    window.uiHandler.post { window.makeSureFreeformInScreen() }
+//                    MiFreeformServiceHolder.resizeFreeform(
+//                        window,
+//                        window.freeformConfig.width,
+//                        window.freeformConfig.height,
+//                        window.freeformConfig.densityDpi
+//                    )
+                    window.freeformView.surfaceTexture!!.setDefaultBufferSize(window.freeformConfig.width, window.freeformConfig.height)
+                }
             }
         }
         return true

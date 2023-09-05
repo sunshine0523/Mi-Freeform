@@ -37,6 +37,7 @@ class FreeformWindow(
     private val resourceHolder = RemoteResourceHolder(context, uiConfig.resPkg)
     lateinit var freeformLayout: ViewGroup
     lateinit var freeformRootView: ViewGroup
+    lateinit var freeformView: TextureView
     private lateinit var topBarView: View
     private lateinit var bottomBarView: View
     private var displayId = Display.INVALID_DISPLAY
@@ -77,17 +78,18 @@ class FreeformWindow(
     }
 
     override fun onSurfaceTextureSizeChanged(surfaceTexture: SurfaceTexture, width: Int, height: Int) {
-        if (freeformConfig.isHangUp) {
-            surfaceTexture.setDefaultBufferSize(freeformConfig.width, freeformConfig.height)
-        } else {
-            freeformConfig.width = width
-            freeformConfig.height = height
-        }
-        if (!freeformConfig.isScaling) {
-            MLog.i(TAG, "onSurfaceTextureSizeChanged $width $height")
-            uiHandler.post { makeSureFreeformInScreen() }
-            MiFreeformServiceHolder.resizeFreeform(this, freeformConfig.width, freeformConfig.height, freeformConfig.densityDpi)
-        }
+//        if (freeformConfig.isHangUp) {
+//            surfaceTexture.setDefaultBufferSize(freeformConfig.width, freeformConfig.height)
+//        } else {
+//            freeformConfig.width = width
+//            freeformConfig.height = height
+//        }
+//        if (!freeformConfig.isScaling) {
+//            MLog.i(TAG, "onSurfaceTextureSizeChanged $width $height")
+//            uiHandler.post { makeSureFreeformInScreen() }
+//            MiFreeformServiceHolder.resizeFreeform(this, freeformConfig.width, freeformConfig.height, freeformConfig.densityDpi)
+//            surfaceTexture.setDefaultBufferSize(freeformConfig.width, freeformConfig.height)
+//        }
     }
 
     override fun onSurfaceTextureDestroyed(surfaceTexture: SurfaceTexture): Boolean {
@@ -151,7 +153,7 @@ class FreeformWindow(
         leftScaleView.setOnTouchListener(RightScaleTouchListener(this))
         rightScaleView.setOnTouchListener(RightScaleTouchListener(this))
 
-        val freeformView = TextureView(context).apply {
+        freeformView = TextureView(context).apply {
             setOnTouchListener(this@FreeformWindow)
             surfaceTextureListener = this@FreeformWindow
         }

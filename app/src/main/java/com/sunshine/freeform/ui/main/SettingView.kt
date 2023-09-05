@@ -28,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sunshine.freeform.R
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -38,11 +37,11 @@ import kotlin.math.roundToInt
  */
 
 @Composable
-fun SettingWidget(settingViewModel: SettingViewModel) {
-    val enableSideBar by settingViewModel.enableSideBar.observeAsState(false)
-    val freeformWidth by settingViewModel.freeformWidth.observeAsState((settingViewModel.screenWidth * 0.8).roundToInt())
-    val freeformHeight by settingViewModel.freeformHeight.observeAsState((settingViewModel.screenHeight * 0.5).roundToInt())
-    val freeformDpi by settingViewModel.freeformDensityDpi.observeAsState(settingViewModel.screenDensityDpi)
+fun SettingWidget(mainViewModel: MainViewModel) {
+    val enableSideBar by mainViewModel.enableSideBar.observeAsState(false)
+    val freeformWidth by mainViewModel.freeformWidth.observeAsState((mainViewModel.screenWidth * 0.8).roundToInt())
+    val freeformHeight by mainViewModel.freeformHeight.observeAsState((mainViewModel.screenHeight * 0.5).roundToInt())
+    val freeformDpi by mainViewModel.freeformDensityDpi.observeAsState(mainViewModel.screenDensityDpi)
     val coroutineScope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     var isShowingSnackBar by remember { mutableStateOf(false) }
@@ -58,13 +57,13 @@ fun SettingWidget(settingViewModel: SettingViewModel) {
                 stringResource(id = R.string.sidebar_message),
                 enableSideBar
             ) {
-                settingViewModel.saveRemoteSidebar(it)
+                mainViewModel.saveRemoteSidebar(it)
             }
             SettingSlideBarOption(
                 stringResource(id = R.string.freeform_width),
                 freeformWidth,
                 50,
-                100f..settingViewModel.screenWidth.toFloat()
+                100f..mainViewModel.screenWidth.toFloat()
             ) {
                 if (it.roundToInt() >= freeformHeight) {
                     if (isShowingSnackBar.not()) {
@@ -77,14 +76,14 @@ fun SettingWidget(settingViewModel: SettingViewModel) {
                         }
                     }
                 } else {
-                    settingViewModel.setFreeformWidth(it.roundToInt())
+                    mainViewModel.setFreeformWidth(it.roundToInt())
                 }
             }
             SettingSlideBarOption(
                 stringResource(id = R.string.freeform_height),
                 freeformHeight,
                 50,
-                100f..settingViewModel.screenHeight.toFloat()
+                100f..mainViewModel.screenHeight.toFloat()
             ) {
                 if (it.roundToInt() <= freeformWidth) {
                     if (isShowingSnackBar.not()) {
@@ -97,7 +96,7 @@ fun SettingWidget(settingViewModel: SettingViewModel) {
                         }
                     }
                 } else {
-                    settingViewModel.setFreeformHeight(it.roundToInt())
+                    mainViewModel.setFreeformHeight(it.roundToInt())
                 }
             }
             SettingSlideBarOption(
@@ -106,7 +105,7 @@ fun SettingWidget(settingViewModel: SettingViewModel) {
                 50,
                 100f..500f
             ) {
-                settingViewModel.setFreeformDpi(it.roundToInt())
+                mainViewModel.setFreeformDpi(it.roundToInt())
             }
         }
     }
