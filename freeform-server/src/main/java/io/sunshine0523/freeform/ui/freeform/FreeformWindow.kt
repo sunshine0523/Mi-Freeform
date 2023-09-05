@@ -2,7 +2,6 @@ package io.sunshine0523.freeform.ui.freeform
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Matrix
 import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
 import android.os.Handler
@@ -11,12 +10,9 @@ import android.view.Display
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.Surface
-import android.view.SurfaceHolder
-import android.view.SurfaceView
 import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.view.WindowManager
 import android.widget.FrameLayout
 import io.sunshine0523.freeform.IMiFreeformDisplayCallback
@@ -24,7 +20,6 @@ import io.sunshine0523.freeform.service.FreeformWindowManager
 import io.sunshine0523.freeform.service.MiFreeformServiceHolder
 import io.sunshine0523.freeform.service.SystemServiceHolder
 import io.sunshine0523.freeform.util.MLog
-import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -41,7 +36,7 @@ class FreeformWindow(
     val windowParams = WindowManager.LayoutParams()
     private val resourceHolder = RemoteResourceHolder(context, uiConfig.resPkg)
     lateinit var freeformLayout: ViewGroup
-    lateinit var freeformView: TextureView
+    lateinit var freeformRootView: ViewGroup
     private lateinit var topBarView: View
     private lateinit var bottomBarView: View
     private var displayId = Display.INVALID_DISPLAY
@@ -55,7 +50,6 @@ class FreeformWindow(
     }
 
     init {
-        updateScale()
         if (MiFreeformServiceHolder.ping()) {
             MLog.i(TAG, "FreeformWindow init")
             uiHandler.post { if (!addFreeformView()) destroy() }
@@ -79,22 +73,21 @@ class FreeformWindow(
 
     override fun onSurfaceTextureAvailable(surfaceTexture: SurfaceTexture, width: Int, height: Int) {
         MLog.i(TAG, "onSurfaceTextureAvailable width:$width height:$height")
-        surfaceTexture.setDefaultBufferSize(freeformConfig.freeformWidth, freeformConfig.freeformHeight)
         MiFreeformServiceHolder.createDisplay(freeformConfig, appConfig, Surface(surfaceTexture), this)
     }
 
     override fun onSurfaceTextureSizeChanged(surfaceTexture: SurfaceTexture, width: Int, height: Int) {
-        freeformConfig.width = width
-        freeformConfig.height = height
-        updateScale()
-        uiHandler.post { makeSureFreeformInScreen() }
-        MiFreeformServiceHolder.resizeFreeform(
-            this,
-            freeformConfig.freeformWidth,
-            freeformConfig.freeformHeight,
-            freeformConfig.densityDpi
-        )
-        surfaceTexture.setDefaultBufferSize(freeformConfig.freeformWidth, freeformConfig.freeformHeight)
+        if (freeformConfig.isHangUp) {
+            surfaceTexture.setDefaultBufferSize(freeformConfig.width, freeformConfig.height)
+        } else {
+            freeformConfig.width = width
+            freeformConfig.height = height
+        }
+        if (!freeformConfig.isScaling) {
+            MLog.i(TAG, "onSurfaceTextureSizeChanged $width $height")
+            uiHandler.post { makeSureFreeformInScreen() }
+            MiFreeformServiceHolder.resizeFreeform(this, freeformConfig.width, freeformConfig.height, freeformConfig.densityDpi)
+        }
     }
 
     override fun onSurfaceTextureDestroyed(surfaceTexture: SurfaceTexture): Boolean {
@@ -131,19 +124,6 @@ class FreeformWindow(
     }
 
     /**
-     * get freeform view dimen and freeform dimen scale
-     */
-    fun updateScale() {
-        Log.e(TAG, "$defaultDisplayHeight $defaultDisplayWidth")
-        val scaleX = min(defaultDisplayHeight, defaultDisplayWidth) * 1.0f / freeformConfig.width
-        val scaleY = max(defaultDisplayHeight, defaultDisplayWidth) * 1.0f / freeformConfig.height
-        val scale = min(scaleX, scaleY)
-        Log.e(TAG, "$scaleX $scaleY")
-        freeformConfig.freeformWidth = (freeformConfig.width * scale).roundToInt()
-        freeformConfig.freeformHeight = (freeformConfig.height * scale).roundToInt()
-    }
-
-    /**
      * Called in uiHandler
      */
     @SuppressLint("WrongConstant")
@@ -151,7 +131,7 @@ class FreeformWindow(
         MLog.i(TAG, "addFreeformView")
         val tmpFreeformLayout = resourceHolder.getLayout(uiConfig.layoutName) ?: return false
         freeformLayout = tmpFreeformLayout
-        val freeformRootView = resourceHolder.getLayoutChildViewByTag<FrameLayout>(freeformLayout, "freeform_root") ?: return false
+        freeformRootView = resourceHolder.getLayoutChildViewByTag<FrameLayout>(freeformLayout, "freeform_root") ?: return false
         topBarView = resourceHolder.getLayoutChildViewByTag(freeformLayout, "topBarView") ?: return false
         bottomBarView = resourceHolder.getLayoutChildViewByTag(freeformLayout, "bottomBarView") ?: return false
         val middleView = resourceHolder.getLayoutChildViewByTag<View>(freeformLayout, "middleView") ?: return false
@@ -171,11 +151,15 @@ class FreeformWindow(
         leftScaleView.setOnTouchListener(RightScaleTouchListener(this))
         rightScaleView.setOnTouchListener(RightScaleTouchListener(this))
 
-        freeformView = TextureView(context).apply {
+        val freeformView = TextureView(context).apply {
             setOnTouchListener(this@FreeformWindow)
             surfaceTextureListener = this@FreeformWindow
         }
-        freeformRootView.addView(freeformView, freeformConfig.width, freeformConfig.height)
+        freeformRootView.layoutParams = freeformRootView.layoutParams.apply {
+            width = freeformConfig.width
+            height = freeformConfig.height
+        }
+        freeformRootView.addView(freeformView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         windowParams.apply {
             type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
             width = WindowManager.LayoutParams.WRAP_CONTENT
@@ -208,7 +192,7 @@ class FreeformWindow(
                 y = freeformConfig.notInHangUpY
                 flags = flags or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
             }
-            freeformView.layoutParams = freeformView.layoutParams.apply {
+            freeformRootView.layoutParams.apply {
                 width = freeformConfig.width
                 height = freeformConfig.height
             }
@@ -216,7 +200,7 @@ class FreeformWindow(
             topBarView.visibility = View.VISIBLE
             bottomBarView.visibility = View.VISIBLE
             freeformConfig.isHangUp = false
-            freeformView.setOnTouchListener(this)
+            freeformRootView.setOnTouchListener(this)
         } else {
             freeformConfig.notInHangUpX = windowParams.x
             freeformConfig.notInHangUpY = windowParams.y
@@ -225,7 +209,7 @@ class FreeformWindow(
             bottomBarView.visibility = View.GONE
             freeformConfig.isHangUp = true
             val gestureDetector = GestureDetector(context, hangUpGestureListener)
-            freeformView.setOnTouchListener { _, event ->
+            freeformRootView.setOnTouchListener { _, event ->
                 gestureDetector.onTouchEvent(event)
                 if (event.action == MotionEvent.ACTION_UP) makeSureFreeformInScreen()
                 true
@@ -242,7 +226,7 @@ class FreeformWindow(
             y = -(defaultDisplayHeight / 2 - freeformConfig.hangUpHeight / 2)
             flags = flags xor WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
         }
-        freeformView.layoutParams = freeformView.layoutParams.apply {
+        freeformRootView.layoutParams = freeformRootView.layoutParams.apply {
             width = freeformConfig.hangUpWidth
             height = freeformConfig.hangUpHeight
         }
@@ -256,10 +240,10 @@ class FreeformWindow(
         if (!freeformConfig.isHangUp) {
             val maxWidth = defaultDisplayWidth
             val maxHeight = (defaultDisplayHeight * 0.9).roundToInt()
-            if (freeformView.layoutParams.width > maxWidth || freeformView.layoutParams.height > maxHeight) {
-                freeformView.layoutParams = freeformView.layoutParams.apply {
-                    width = min(freeformView.width, maxWidth)
-                    height = min(freeformView.height, maxHeight)
+            if (freeformRootView.layoutParams.width > maxWidth || freeformRootView.layoutParams.height > maxHeight) {
+                freeformRootView.layoutParams = freeformRootView.layoutParams.apply {
+                    width = min(freeformRootView.width, maxWidth)
+                    height = min(freeformRootView.height, maxHeight)
                 }
             }
         }
@@ -273,7 +257,7 @@ class FreeformWindow(
      * Called in uiHandler
      */
     fun changeOrientation() {
-        freeformView.layoutParams = freeformView.layoutParams.apply {
+        freeformRootView.layoutParams = freeformRootView.layoutParams.apply {
             width = if (freeformConfig.isHangUp) freeformConfig.hangUpWidth else freeformConfig.width
             height = if (freeformConfig.isHangUp) freeformConfig.hangUpHeight else freeformConfig.height
         }
@@ -282,7 +266,7 @@ class FreeformWindow(
     fun destroy(removeTask: Boolean = true) {
         MLog.i(TAG, "destroy $this")
         uiHandler.post {
-            runCatching { windowManager.removeViewImmediate(freeformLayout) }.onFailure { exception -> MLog.e(TAG, "removeView failed $exception") }
+            runCatching { windowManager.removeViewImmediate(freeformLayout) }.onFailure { exception -> Log.e(TAG, "removeView failed $exception") }
             SystemServiceHolder.activityTaskManager.unregisterTaskStackListener(freeformTaskStackListener)
             SystemServiceHolder.windowManager.removeRotationWatcher(rotationWatcher)
             MiFreeformServiceHolder.releaseFreeform(this)

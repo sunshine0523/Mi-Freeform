@@ -52,6 +52,17 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".service.QuickStartTileService"
+            android:exported="true"
+            android:icon="@drawable/tile_icon"
+            android:label="@string/sidebar"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
         <meta-data
             android:name="xposedmodule"
             android:value="true" />

@@ -73,4 +73,8 @@ object MiFreeformServiceManager {
     fun clearLog() {
         iMiFreeformService?.clearLog()
     }
+
+    fun collapseStatusBar() {
+        iMiFreeformService?.collapseStatusBar()
+    }
 }

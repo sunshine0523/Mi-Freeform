@@ -44,8 +44,8 @@ public class MiFreeformServiceHolder {
         miFreeformService.createFreeform(
                 appConfig.getComponentName().getPackageName() + "," + appConfig.getUserId(),
                 callback,
-                freeformConfig.getFreeformWidth(),
-                freeformConfig.getFreeformHeight(),
+                freeformConfig.getWidth(),
+                freeformConfig.getHeight(),
                 freeformConfig.getDensityDpi(),
                 freeformConfig.getSecure(),
                 freeformConfig.getOwnContentOnly(),

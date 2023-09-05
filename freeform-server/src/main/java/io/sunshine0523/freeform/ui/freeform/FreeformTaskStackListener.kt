@@ -4,6 +4,7 @@ import android.app.ActivityManager
 import android.app.ActivityManagerHidden
 import android.app.ITaskStackListener
 import android.content.ComponentName
+import android.os.Build
 import android.util.Log
 import android.window.TaskSnapshot
 import io.sunshine0523.freeform.util.MLog
@@ -74,7 +75,6 @@ class FreeformTaskStackListener(
 
     override fun onTaskRemoved(taskId: Int) {
         Log.i(TAG, "onTaskRemoved $taskId")
-        if (this.taskId == taskId) window.destroy(false)
     }
 
     override fun onTaskMovedToFront(taskInfo: ActivityManager.RunningTaskInfo) {
@@ -84,7 +84,14 @@ class FreeformTaskStackListener(
     }
 
     override fun onTaskDescriptionChanged(taskInfo: ActivityManager.RunningTaskInfo?) {
-
+        Log.i(TAG, "onTaskDescriptionChanged $taskInfo")
+        //A10 A11 maybe not called onTaskMovedToFront. So use this func
+        if (Build.VERSION.SDK_INT in Build.VERSION_CODES.Q .. Build.VERSION_CODES.R) {
+            if (taskInfo != null) {
+                val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
+                if (this.displayId == displayId) taskId = taskInfo.taskId
+            }
+        }
     }
 
     override fun onActivityRequestedOrientationChanged(taskId: Int, requestedOrientation: Int) {
@@ -92,7 +99,11 @@ class FreeformTaskStackListener(
     }
 
     override fun onTaskRemovalStarted(taskInfo: ActivityManager.RunningTaskInfo?) {
-
+        Log.i(TAG, "onTaskRemovalStarted")
+        Log.i(TAG, "${this.taskId == taskInfo?.taskId}")
+        if (this.taskId == taskInfo?.taskId) {
+            window.destroy(false)
+        }
     }
 
     override fun onTaskProfileLocked(taskInfo: ActivityManager.RunningTaskInfo?) {
@@ -125,9 +136,9 @@ class FreeformTaskStackListener(
 
     override fun onTaskFocusChanged(taskId: Int, focused: Boolean) {
         Log.i(TAG, "onTaskFocusChanged $taskId $focused")
-        if (taskId == this.taskId && !focused && !window.freeformConfig.isHangUp) {
-            window.uiHandler.post { window.handleHangUp() }
-        }
+//        if (taskId == this.taskId && !focused && !window.freeformConfig.isHangUp) {
+//            window.uiHandler.post { window.handleHangUp() }
+//        }
     }
 
     override fun onTaskRequestedOrientationChanged(taskId: Int, requestedOrientation: Int) {

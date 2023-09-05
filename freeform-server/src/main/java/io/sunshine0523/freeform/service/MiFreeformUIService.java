@@ -44,7 +44,7 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
             Map<String, IBinder> cache = new ArrayMap<>();
             cache.put("mi_freeform", this);
             ServiceManager.initServiceCache(cache);
-            MLog.i(TAG, "add mi_freeform SystemService: " + this);
+            MLog.i(TAG, "add mi_freeform SystemService: " + ServiceManager.getService("mi_freeform"));
         });
     }
 
@@ -116,6 +116,12 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
     @Override
     public void clearLog() {
         DataHelper.INSTANCE.clearLog();
+    }
+
+    @Override
+    public void collapseStatusBar() {
+        uiHandler.post(() -> SystemServiceHolder.statusBarService.collapsePanels());
+
     }
 
 }

@@ -62,7 +62,7 @@ object FreeformAnimation {
             play(
                 ValueAnimator.ofInt(window.freeformConfig.width, window.defaultDisplayWidth).apply {
                     addUpdateListener {
-                        window.freeformView.layoutParams = window.freeformView.layoutParams.apply {
+                        window.freeformRootView.layoutParams = window.freeformRootView.layoutParams.apply {
                             width = it.animatedValue as Int
                         }
                     }
@@ -75,7 +75,7 @@ object FreeformAnimation {
             play(
                 ValueAnimator.ofInt(window.freeformConfig.height, window.defaultDisplayHeight).apply {
                     addUpdateListener {
-                        window.freeformView.layoutParams = window.freeformView.layoutParams.apply {
+                        window.freeformRootView.layoutParams = window.freeformRootView.layoutParams.apply {
                             height = it.animatedValue as Int
                         }
                     }
