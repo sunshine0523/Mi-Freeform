@@ -126,6 +126,7 @@ public interface ITaskStackListener extends IInterface {
 
     /**
      * Called when a task snapshot got updated.
+     * For A11,A10
      */
     void onTaskSnapshotChanged(int taskId, ActivityManagerHidden.TaskSnapshot snapshot);
 
@@ -134,6 +135,8 @@ public interface ITaskStackListener extends IInterface {
      * on the back stack.
      *
      * @param taskInfo info about the task which received the back press
+     *
+     * For A13,A12
      */
     void onBackPressedOnTaskRoot(ActivityManager.RunningTaskInfo taskInfo);
 
