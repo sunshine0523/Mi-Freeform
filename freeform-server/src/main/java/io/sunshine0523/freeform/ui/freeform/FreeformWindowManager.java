@@ -1,4 +1,4 @@
-package io.sunshine0523.freeform.service;
+package io.sunshine0523.freeform.ui.freeform;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -14,6 +14,7 @@ import io.sunshine0523.freeform.ui.freeform.FreeformWindow;
 import io.sunshine0523.freeform.ui.freeform.UIConfig;
 
 public class FreeformWindowManager {
+    static String topWindow = "";
     private static final HashMap<String, FreeformWindow> freeformWindows = new HashMap<>();
     public static void addWindow(
             Handler uiHandler, Context context,
@@ -24,7 +25,8 @@ public class FreeformWindowManager {
         AppConfig appConfig = new AppConfig(componentName, userId);
         FreeformConfig freeformConfig = new FreeformConfig(width, height, densityDpi, secure, ownContentOnly, shouldShowSystemDecorations, refreshRate);
         UIConfig uiConfig = new UIConfig(resPkg, layoutName);
-        freeformWindows.put(componentName.getPackageName() + "," + componentName.getClassName() + "," + userId, new FreeformWindow(uiHandler, context, appConfig, freeformConfig, uiConfig));
+        FreeformWindow window = new FreeformWindow(uiHandler, context, appConfig, freeformConfig, uiConfig);
+        freeformWindows.put(window.getFreeformId(), window);
     }
 
     /**

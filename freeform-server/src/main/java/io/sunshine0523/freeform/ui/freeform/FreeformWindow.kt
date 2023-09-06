@@ -16,7 +16,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
 import io.sunshine0523.freeform.IMiFreeformDisplayCallback
-import io.sunshine0523.freeform.service.FreeformWindowManager
 import io.sunshine0523.freeform.service.MiFreeformServiceHolder
 import io.sunshine0523.freeform.service.SystemServiceHolder
 import io.sunshine0523.freeform.util.MLog
@@ -144,9 +143,9 @@ class FreeformWindow(
             event.source,
             event.flags
         )
-        Log.i(TAG, "$newEvent")
         MiFreeformServiceHolder.touch(newEvent, displayId)
         newEvent.recycle()
+        if (event.action == MotionEvent.ACTION_UP) checkWindowOnTop()
         return true
     }
 
@@ -208,10 +207,12 @@ class FreeformWindow(
                     WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED or
                     WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
             format = PixelFormat.RGBA_8888
+            windowAnimations = android.R.style.Animation_Dialog
         }
         SystemServiceHolder.windowManager.watchRotation(rotationWatcher, Display.DEFAULT_DISPLAY)
         runCatching {
             windowManager.addView(freeformLayout, windowParams)
+            FreeformWindowManager.topWindow = getFreeformId()
         }.onFailure {
             MLog.e(TAG, "addView failed: $it")
             return false
@@ -302,6 +303,22 @@ class FreeformWindow(
         }
     }
 
+    fun getFreeformId(): String {
+        return "${appConfig.componentName.packageName},${appConfig.componentName.className},${appConfig.userId}"
+    }
+
+    fun checkWindowOnTop() {
+        if (getFreeformId() != FreeformWindowManager.topWindow) {
+            uiHandler.post {
+                runCatching {
+                    windowManager.removeViewImmediate(freeformLayout)
+                    windowManager.addView(freeformLayout, windowParams)
+                    FreeformWindowManager.topWindow = getFreeformId()
+                }
+            }
+        }
+    }
+
     fun destroy(removeTask: Boolean = true) {
         MLog.i(TAG, "destroy $this")
         uiHandler.post {
@@ -309,7 +326,7 @@ class FreeformWindow(
             SystemServiceHolder.activityTaskManager.unregisterTaskStackListener(freeformTaskStackListener)
             SystemServiceHolder.windowManager.removeRotationWatcher(rotationWatcher)
             MiFreeformServiceHolder.releaseFreeform(this)
-            FreeformWindowManager.removeWindow("${appConfig.componentName.packageName},${appConfig.componentName.className},${appConfig.userId}")
+            FreeformWindowManager.removeWindow(getFreeformId())
             if (removeTask) runCatching { SystemServiceHolder.activityTaskManager.removeTask(freeformTaskStackListener!!.taskId) }.onFailure { exception -> MLog.e(TAG, "removeTask failed $exception") }
         }
     }

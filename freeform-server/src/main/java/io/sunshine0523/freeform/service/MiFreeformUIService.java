@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.util.ArrayMap;
 import android.view.Surface;
@@ -15,6 +14,7 @@ import java.util.Map;
 
 import io.sunshine0523.freeform.IMiFreeformDisplayCallback;
 import io.sunshine0523.freeform.IMiFreeformUIService;
+import io.sunshine0523.freeform.ui.freeform.FreeformWindowManager;
 import io.sunshine0523.freeform.util.DataHelper;
 import io.sunshine0523.freeform.util.MLog;
 import io.sunshine0523.freeform.util.Settings;
