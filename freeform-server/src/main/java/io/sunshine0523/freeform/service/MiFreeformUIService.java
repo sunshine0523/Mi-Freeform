@@ -39,12 +39,17 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
         this.uiHandler = uiHandler;
         this.settings = DataHelper.INSTANCE.getSettings();
         SystemServiceHolder.init(() -> {
+            try {
+                ServiceManager.addService("mi_freeform", this);
+                Map<String, IBinder> cache = new ArrayMap<>();
+                cache.put("mi_freeform", this);
+                ServiceManager.initServiceCache(cache);
+                MLog.i(TAG, "add mi_freeform SystemService: " + ServiceManager.getService("mi_freeform"));
+            } catch (Exception e) {
+                MLog.e(TAG, "add mi_freeform service failed, " + e);
+            }
+            if (ServiceManager.getService("mi_freeform") == null) return;
             this.sideBarService = new SideBarService(context, uiHandler, settings);
-            ServiceManager.addService("mi_freeform", this);
-            Map<String, IBinder> cache = new ArrayMap<>();
-            cache.put("mi_freeform", this);
-            ServiceManager.initServiceCache(cache);
-            MLog.i(TAG, "add mi_freeform SystemService: " + ServiceManager.getService("mi_freeform"));
         });
     }
 

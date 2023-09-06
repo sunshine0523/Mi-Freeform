@@ -79,9 +79,9 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScaffoldWidget(mainViewModel: MainViewModel, saveLogsLauncher: ActivityResultLauncher<String>) {
-    val items = mutableListOf("Home")
+    val items = mutableListOf("Home", "Log")
     if (MiFreeformServiceManager.ping()) items.add("Setting")
-    items.add("Log")
+
     var selectedIndex by remember {
         mutableIntStateOf(0)
     }
@@ -107,8 +107,8 @@ fun ScaffoldWidget(mainViewModel: MainViewModel, saveLogsLauncher: ActivityResul
         Box(modifier = Modifier.padding(it)) {
             when (selectedIndex) {
                 0 -> HomeWidget()
-                1 -> SettingWidget(mainViewModel)
-                2 -> LogWidget(mainViewModel)
+                1 -> LogWidget(mainViewModel)
+                2 -> SettingWidget(mainViewModel)
             }
         }
     }
@@ -126,7 +126,7 @@ fun TopBarWidget(
             Text(text = getTitle(index = selectedIndex))
         },
         actions  = {
-            if (selectedIndex == 2) {
+            if (selectedIndex == 1) {
                 IconButton(
                     onClick = {
                         viewModel.setLogSoftWrap(viewModel.logSoftWrap.value?.not()?:true)
@@ -157,8 +157,8 @@ fun TopBarWidget(
 private fun getTitle(index: Int): String {
     return when (index) {
         0 -> stringResource(id = R.string.app_name)
-        1 -> stringResource(id =R.string.setting)
-        2 -> stringResource(id = R.string.log)
+        1 -> stringResource(id = R.string.log)
+        2 -> stringResource(id =R.string.setting)
         else -> stringResource(id = R.string.app_name)
     }
 }
@@ -167,8 +167,8 @@ private fun getTitle(index: Int): String {
 private fun getNavigationIcon(index: Int):  Painter{
     return when (index) {
         0 -> painterResource(id = R.drawable.ic_home)
-        1 -> painterResource(id = R.drawable.ic_setting)
-        2 -> painterResource(id = R.drawable.ic_log)
+        1 -> painterResource(id = R.drawable.ic_log)
+        2 -> painterResource(id = R.drawable.ic_setting)
         else -> painterResource(id = R.drawable.ic_home)
     }
 }

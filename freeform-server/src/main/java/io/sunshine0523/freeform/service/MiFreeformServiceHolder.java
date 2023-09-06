@@ -65,7 +65,6 @@ public class MiFreeformServiceHolder {
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             ActivityOptions activityOptions = ActivityOptions.makeBasic();
             activityOptions.setLaunchDisplayId(displayId);
-            ActivityOptions.class.getMethod("setCallerDisplayId", int.class).invoke(activityOptions, displayId);
             Context.class.getMethod("startActivityAsUser", Intent.class, Bundle.class, UserHandleHidden.class)
                     .invoke(context, intent, activityOptions.toBundle(), new UserHandleHidden(appConfig.getUserId()));
         } catch (Exception e) {

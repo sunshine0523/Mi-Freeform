@@ -1,6 +1,7 @@
 package io.sunshine0523.freeform.ui.freeform
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.view.Display
 import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
@@ -50,7 +51,13 @@ class LeftViewClickListener(private val window: FreeformWindow) : View.OnClickLi
  */
 class LeftViewLongClickListener(private val window: FreeformWindow): View.OnLongClickListener {
     override fun onLongClick(v: View): Boolean {
-        if (null != window.freeformTaskStackListener) SystemServiceHolder.activityTaskManager.moveRootTaskToDisplay(window.freeformTaskStackListener!!.taskId, Display.DEFAULT_DISPLAY)
+        if (null != window.freeformTaskStackListener) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                SystemServiceHolder.activityTaskManager.moveRootTaskToDisplay(window.freeformTaskStackListener!!.taskId, Display.DEFAULT_DISPLAY)
+            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+                SystemServiceHolder.activityTaskManager.moveStackToDisplay(window.freeformTaskStackListener!!.stackId, Display.DEFAULT_DISPLAY)
+            }
+        }
         window.destroy(false)
 //        FreeformAnimation.toFullScreen(window, 500, object : AnimatorListener {
 //            override fun onAnimationEnd(p0: Animator) {

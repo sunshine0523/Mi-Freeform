@@ -17,6 +17,8 @@ class FreeformTaskStackListener(
 ) : ITaskStackListener.Stub() {
 
     var taskId = -1
+    //For A10
+    var stackId = -1
 
     companion object {
         private const val TAG = "Mi-Freeform/FreeformTaskStackListener"
@@ -79,17 +81,29 @@ class FreeformTaskStackListener(
 
     override fun onTaskMovedToFront(taskInfo: ActivityManager.RunningTaskInfo) {
         Log.i(TAG, "onTaskMovedToFront $taskInfo")
-        val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
-        if (this.displayId == displayId) taskId = taskInfo.taskId
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
+            if (this.displayId == displayId) taskId = taskInfo.taskId
+        }
     }
 
     override fun onTaskDescriptionChanged(taskInfo: ActivityManager.RunningTaskInfo?) {
         Log.i(TAG, "onTaskDescriptionChanged $taskInfo")
         //A10 A11 maybe not called onTaskMovedToFront. So use this func
-        if (Build.VERSION.SDK_INT in Build.VERSION_CODES.Q .. Build.VERSION_CODES.R) {
-            if (taskInfo != null) {
-                val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
-                if (this.displayId == displayId) taskId = taskInfo.taskId
+        when (Build.VERSION.SDK_INT) {
+            Build.VERSION_CODES.R -> {
+                if (taskInfo != null) {
+                    val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
+                    if (this.displayId == displayId) taskId = taskInfo.taskId
+                }
+            }
+            Build.VERSION_CODES.Q -> {
+                if (taskInfo != null) {
+                    val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
+                    val stackId = taskInfo::class.java.getField("stackId").get(taskInfo) as Int
+                    this.taskId = taskInfo.taskId
+                    if (this.displayId == displayId) this.stackId = stackId
+                }
             }
         }
     }
