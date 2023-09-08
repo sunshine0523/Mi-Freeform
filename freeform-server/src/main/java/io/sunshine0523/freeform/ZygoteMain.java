@@ -85,7 +85,7 @@ public class ZygoteMain {
             miFreeformDisplayAdapterObj = mfdaClass.getConstructors()[0].newInstance(mSyncRoot, mContext, mHandler, mDisplayDeviceRepo, mLogicalDisplayMapper, mUiHandler);
             mfdaClass.getMethod("registerLocked").invoke(miFreeformDisplayAdapterObj);
         }
-        // for Android Q,R
+        // for Android O,P,Q,R
         else {
             Field mListenerField = dmsClass.getDeclaredField("mDisplayAdapterListener");
             Field mLogicalDisplaysField = dmsClass.getDeclaredField("mLogicalDisplays");

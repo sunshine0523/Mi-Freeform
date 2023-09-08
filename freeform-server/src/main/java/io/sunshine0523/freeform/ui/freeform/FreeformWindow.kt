@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
+import android.os.Build
 import android.os.Handler
 import android.util.Log
 import android.view.Display
@@ -93,12 +94,19 @@ class FreeformWindow(
 
     override fun onDisplayAdd(displayId: Int) {
         MLog.i(TAG, "onDisplayAdd displayId $displayId")
-        uiHandler.post {
-            this.displayId = displayId
-            freeformTaskStackListener = FreeformTaskStackListener(displayId, this)
+        this.displayId = displayId
+        freeformTaskStackListener = FreeformTaskStackListener(displayId, this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             SystemServiceHolder.activityTaskManager.registerTaskStackListener(freeformTaskStackListener)
-            MiFreeformServiceHolder.startApp(context, appConfig, displayId)
+        } else {
+            SystemServiceHolder.activityManager.registerTaskStackListener(freeformTaskStackListener)
+        }
+        if (FreeformWindowManager.settings.showImeInFreeform && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            SystemServiceHolder.windowManager.setDisplayImePolicy(displayId, 0)
+        }
 
+        uiHandler.post {
+            MiFreeformServiceHolder.startApp(context, appConfig, displayId)
             val rightView = resourceHolder.getLayoutChildViewByTag<View>(freeformLayout, "rightView")
             if (null == rightView) {
                 MLog.e(TAG, "left&leftScale&rightScale view is null")
@@ -325,10 +333,22 @@ class FreeformWindow(
         uiHandler.post {
             runCatching { windowManager.removeViewImmediate(freeformLayout) }.onFailure { exception -> Log.e(TAG, "removeView failed $exception") }
         }
-        SystemServiceHolder.activityTaskManager.unregisterTaskStackListener(freeformTaskStackListener)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            SystemServiceHolder.activityTaskManager.unregisterTaskStackListener(freeformTaskStackListener)
+        } else {
+            SystemServiceHolder.activityManager.unregisterTaskStackListener(freeformTaskStackListener)
+        }
         SystemServiceHolder.windowManager.removeRotationWatcher(rotationWatcher)
         MiFreeformServiceHolder.releaseFreeform(this)
-        if (removeTask) runCatching { SystemServiceHolder.activityTaskManager.removeTask(freeformTaskStackListener!!.taskId) }.onFailure { exception -> MLog.e(TAG, "removeTask failed $exception") }
+        if (removeTask) runCatching {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                SystemServiceHolder.activityTaskManager.removeTask(freeformTaskStackListener!!.taskId)
+            } else {
+                SystemServiceHolder.activityManager.removeTask(freeformTaskStackListener!!.taskId)
+            }
+        }.onFailure { exception ->
+            MLog.e(TAG, "removeTask failed $exception")
+        }
         FreeformWindowManager.removeWindow(getFreeformId())
     }
 }

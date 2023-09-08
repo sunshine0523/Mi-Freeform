@@ -221,7 +221,7 @@ public abstract class MiFreeformDisplayAdapter extends DisplayAdapter {
                 mInfo.yDpi = mDensityDpi;
                 mInfo.presentationDeadlineNanos = mDisplayPresentationDeadlineNanos +
                         1000000000L / (int) mRefreshRate;   // display's deadline + 1 frame
-                mInfo.flags = DisplayDeviceInfo.FLAG_PRESENTATION;
+                //mInfo.flags = DisplayDeviceInfo.FLAG_PRESENTATION;
                 if (mFlags.mSecure) {
                     mInfo.flags |= DisplayDeviceInfo.FLAG_SECURE;
                 }

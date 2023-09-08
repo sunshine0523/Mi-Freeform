@@ -8,6 +8,7 @@ import android.os.Build
 import android.util.Log
 import android.view.Display
 import android.window.TaskSnapshot
+import androidx.annotation.RequiresApi
 import io.sunshine0523.freeform.util.MLog
 import kotlin.math.max
 import kotlin.math.min
@@ -58,6 +59,10 @@ class FreeformTaskStackListener(
 
     }
 
+    override fun onActivityLaunchOnSecondaryDisplayFailed() {
+
+    }
+
     override fun onActivityLaunchOnSecondaryDisplayFailed(
         taskInfo: ActivityManager.RunningTaskInfo?,
         requestedDisplayId: Int
@@ -80,12 +85,20 @@ class FreeformTaskStackListener(
         Log.i(TAG, "onTaskRemoved $taskId")
     }
 
+    override fun onTaskMovedToFront(taskId: Int) {
+        Log.i(TAG, "onTaskMovedToFront $taskId")
+    }
+
     override fun onTaskMovedToFront(taskInfo: ActivityManager.RunningTaskInfo) {
         Log.i(TAG, "onTaskMovedToFront $taskInfo")
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
 //            val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
 //            if (this.displayId == displayId) taskId = taskInfo.taskId
 //        }
+    }
+
+    override fun onTaskDescriptionChanged(taskId: Int, td: ActivityManager.TaskDescription?) {
+        Log.i(TAG, "onTaskDescriptionChanged $taskId $td")
     }
 
     override fun onTaskDescriptionChanged(taskInfo: ActivityManager.RunningTaskInfo?) {
@@ -121,6 +134,14 @@ class FreeformTaskStackListener(
         Log.i(TAG, "onActivityRequestedOrientationChanged $taskId $requestedOrientation")
     }
 
+    override fun onTaskRemovalStarted(taskId: Int) {
+        Log.i(TAG, "onTaskRemovalStarted")
+        if (this.taskId == taskId) {
+            window.destroy(false)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onTaskRemovalStarted(taskInfo: ActivityManager.RunningTaskInfo?) {
         Log.i(TAG, "onTaskRemovalStarted")
         if (this.taskId == taskInfo?.taskId) {
@@ -128,15 +149,19 @@ class FreeformTaskStackListener(
         }
     }
 
+    override fun onTaskProfileLocked(taskId: Int, userId: Int) {
+
+    }
+
     override fun onTaskProfileLocked(taskInfo: ActivityManager.RunningTaskInfo?) {
 
     }
 
-    override fun onTaskSnapshotChanged(taskId: Int, snapshot: TaskSnapshot?) {
+    override fun onTaskSnapshotChanged(taskId: Int, snapshot: ActivityManagerHidden.TaskSnapshot?) {
 
     }
 
-    override fun onTaskSnapshotChanged(taskId: Int, snapshot: ActivityManagerHidden.TaskSnapshot?) {
+    override fun onTaskSnapshotChanged(taskId: Int, snapshot: TaskSnapshot?) {
 
     }
 

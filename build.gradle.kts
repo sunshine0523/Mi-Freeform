@@ -13,7 +13,7 @@ plugins {
 }
 
 val androidTargetSdkVersion by extra(34)
-val androidMinSdkVersion by extra(29)
+val androidMinSdkVersion by extra(27)
 val androidBuildToolsVersion by extra("34.0.0-rc3")
 val androidCompileSdkVersion by extra(34)
 val androidSourceCompatibility by extra(JavaVersion.VERSION_17)

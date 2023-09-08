@@ -1,5 +1,6 @@
 package com.sunshine.freeform.ui.main
 
+import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ import kotlin.math.roundToInt
 @Composable
 fun SettingWidget(mainViewModel: MainViewModel) {
     val enableSideBar by mainViewModel.enableSideBar.observeAsState(false)
+    val showImeInFreeform by mainViewModel.showImeInFreeform.observeAsState(false)
     val freeformWidth by mainViewModel.freeformWidth.observeAsState((mainViewModel.screenWidth * 0.8).roundToInt())
     val freeformHeight by mainViewModel.freeformHeight.observeAsState((mainViewModel.screenHeight * 0.5).roundToInt())
     val freeformDpi by mainViewModel.freeformDensityDpi.observeAsState(mainViewModel.screenDensityDpi)
@@ -106,6 +108,15 @@ fun SettingWidget(mainViewModel: MainViewModel) {
                 100f..700f
             ) {
                 mainViewModel.setFreeformDpi(it.roundToInt())
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                SettingSwitchOption(
+                    stringResource(id = R.string.show_ime_in_freeform),
+                    stringResource(id = R.string.show_ime_in_freeform_message),
+                    showImeInFreeform
+                ) {
+                    mainViewModel.saveShowImeInFreeform(it)
+                }
             }
         }
     }

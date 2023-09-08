@@ -14,7 +14,9 @@ import java.util.Map;
 
 import io.sunshine0523.freeform.IMiFreeformDisplayCallback;
 import io.sunshine0523.freeform.IMiFreeformUIService;
+import io.sunshine0523.freeform.ui.freeform.FreeformWindow;
 import io.sunshine0523.freeform.ui.freeform.FreeformWindowManager;
+import io.sunshine0523.freeform.util.DataChangeListener;
 import io.sunshine0523.freeform.util.DataHelper;
 import io.sunshine0523.freeform.util.MLog;
 import io.sunshine0523.freeform.util.Settings;
@@ -110,7 +112,10 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
 
     @Override
     public void setSettings(String settings) {
-        DataHelper.INSTANCE.saveSettings(settings, this.sideBarService);
+        DataHelper.INSTANCE.saveSettings(settings, () -> {
+            sideBarService.onChanged();
+            FreeformWindowManager.settings = DataHelper.INSTANCE.getSettings();
+        });
     }
 
     @Override

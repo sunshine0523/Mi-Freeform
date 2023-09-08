@@ -30,6 +30,7 @@ dependencies {
     implementation(libs.gson)
     implementation(projects.service)
     compileOnly(projects.hiddenApi)
+    compileOnly(libs.core.ktx)
 }
 
 zygote {

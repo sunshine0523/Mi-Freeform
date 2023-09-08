@@ -7,7 +7,7 @@ import java.io.File
 import java.lang.StringBuilder
 
 object DataHelper {
-    private const val TAG = "MiFreeform/DataHelper"
+    private const val TAG = "Mi-Freeform/DataHelper"
     private val dataDir = File("${Environment.getDataDirectory()}/system/mi_freeform")
     private val dataFile = File(dataDir, "settings.json")
     private val logFile = File(dataDir, "log.log")
@@ -27,7 +27,7 @@ object DataHelper {
                 }
             }.start()
         }.onFailure {
-            MLog.e(TAG, "$it")
+            MLog.e(TAG, "$it $dataDir")
         }
     }
 

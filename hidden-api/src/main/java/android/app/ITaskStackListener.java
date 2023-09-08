@@ -47,6 +47,13 @@ public interface ITaskStackListener extends IInterface {
     /**
      * Called when an activity was requested to be launched on a secondary display but was not
      * allowed there.
+     * Only for A8.1, A9
+     */
+    void onActivityLaunchOnSecondaryDisplayFailed();
+
+    /**
+     * Called when an activity was requested to be launched on a secondary display but was not
+     * allowed there.
      *
      * @param taskInfo info about the Activity's task
      * @param requestedDisplayId the id of the requested launch display
@@ -82,9 +89,28 @@ public interface ITaskStackListener extends IInterface {
     /**
      * Called when a task is moved to the front of its stack.
      *
+     * @param taskId id of the task.
+     * Only for A8.1,A9
+     */
+    void onTaskMovedToFront(int taskId);
+
+    /**
+     * Called when a task is moved to the front of its stack.
+     *
      * @param taskInfo info about the task which moved
      */
     void onTaskMovedToFront(ActivityManager.RunningTaskInfo taskInfo);
+
+    /**
+     * Called when a task’s description is changed due to an activity calling
+     * ActivityManagerService.setTaskDescription
+     *
+     * @param taskId id of the task.
+     * @param td the new TaskDescription.
+     *
+     * Only for A8.1,A9
+     */
+    void onTaskDescriptionChanged(int taskId, ActivityManager.TaskDescription td);
 
     /**
      * Called when a task’s description is changed due to an activity calling
@@ -107,10 +133,26 @@ public interface ITaskStackListener extends IInterface {
      * Called when the task is about to be finished but before its surfaces are
      * removed from the window manager. This allows interested parties to
      * perform relevant animations before the window disappears.
+     * Only For A8.1, A9
+     */
+    void onTaskRemovalStarted(int taskId);
+
+    /**
+     * Called when the task is about to be finished but before its surfaces are
+     * removed from the window manager. This allows interested parties to
+     * perform relevant animations before the window disappears.
      *
      * @param taskInfo info about the task being removed
      */
     void onTaskRemovalStarted(ActivityManager.RunningTaskInfo taskInfo);
+
+    /**
+     * Called when the task has been put in a locked state because one or more of the
+     * activities inside it belong to a managed profile user, and that user has just
+     * been locked.
+     * Only for A8.1,A9
+     */
+    void onTaskProfileLocked(int taskId, int userId);
 
     /**
      * Called when the task has been put in a locked state because one or more of the
@@ -121,14 +163,14 @@ public interface ITaskStackListener extends IInterface {
 
     /**
      * Called when a task snapshot got updated.
-     */
-    void onTaskSnapshotChanged(int taskId, TaskSnapshot snapshot);
-
-    /**
-     * Called when a task snapshot got updated.
      * For A11,A10
      */
     void onTaskSnapshotChanged(int taskId, ActivityManagerHidden.TaskSnapshot snapshot);
+
+    /**
+     * Called when a task snapshot got updated.
+     */
+    void onTaskSnapshotChanged(int taskId, TaskSnapshot snapshot);
 
     /**
      * Reports that an Activity received a back key press when there were no additional activities

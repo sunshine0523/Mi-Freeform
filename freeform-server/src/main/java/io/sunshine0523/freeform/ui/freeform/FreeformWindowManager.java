@@ -12,9 +12,12 @@ import io.sunshine0523.freeform.ui.freeform.AppConfig;
 import io.sunshine0523.freeform.ui.freeform.FreeformConfig;
 import io.sunshine0523.freeform.ui.freeform.FreeformWindow;
 import io.sunshine0523.freeform.ui.freeform.UIConfig;
+import io.sunshine0523.freeform.util.DataHelper;
+import io.sunshine0523.freeform.util.Settings;
 
 public class FreeformWindowManager {
     static String topWindow = "";
+    public static Settings settings = DataHelper.INSTANCE.getSettings();
     private static final HashMap<String, FreeformWindow> freeformWindows = new HashMap<>();
     public static void addWindow(
             Handler uiHandler, Context context,

@@ -31,6 +31,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val remoteSetting = Gson().fromJson(MiFreeformServiceManager.getSetting(), RemoteSettings::class.java) ?: RemoteSettings()
     private val _enableSideBar = MutableLiveData<Boolean>()
     val enableSideBar: LiveData<Boolean> get() = _enableSideBar
+    private val _showImeInFreeform = MutableLiveData<Boolean>()
+    val showImeInFreeform: LiveData<Boolean> get() = _showImeInFreeform
     private val _freeformWidth = MutableLiveData<Int>()
     val freeformWidth: LiveData<Int> get() = _freeformWidth
     private val _freeformHeight = MutableLiveData<Int>()
@@ -45,6 +47,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         _enableSideBar.postValue(remoteSetting.enableSideBar)
+        _showImeInFreeform.postValue(remoteSetting.showImeInFreeform)
         _freeformWidth.postValue(sp.getInt("freeform_width", (screenWidth * 0.8).roundToInt()))
         _freeformHeight.postValue(sp.getInt("freeform_height", (screenHeight * 0.5).roundToInt()))
         _freeformDensityDpi.postValue(sp.getInt("freeform_dpi", screenDensityDpi))
@@ -55,6 +58,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun saveRemoteSidebar(enableSideBar: Boolean) {
         _enableSideBar.postValue(enableSideBar)
         remoteSetting.enableSideBar = enableSideBar
+        MiFreeformServiceManager.setSetting(remoteSetting)
+    }
+
+    fun saveShowImeInFreeform(showImeInFreeform: Boolean) {
+        _showImeInFreeform.postValue(showImeInFreeform)
+        remoteSetting.showImeInFreeform = showImeInFreeform
         MiFreeformServiceManager.setSetting(remoteSetting)
     }
 
