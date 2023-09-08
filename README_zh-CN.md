@@ -1,13 +1,13 @@
-# Mi-Freeform
+# 米窗3-全局小窗
 
-[中文](https://www.github.com/sunshine0523/Mi-Freeform/README_zh-CN.md)
+[English](https://www.github.com/sunshine0523/Mi-Freeform/README.md)
 
-Mi-Freeform 3 is an Android third-party freeform software that supports Android 8.1-Android 13.
+米窗3是一款Android第三方小窗软件，支持Android 8.1-Android 13。
 
-## Defect
+## 缺陷
 
-- Touch sampling rate
-- Some apps will reload after restoring to the default screen
+- 触控采样率
+- 还原到默认屏幕后部分应用会重载
 
 ## License
 
