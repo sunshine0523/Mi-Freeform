@@ -2,7 +2,7 @@
 
 ![Star](https://img.shields.io/github/stars/sunshine0523/Mi-Freeform) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/sunshine0523/Mi-FreeForm)](https://github.com/sunshine0523/Mi-Freeform/releases) ![License](https://img.shields.io/github/license/sunshine0523/Mi-Freeform) [![Channel](https://img.shields.io/badge/Follow-Telegram-blue.svg?logo=telegram)](https://t.me/+8M3IrjRFiPE2NGE9) [![Chat](https://img.shields.io/badge/Join-QQ%E9%A2%91%E9%81%93-red?logo=tencent-qq&logoColor=red)](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&inviteCode=XKL1t&from=246610&biz=ka)
 
-[中文](https://www.github.com/sunshine0523/Mi-Freeform/README_zh-CN.md)
+[中文](./README_zh-CN.md)
 
 Mi-Freeform 3 is an Android third-party freeform software that supports Android 8.1-Android 13.
 
