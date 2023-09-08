@@ -1,8 +1,18 @@
 # Mi-Freeform
 
+![GitHub](https://img.shields.io/github/license/sunshine0523/Mi-FreeForm) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/sunshine0523/Mi-FreeForm)
+
 [中文](https://www.github.com/sunshine0523/Mi-Freeform/README_zh-CN.md)
 
 Mi-Freeform 3 is an Android third-party freeform software that supports Android 8.1-Android 13.
+
+## TODO
+
+- Compatible with Android 8.1-Android 9 ⭐⭐⭐⭐⭐
+- Redo the sidebar trigger way ⭐⭐⭐⭐
+- Sliding style window ⭐⭐⭐
+- Takeover notification ⭐⭐
+- Start in multitasking ⭐
 
 ## Defect
 
