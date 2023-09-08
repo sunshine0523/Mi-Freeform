@@ -1,8 +1,8 @@
 # 米窗3-全局小窗
 
-![GitHub](https://img.shields.io/github/license/sunshine0523/Mi-FreeForm) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/sunshine0523/Mi-FreeForm)
+![Star](https://img.shields.io/github/stars/sunshine0523/Mi-Freeform) ![License](https://img.shields.io/github/license/sunshine0523/Mi-Freeform) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/sunshine0523/Mi-FreeForm)
 
-[English](https://www.github.com/sunshine0523/Mi-Freeform/README.md)
+[![Channel](https://img.shields.io/badge/Follow-Telegram-blue.svg?logo=telegram)](https://t.me/+8M3IrjRFiPE2NGE9) [![Chat](https://img.shields.io/badge/Join-QQ%E9%A2%91%E9%81%93-red?logo=tencent-qq&logoColor=red)](https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&inviteCode=XKL1t&from=246610&biz=ka)
 
 米窗3是一款Android第三方小窗软件，支持Android 8.1-Android 13。
 
