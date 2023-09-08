@@ -102,8 +102,8 @@ fun SettingWidget(mainViewModel: MainViewModel) {
             SettingSlideBarOption(
                 stringResource(id = R.string.freeform_dpi),
                 freeformDpi,
-                50,
-                100f..500f
+                100,
+                100f..700f
             ) {
                 mainViewModel.setFreeformDpi(it.roundToInt())
             }

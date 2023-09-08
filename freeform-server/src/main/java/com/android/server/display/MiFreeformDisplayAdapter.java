@@ -72,7 +72,7 @@ public abstract class MiFreeformDisplayAdapter extends DisplayAdapter {
 
             device.destroyLocked(true);
             appToken.unlinkToDeath(device, 0);
-            MLog.i(TAG, "release freeform display: " + appToken);
+            MLog.i(TAG, "release freeform display: " + device.mName);
         }
     }
 

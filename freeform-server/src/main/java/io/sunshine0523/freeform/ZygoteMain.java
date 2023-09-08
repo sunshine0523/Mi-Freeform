@@ -70,7 +70,7 @@ public class ZygoteMain {
         Object mUiHandler = mUiHandlerField.get(displayManagerServiceObj);
 
         //add MiFreeformServer dex to path
-        classLoader.getClass().getMethod("addDexPath", String.class).invoke(classLoader, "/system/framework/freeform.dex");
+        classLoader.getClass().getMethod("addDexPath", String.class).invoke(classLoader, "/data/system/mi_freeform/freeform.dex");
 
         Object miFreeformDisplayAdapterObj;
         // for Android S,T

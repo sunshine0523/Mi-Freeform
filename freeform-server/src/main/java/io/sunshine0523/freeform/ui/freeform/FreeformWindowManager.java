@@ -26,6 +26,9 @@ public class FreeformWindowManager {
         FreeformConfig freeformConfig = new FreeformConfig(width, height, densityDpi, secure, ownContentOnly, shouldShowSystemDecorations, refreshRate);
         UIConfig uiConfig = new UIConfig(resPkg, layoutName);
         FreeformWindow window = new FreeformWindow(uiHandler, context, appConfig, freeformConfig, uiConfig);
+        //if freeform exist, remove old
+        FreeformWindow oldWindow = freeformWindows.get(window.getFreeformId());
+        if (oldWindow != null) oldWindow.destroy(false);
         freeformWindows.put(window.getFreeformId(), window);
     }
 

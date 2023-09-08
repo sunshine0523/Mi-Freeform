@@ -6,6 +6,7 @@ import android.app.ITaskStackListener
 import android.content.ComponentName
 import android.os.Build
 import android.util.Log
+import android.view.Display
 import android.window.TaskSnapshot
 import io.sunshine0523.freeform.util.MLog
 import kotlin.math.max
@@ -81,27 +82,35 @@ class FreeformTaskStackListener(
 
     override fun onTaskMovedToFront(taskInfo: ActivityManager.RunningTaskInfo) {
         Log.i(TAG, "onTaskMovedToFront $taskInfo")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
-            if (this.displayId == displayId) taskId = taskInfo.taskId
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//            val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
+//            if (this.displayId == displayId) taskId = taskInfo.taskId
+//        }
     }
 
     override fun onTaskDescriptionChanged(taskInfo: ActivityManager.RunningTaskInfo?) {
         Log.i(TAG, "onTaskDescriptionChanged $taskInfo")
-        //A10 A11 maybe not called onTaskMovedToFront. So use this func
-        when (Build.VERSION.SDK_INT) {
-            Build.VERSION_CODES.R -> {
+        // Use this not onTaskMovedToFront because task maybe changed
+        when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
                 if (taskInfo != null) {
                     val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
+                    //Handle start freeform app in other display
+                    if (this.taskId == taskInfo.taskId && displayId != this.displayId) {
+                        Log.i(TAG, "在其他位置打开，关闭该小窗")
+                        window.destroy(false)
+                    }
                     if (this.displayId == displayId) taskId = taskInfo.taskId
                 }
             }
-            Build.VERSION_CODES.Q -> {
+            Build.VERSION.SDK_INT == Build.VERSION_CODES.Q -> {
                 if (taskInfo != null) {
                     val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
                     val stackId = taskInfo::class.java.getField("stackId").get(taskInfo) as Int
                     this.taskId = taskInfo.taskId
+                    if (this.taskId == taskInfo.taskId && displayId != this.displayId) {
+                        window.destroy(false)
+                    }
                     if (this.displayId == displayId) this.stackId = stackId
                 }
             }
@@ -114,7 +123,6 @@ class FreeformTaskStackListener(
 
     override fun onTaskRemovalStarted(taskInfo: ActivityManager.RunningTaskInfo?) {
         Log.i(TAG, "onTaskRemovalStarted")
-        Log.i(TAG, "${this.taskId == taskInfo?.taskId}")
         if (this.taskId == taskInfo?.taskId) {
             window.destroy(false)
         }

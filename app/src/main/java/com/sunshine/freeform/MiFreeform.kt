@@ -16,7 +16,6 @@ class MiFreeform: Application() {
 
         init {
             HiddenApiBypass.addHiddenApiExemptions("")
-
         }
     }
 }

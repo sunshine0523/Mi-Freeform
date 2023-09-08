@@ -1,5 +1,4 @@
-ui_print "- Copy Mi-Freeform service dex to /system/framework"
+ui_print "- Copy Mi-Freeform service dex to /data/system/mi_freeform"
 
-mkdir "$MODPATH/system"
-mkdir "$MODPATH/system/framework"
-cp "$MODPATH/classes.dex" "$MODPATH/system/framework/freeform.dex"
+mkdir "/data/system/mi_freeform"
+cp "$MODPATH/classes.dex" "/data/system/mi_freeform/freeform.dex"

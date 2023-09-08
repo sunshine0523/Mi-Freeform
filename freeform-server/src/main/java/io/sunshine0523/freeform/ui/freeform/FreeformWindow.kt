@@ -206,6 +206,7 @@ class FreeformWindow(
                     WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
                     WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED or
                     WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+            if (freeformConfig.secure) flags = flags or WindowManager.LayoutParams.FLAG_SECURE
             format = PixelFormat.RGBA_8888
             windowAnimations = android.R.style.Animation_Dialog
         }
@@ -320,14 +321,14 @@ class FreeformWindow(
     }
 
     fun destroy(removeTask: Boolean = true) {
-        MLog.i(TAG, "destroy $this")
+        MLog.i(TAG, "destroy ${getFreeformId()}, displayId=$displayId")
         uiHandler.post {
             runCatching { windowManager.removeViewImmediate(freeformLayout) }.onFailure { exception -> Log.e(TAG, "removeView failed $exception") }
-            SystemServiceHolder.activityTaskManager.unregisterTaskStackListener(freeformTaskStackListener)
-            SystemServiceHolder.windowManager.removeRotationWatcher(rotationWatcher)
-            MiFreeformServiceHolder.releaseFreeform(this)
-            FreeformWindowManager.removeWindow(getFreeformId())
-            if (removeTask) runCatching { SystemServiceHolder.activityTaskManager.removeTask(freeformTaskStackListener!!.taskId) }.onFailure { exception -> MLog.e(TAG, "removeTask failed $exception") }
         }
+        SystemServiceHolder.activityTaskManager.unregisterTaskStackListener(freeformTaskStackListener)
+        SystemServiceHolder.windowManager.removeRotationWatcher(rotationWatcher)
+        MiFreeformServiceHolder.releaseFreeform(this)
+        if (removeTask) runCatching { SystemServiceHolder.activityTaskManager.removeTask(freeformTaskStackListener!!.taskId) }.onFailure { exception -> MLog.e(TAG, "removeTask failed $exception") }
+        FreeformWindowManager.removeWindow(getFreeformId())
     }
 }
