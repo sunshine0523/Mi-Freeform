@@ -61,7 +61,7 @@ object MiFreeformServiceManager {
             height,
             densityDpi,
             120.0f,
-            true,
+            false,
             true,
             false,
             "com.sunshine.freeform",
