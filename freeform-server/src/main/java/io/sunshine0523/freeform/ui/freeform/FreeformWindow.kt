@@ -350,13 +350,7 @@ class FreeformWindow(
         }.onFailure { exception ->
             MLog.e(TAG, "removeTask failed $exception")
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            SystemServiceHolder.activityTaskManager.unregisterTaskStackListener(freeformTaskStackListener)
-        } else {
-            SystemServiceHolder.activityManager.unregisterTaskStackListener(freeformTaskStackListener)
-        }
         SystemServiceHolder.windowManager.removeRotationWatcher(rotationWatcher)
-        MiFreeformServiceHolder.releaseFreeform(this)
         FreeformWindowManager.removeWindow(getFreeformId())
     }
 }

@@ -8,6 +8,8 @@ import android.os.Build
 import android.util.Log
 import android.window.TaskSnapshot
 import androidx.annotation.RequiresApi
+import io.sunshine0523.freeform.service.MiFreeformServiceHolder
+import io.sunshine0523.freeform.service.SystemServiceHolder
 import io.sunshine0523.freeform.util.MLog
 import kotlin.math.max
 import kotlin.math.min
@@ -81,7 +83,13 @@ class FreeformTaskStackListener(
     }
 
     override fun onTaskRemoved(taskId: Int) {
-        Log.i(TAG, "onTaskRemoved $taskId")
+        MLog.i(TAG, "onTaskRemoved $taskId")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            SystemServiceHolder.activityTaskManager.unregisterTaskStackListener(this)
+        } else {
+            SystemServiceHolder.activityManager.unregisterTaskStackListener(this)
+        }
+        MiFreeformServiceHolder.releaseFreeform(window)
     }
 
     override fun onTaskMovedToFront(taskId: Int) {
