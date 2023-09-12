@@ -140,6 +140,7 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
     public void setSettings(String settings) {
         DataHelper.INSTANCE.saveSettings(settings, () -> {
             sideBarService.onChanged();
+            notificationListener.onChanged();
             FreeformWindowManager.settings = DataHelper.INSTANCE.getSettings();
         });
     }

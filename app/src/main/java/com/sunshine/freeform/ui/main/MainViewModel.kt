@@ -33,6 +33,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val enableSideBar: LiveData<Boolean> get() = _enableSideBar
     private val _showImeInFreeform = MutableLiveData<Boolean>()
     val showImeInFreeform: LiveData<Boolean> get() = _showImeInFreeform
+    private val _notification = MutableLiveData<Boolean>()
+    val notification: LiveData<Boolean> get() = _notification
     private val _freeformWidth = MutableLiveData<Int>()
     val freeformWidth: LiveData<Int> get() = _freeformWidth
     private val _freeformHeight = MutableLiveData<Int>()
@@ -48,6 +50,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     init {
         _enableSideBar.postValue(remoteSetting.enableSideBar)
         _showImeInFreeform.postValue(remoteSetting.showImeInFreeform)
+        _notification.postValue(remoteSetting.notification)
         _freeformWidth.postValue(sp.getInt("freeform_width", (screenWidth * 0.8).roundToInt()))
         _freeformHeight.postValue(sp.getInt("freeform_height", (screenHeight * 0.5).roundToInt()))
         _freeformDensityDpi.postValue(sp.getInt("freeform_dpi", screenDensityDpi))
@@ -64,6 +67,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun saveShowImeInFreeform(showImeInFreeform: Boolean) {
         _showImeInFreeform.postValue(showImeInFreeform)
         remoteSetting.showImeInFreeform = showImeInFreeform
+        MiFreeformServiceManager.setSetting(remoteSetting)
+    }
+
+    fun saveNotification(notification: Boolean) {
+        _notification.postValue(notification)
+        remoteSetting.notification = notification
         MiFreeformServiceManager.setSetting(remoteSetting)
     }
 

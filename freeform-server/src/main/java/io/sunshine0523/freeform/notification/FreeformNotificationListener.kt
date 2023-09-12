@@ -16,6 +16,8 @@ import android.service.notification.NotificationRankingUpdate
 import android.service.notification.NotificationStats
 import android.system.Os
 import android.util.Log
+import io.sunshine0523.freeform.util.DataChangeListener
+import io.sunshine0523.freeform.util.DataHelper
 import io.sunshine0523.freeform.util.MLog
 import java.util.Arrays
 
@@ -27,8 +29,9 @@ class FreeformNotificationListener(
     private val userContext: Context,
     private val notificationManager: NotificationManager,
     private val handler: Handler
-) : INotificationListener.Stub() {
+) : INotificationListener.Stub(), DataChangeListener {
 
+    private var settings = DataHelper.getSettings()
     private val freeformTextId = userContext.resources.getIdentifier("notification_freeform", "string", "com.sunshine.freeform")
     private val freeformText = userContext.resources.getString(freeformTextId)
 
@@ -44,6 +47,7 @@ class FreeformNotificationListener(
         notificationHolder: IStatusBarNotificationHolder?,
         update: NotificationRankingUpdate?
     ) {
+        if (settings.notification.not()) return
         val sbn = notificationHolder?.get()
         if (sbn != null) {
             val notification = sbn.notification
@@ -194,5 +198,9 @@ class FreeformNotificationListener(
         feedback: Bundle?
     ) {
 
+    }
+
+    override fun onChanged() {
+        settings = DataHelper.getSettings()
     }
 }

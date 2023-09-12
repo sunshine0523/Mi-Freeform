@@ -344,11 +344,11 @@ class FreeformWindow(
             } else {
                 SystemServiceHolder.activityManager.removeTask(freeformTaskStackListener!!.taskId)
             }
+            freeformTaskStackListener?.listenTaskRemoved = true
         }.onFailure { exception ->
             MLog.e(TAG, "removeTask failed $exception")
         }
         SystemServiceHolder.windowManager.removeRotationWatcher(rotationWatcher)
         FreeformWindowManager.removeWindow(getFreeformId())
-        freeformTaskStackListener!!.listenTaskRemoved = true
     }
 }

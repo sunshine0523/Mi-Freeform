@@ -33,9 +33,11 @@
     <!--FreeformAppActivity-->
     <string name="title_activity_freeform_app">Choose Freeform App</string>
     <string name="show_ime_in_freeform">Show IME in Freeform</string>
-    <string name="show_ime_in_freeform_message">Show IME in Freeform. Only support Android 12+</string>
+    <string name="show_ime_in_freeform_message">Show IME in Freeform. Only support Android 12+.</string>
 
     <!--system server-->
     <string name="notification_freeform">Freeform</string>
     <string name="title_activity_freeform">Open a Freeform</string>
+    <string name="take_over_notification">Take over notification</string>
+    <string name="take_over_notification_message">Display the freeform button in the notification. Only support Android 12+. Warning: use push can NOT be redirected correctly. e.g. MIUI.</string>
 </resources>

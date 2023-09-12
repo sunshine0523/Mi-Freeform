@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -41,6 +42,7 @@ import kotlin.math.roundToInt
 fun SettingWidget(mainViewModel: MainViewModel) {
     val enableSideBar by mainViewModel.enableSideBar.observeAsState(false)
     val showImeInFreeform by mainViewModel.showImeInFreeform.observeAsState(false)
+    val takeOverNotification by mainViewModel.notification.observeAsState(false)
     val freeformWidth by mainViewModel.freeformWidth.observeAsState((mainViewModel.screenWidth * 0.8).roundToInt())
     val freeformHeight by mainViewModel.freeformHeight.observeAsState((mainViewModel.screenHeight * 0.5).roundToInt())
     val freeformDpi by mainViewModel.freeformDensityDpi.observeAsState(mainViewModel.screenDensityDpi)
@@ -118,6 +120,15 @@ fun SettingWidget(mainViewModel: MainViewModel) {
                     mainViewModel.saveShowImeInFreeform(it)
                 }
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                SettingSwitchOption(
+                    stringResource(id = R.string.take_over_notification),
+                    stringResource(id = R.string.take_over_notification_message),
+                    takeOverNotification
+                ) {
+                    mainViewModel.saveNotification(it)
+                }
+            }
         }
     }
 
@@ -133,20 +144,20 @@ fun SettingSwitchOption(
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(90.dp)
+            .fillMaxSize()
             .padding(8.dp)
             .clickable { onCheckedChange(!isChecked) },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Column {
+        Column(Modifier.weight(1f)) {
             Text(text = title, style = MaterialTheme.typography.titleLarge)
             Text(text = message, style = MaterialTheme.typography.bodyMedium)
         }
         Switch(
             checked = isChecked,
-            onCheckedChange = onCheckedChange
+            onCheckedChange = onCheckedChange,
+            modifier = Modifier.width(50.dp)
         )
     }
 }
