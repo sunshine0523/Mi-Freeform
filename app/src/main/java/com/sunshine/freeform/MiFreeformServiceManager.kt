@@ -1,15 +1,15 @@
 package com.sunshine.freeform
 
-import android.content.ComponentName
+import android.app.PendingIntent
 import android.os.Build
 import android.os.IBinder
 import android.os.ServiceManager
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 import com.sunshine.freeform.ui.main.RemoteSettings
 import io.sunshine0523.freeform.IMiFreeformUIService
 import org.lsposed.hiddenapibypass.HiddenApiBypass
+import java.util.Date
 
 object MiFreeformServiceManager {
     private const val TAG = "MiFreeformServiceManager"
@@ -52,11 +52,30 @@ object MiFreeformServiceManager {
         }
     }
 
-    fun createDisplay(componentName: ComponentName, userId: Int, width: Int, height: Int, densityDpi: Int) {
-        Log.i(TAG, "$width $height $densityDpi")
+    fun createWindow(packageName: String, activityName: String, userId: Int, width: Int, height: Int, densityDpi: Int) {
         iMiFreeformService?.startAppInFreeform(
-            componentName,
+            packageName,
+            activityName,
             userId,
+            null,
+            width,
+            height,
+            densityDpi,
+            120.0f,
+            false,
+            true,
+            false,
+            "com.sunshine.freeform",
+            "view_freeform"
+        )
+    }
+
+    fun createWindow(pendingIntent: PendingIntent?, width: Int, height: Int, densityDpi: Int) {
+        iMiFreeformService?.startAppInFreeform(
+            pendingIntent?.creatorPackage?:"pendingIntentCreatorPackage",
+            "unknownActivity-${Date().time}",
+            -100,
+            pendingIntent,
             width,
             height,
             densityDpi,
@@ -91,5 +110,9 @@ object MiFreeformServiceManager {
 
     fun collapseStatusBar() {
         iMiFreeformService?.collapseStatusBar()
+    }
+
+    fun cancelNotification(key: String?) {
+        iMiFreeformService?.cancelNotification(key)
     }
 }

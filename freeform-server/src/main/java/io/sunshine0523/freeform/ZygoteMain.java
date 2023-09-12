@@ -104,7 +104,7 @@ public class ZygoteMain {
         MLog.i(TAG, "instance MiFreeformService: " + miFreeformServiceObj);
 
         Class<?> mfuisClass = classLoader.loadClass("io.sunshine0523.freeform.service.MiFreeformUIService");
-        Object miFreeformUIServiceObj = mfuisClass.getConstructors()[0].newInstance(mContext, miFreeformDisplayAdapterObj, miFreeformServiceObj, mUiHandler);
+        Object miFreeformUIServiceObj = mfuisClass.getConstructors()[0].newInstance(mContext, miFreeformDisplayAdapterObj, miFreeformServiceObj, mUiHandler, mHandler);
         MLog.i(TAG, "instance MiFreeformUIService: " + miFreeformUIServiceObj);
 
         Class<?> mfsmClass = classLoader.loadClass("io.sunshine0523.freeform.service.MiFreeformServiceHolder");

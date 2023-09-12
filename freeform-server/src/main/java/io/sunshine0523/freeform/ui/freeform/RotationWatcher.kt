@@ -10,7 +10,7 @@ class RotationWatcher(private val window: FreeformWindow): IRotationWatcher.Stub
     override fun onRotationChanged(rotation: Int) {
         window.defaultDisplayWidth = window.context.resources.displayMetrics.widthPixels
         window.defaultDisplayHeight = window.context.resources.displayMetrics.heightPixels
-        window.uiHandler.post {
+        window.handler.post {
             if (window.freeformConfig.isHangUp) window.toHangUp()
             else window.makeSureFreeformInScreen()
         }

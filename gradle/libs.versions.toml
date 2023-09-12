@@ -61,6 +61,7 @@ magic-library = { group = "com.github.kr328.magic", name = "library", version.re
 
 hiddenapirefineannotationprocessor = { group = "dev.rikka.tools.refine", name = "annotation-processor", version.ref = "hidden-api-refine"}
 hiddenapirefineannotation = { group = "dev.rikka.tools.refine", name = "annotation", version.ref = "hidden-api-refine"}
+hiddenapirefineruntime = { group = "dev.rikka.tools.refine", name = "runtime", version.ref = "hidden-api-refine"}
 
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 

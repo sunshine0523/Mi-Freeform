@@ -1,5 +1,6 @@
 package io.sunshine0523.freeform.ui.freeform;
 
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Handler;
@@ -20,15 +21,15 @@ public class FreeformWindowManager {
     public static Settings settings = DataHelper.INSTANCE.getSettings();
     private static final HashMap<String, FreeformWindow> freeformWindows = new HashMap<>();
     public static void addWindow(
-            Handler uiHandler, Context context,
-            ComponentName componentName, int userId,
+            Handler handler, Context context,
+            String packageName, String activityName, int userId, PendingIntent pendingIntent,
             int width, int height, int densityDpi, float refreshRate,
             boolean secure, boolean ownContentOnly, boolean shouldShowSystemDecorations,
             String resPkg, String layoutName) {
-        AppConfig appConfig = new AppConfig(componentName, userId);
+        AppConfig appConfig = new AppConfig(packageName, activityName, pendingIntent, userId);
         FreeformConfig freeformConfig = new FreeformConfig(width, height, densityDpi, secure, ownContentOnly, shouldShowSystemDecorations, refreshRate);
         UIConfig uiConfig = new UIConfig(resPkg, layoutName);
-        FreeformWindow window = new FreeformWindow(uiHandler, context, appConfig, freeformConfig, uiConfig);
+        FreeformWindow window = new FreeformWindow(handler, context, appConfig, freeformConfig, uiConfig);
         //if freeform exist, remove old
         FreeformWindow oldWindow = freeformWindows.get(window.getFreeformId());
         if (oldWindow != null) oldWindow.destroy(false);

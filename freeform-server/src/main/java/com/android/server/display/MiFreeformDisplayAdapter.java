@@ -66,13 +66,16 @@ public abstract class MiFreeformDisplayAdapter extends DisplayAdapter {
     }
 
     public void releaseFreeform(IBinder appToken) {
-        FreeformDisplayDevice device = mFreeformDisplayDevices.remove(appToken);
-        if (device != null) {
-            miFreeformDisplayCallbackArrayMap.remove(device);
+        synchronized (getSyncRoot()) {
+            FreeformDisplayDevice device = mFreeformDisplayDevices.remove(appToken);
+            if (device != null) {
+                miFreeformDisplayCallbackArrayMap.remove(device);
 
-            device.destroyLocked(true);
-            appToken.unlinkToDeath(device, 0);
-            MLog.i(TAG, "release freeform display: " + device.mName);
+                device.destroyLocked(true);
+                appToken.unlinkToDeath(device, 0);
+                sendDisplayDeviceEventLocked(device, DISPLAY_DEVICE_EVENT_REMOVED);
+                MLog.i(TAG, "release freeform display: " + device.mName);
+            }
         }
     }
 

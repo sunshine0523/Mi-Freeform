@@ -51,6 +51,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.freeform.FreeformActivity"
+            android:exported="true"
+            android:label="@string/title_activity_freeform"
+            android:taskAffinity=":freeform"
+            android:theme="@style/ActivityDialogTheme">
+        </activity>
 
         <service
             android:name=".service.QuickStartTileService"

@@ -6,7 +6,6 @@ import android.app.ITaskStackListener
 import android.content.ComponentName
 import android.os.Build
 import android.util.Log
-import android.view.Display
 import android.window.TaskSnapshot
 import androidx.annotation.RequiresApi
 import io.sunshine0523.freeform.util.MLog
@@ -89,12 +88,16 @@ class FreeformTaskStackListener(
         Log.i(TAG, "onTaskMovedToFront $taskId")
     }
 
-    override fun onTaskMovedToFront(taskInfo: ActivityManager.RunningTaskInfo) {
-        Log.i(TAG, "onTaskMovedToFront $taskInfo")
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
-//            if (this.displayId == displayId) taskId = taskInfo.taskId
-//        }
+    override fun onTaskMovedToFront(taskInfo: ActivityManager.RunningTaskInfo?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (taskInfo != null) {
+                val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
+                if (this.displayId == displayId) {
+                    taskId = taskInfo.taskId
+                    MLog.i(TAG, "onTaskDescriptionChanged $taskInfo")
+                }
+            }
+        }
     }
 
     override fun onTaskDescriptionChanged(taskId: Int, td: ActivityManager.TaskDescription?) {
@@ -102,29 +105,28 @@ class FreeformTaskStackListener(
     }
 
     override fun onTaskDescriptionChanged(taskInfo: ActivityManager.RunningTaskInfo?) {
-        Log.i(TAG, "onTaskDescriptionChanged $taskInfo")
-        // Use this not onTaskMovedToFront because task maybe changed
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
                 if (taskInfo != null) {
                     val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
-                    //Handle start freeform app in other display
-                    if (this.taskId == taskInfo.taskId && displayId != this.displayId) {
-                        Log.i(TAG, "在其他位置打开，关闭该小窗")
-                        window.destroy(false)
+                    if (this.displayId == displayId) {
+                        taskId = taskInfo.taskId
+                        MLog.i(TAG, "onTaskDescriptionChanged $taskInfo")
                     }
-                    if (this.displayId == displayId) taskId = taskInfo.taskId
                 }
             }
             Build.VERSION.SDK_INT == Build.VERSION_CODES.Q -> {
                 if (taskInfo != null) {
                     val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
                     val stackId = taskInfo::class.java.getField("stackId").get(taskInfo) as Int
-                    this.taskId = taskInfo.taskId
                     if (this.taskId == taskInfo.taskId && displayId != this.displayId) {
                         window.destroy(false)
                     }
-                    if (this.displayId == displayId) this.stackId = stackId
+                    if (this.displayId == displayId) {
+                        this.taskId = taskInfo.taskId
+                        this.stackId = stackId
+                        MLog.i(TAG, "onTaskDescriptionChanged $taskInfo")
+                    }
                 }
             }
         }
@@ -211,7 +213,7 @@ class FreeformTaskStackListener(
                     window.freeformConfig.hangUpHeight = minHangUp
                 }
             }
-            window.uiHandler.post { window.changeOrientation() }
+            window.handler.post { window.changeOrientation() }
         }
     }
 

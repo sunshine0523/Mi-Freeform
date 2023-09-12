@@ -21,4 +21,6 @@
     <string name="log">日志</string>
     <string name="show_ime_in_freeform">在小窗中展示输入法</string>
     <string name="show_ime_in_freeform_message">在小窗中展示输入法，仅支持Android 12+</string>
+    <string name="notification_freeform">米窗</string>
+    <string name="title_activity_freeform">启动小窗</string>
 </resources>

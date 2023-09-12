@@ -5,12 +5,12 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Handler
-import android.util.Log
 import android.view.Display
 import android.view.IRotationWatcher
 import android.view.WindowManager
 import io.sunshine0523.freeform.service.SystemServiceHolder
 import io.sunshine0523.freeform.util.MLog
+import java.lang.reflect.Field
 
 /**
  * @author KindBrave
@@ -51,23 +51,24 @@ class SideBarWindow(
             rightView.setBackgroundColor(Color.TRANSPARENT)
             SideBarTouchListener(this)
             leftWindowParams.apply {
-                type = 2017
+                type = 2038
                 width = 50
                 height = screenHeight / 5
                 x = -screenWidth / 2
                 y = -screenHeight / 6
-                flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                flags = 8 or 256 or 1024 or 524288 or 16777216
                 format = PixelFormat.RGBA_8888
             }
             rightWindowParams.apply {
-                type = 2017
+                type = 2038
                 width = 50
                 height = screenHeight / 5
                 x = screenWidth / 2
                 y = -screenHeight / 6
-                flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                flags = 8 or 256 or 1024 or 524288 or 16777216
                 format = PixelFormat.RGBA_8888
             }
+            setPrivateFlag()
             uiHandler.post {
                 runCatching {
                     windowManager.addView(leftView, leftWindowParams)
@@ -85,6 +86,18 @@ class SideBarWindow(
                 }
             }
         }
+    }
+
+    private fun setPrivateFlag() {
+        val classname = "android.view.WindowManager\$LayoutParams"
+        try {
+            val layoutParamsClass: Class<*> = Class.forName(classname)
+            val privateFlags: Field = layoutParamsClass.getField("privateFlags")
+            var privateFlagsValue: Int = privateFlags.getInt(leftWindowParams)
+            privateFlagsValue = privateFlagsValue or 16
+            privateFlags.setInt(leftWindowParams, privateFlagsValue)
+            privateFlags.setInt(rightWindowParams, privateFlagsValue)
+        } catch (e: Exception) { }
     }
 
     /**

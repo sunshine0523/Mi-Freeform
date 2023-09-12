@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import io.sunshine0523.freeform.service.MiFreeformServiceHolder
 import io.sunshine0523.freeform.service.SystemServiceHolder
+import io.sunshine0523.freeform.util.MLog
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -51,23 +52,29 @@ class LeftViewClickListener(private val window: FreeformWindow) : View.OnClickLi
  * to full screen
  */
 class LeftViewLongClickListener(private val window: FreeformWindow): View.OnLongClickListener {
+    companion object {
+        private const val TAG = "Mi-Freeform/TouchListener"
+    }
     override fun onLongClick(v: View): Boolean {
         if (null != window.freeformTaskStackListener) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                SystemServiceHolder.activityTaskManager.moveRootTaskToDisplay(window.freeformTaskStackListener!!.taskId, Display.DEFAULT_DISPLAY)
-            } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-                SystemServiceHolder.activityTaskManager.moveStackToDisplay(window.freeformTaskStackListener!!.stackId, Display.DEFAULT_DISPLAY)
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                    if (window.freeformTaskStackListener!!.taskId == -1) {
+                        MLog.e(TAG, "taskId is -1, can`t move")
+                        return true
+                    }
+                    SystemServiceHolder.activityTaskManager.moveRootTaskToDisplay(window.freeformTaskStackListener!!.taskId, Display.DEFAULT_DISPLAY)
+                }
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
+                    if (window.freeformTaskStackListener!!.stackId == -1) {
+                        MLog.e(TAG, "stackId is -1, can`t move")
+                        return true
+                    }
+                    SystemServiceHolder.activityTaskManager.moveStackToDisplay(window.freeformTaskStackListener!!.stackId, Display.DEFAULT_DISPLAY)
+                }
             }
         }
         window.destroy(false)
-//        FreeformAnimation.toFullScreen(window, 500, object : AnimatorListener {
-//            override fun onAnimationEnd(p0: Animator) {
-//
-//            }
-//            override fun onAnimationStart(p0: Animator) {}
-//            override fun onAnimationCancel(p0: Animator) {}
-//            override fun onAnimationRepeat(p0: Animator) {}
-//        })
         return true
     }
 }
@@ -77,7 +84,7 @@ class LeftViewLongClickListener(private val window: FreeformWindow): View.OnLong
  */
 class RightViewLongClickListener(private val window: FreeformWindow): View.OnLongClickListener {
     override fun onLongClick(v: View): Boolean {
-        window.uiHandler.post {
+        window.handler.post {
 //            // change orientation
 //            val tmp = window.freeformConfig.width
 //            window.freeformConfig.width = window.freeformConfig.height
@@ -118,7 +125,7 @@ class ScaleTouchListener(private val window: FreeformWindow, private val isRight
                 if (window.freeformView.surfaceTexture != null) {
                     window.freeformConfig.width = window.freeformRootView.layoutParams.width
                     window.freeformConfig.height = window.freeformRootView.layoutParams.height
-                    window.uiHandler.post { window.makeSureFreeformInScreen() }
+                    window.handler.post { window.makeSureFreeformInScreen() }
                     window.measureScale()
                     MiFreeformServiceHolder.resizeFreeform(
                         window,
@@ -145,7 +152,7 @@ class HangUpGestureListener(private val window: FreeformWindow) : SimpleOnGestur
     }
 
     override fun onSingleTapUp(e: MotionEvent): Boolean {
-        window.uiHandler.post { window.handleHangUp() }
+        window.handler.post { window.handleHangUp() }
         return true
     }
 
@@ -156,7 +163,7 @@ class HangUpGestureListener(private val window: FreeformWindow) : SimpleOnGestur
         distanceY: Float
     ): Boolean {
         if (null == e1) return true
-        window.uiHandler.post {
+        window.handler.post {
             window.windowManager.updateViewLayout(window.freeformLayout, window.windowParams.apply {
                 x = (startX + e2.rawX - e1.rawX).roundToInt()
                 y = (startY + e2.rawY - e1.rawY).roundToInt()

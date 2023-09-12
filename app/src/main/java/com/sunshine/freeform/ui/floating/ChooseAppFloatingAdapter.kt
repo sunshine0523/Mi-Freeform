@@ -10,7 +10,6 @@ import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.os.UserHandle
 import android.os.UserManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,6 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.sunshine.freeform.MiFreeformServiceManager
 import com.sunshine.freeform.R
 import com.sunshine.freeform.room.FreeFormAppsEntity
-import com.sunshine.freeform.ui.app_list.FreeformAppActivity
 import kotlin.math.roundToInt
 
 /**
@@ -75,8 +73,9 @@ class ChooseAppFloatingAdapter(
                 holder.icon.setImageResource(R.drawable.ic_all)
                 holder.appName.text = context.getString(R.string.all_apps)
                 holder.click.setOnClickListener {
-                    MiFreeformServiceManager.createDisplay(
-                        ComponentName("com.sunshine.freeform", "com.sunshine.freeform.ui.app_list.AppListActivity"),
+                    MiFreeformServiceManager.createWindow(
+                        "com.sunshine.freeform",
+                        "com.sunshine.freeform.ui.app_list.AppListActivity",
                         0,
                         viewModel.getIntSp("freeform_width", (viewModel.screenWidth * 0.8).roundToInt()),
                         viewModel.getIntSp("freeform_height", (viewModel.screenHeight * 0.5).roundToInt()),
@@ -90,8 +89,9 @@ class ChooseAppFloatingAdapter(
                 holder.icon.setImageResource(R.drawable.ic_add)
                 holder.appName.text = context.getString(R.string.edit_apps)
                 holder.click.setOnClickListener {
-                    MiFreeformServiceManager.createDisplay(
-                        ComponentName("com.sunshine.freeform", "com.sunshine.freeform.ui.app_list.FreeformAppActivity"),
+                    MiFreeformServiceManager.createWindow(
+                        "com.sunshine.freeform",
+                        "com.sunshine.freeform.ui.app_list.FreeformAppActivity",
                         0,
                         viewModel.getIntSp("freeform_width", (viewModel.screenWidth * 0.8).roundToInt()),
                         viewModel.getIntSp("freeform_height", (viewModel.screenHeight * 0.5).roundToInt()),
@@ -110,8 +110,9 @@ class ChooseAppFloatingAdapter(
                         .into(holder.icon)
                     holder.appName.text = getLabel(appInfo, apps[position - 1].userId)
                     holder.click.setOnClickListener {
-                        MiFreeformServiceManager.createDisplay(
-                            ComponentName(apps[position - 1].packageName, apps[position - 1].activityName),
+                        MiFreeformServiceManager.createWindow(
+                            apps[position - 1].packageName,
+                            apps[position - 1].activityName,
                             apps[position - 1].userId,
                             viewModel.getIntSp("freeform_width", (viewModel.screenWidth * 0.8).roundToInt()),
                             viewModel.getIntSp("freeform_height", (viewModel.screenHeight * 0.5).roundToInt()),

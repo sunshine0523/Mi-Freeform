@@ -1,11 +1,18 @@
 package io.sunshine0523.freeform.service;
 
+import static android.content.Context.CONTEXT_IGNORE_SECURITY;
+import static android.content.Context.CONTEXT_INCLUDE_CODE;
+
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.view.Surface;
 
 import com.android.server.display.MiFreeformDisplayAdapter;
@@ -14,6 +21,7 @@ import java.util.Map;
 
 import io.sunshine0523.freeform.IMiFreeformDisplayCallback;
 import io.sunshine0523.freeform.IMiFreeformUIService;
+import io.sunshine0523.freeform.notification.FreeformNotificationListener;
 import io.sunshine0523.freeform.ui.freeform.FreeformWindow;
 import io.sunshine0523.freeform.ui.freeform.FreeformWindowManager;
 import io.sunshine0523.freeform.util.DataChangeListener;
@@ -29,17 +37,21 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
     private MiFreeformDisplayAdapter miFreeformDisplayAdapter = null;
     private MiFreeformService miFreeformService = null;
     private Handler uiHandler = null;
+    private Handler handler = null;
     private Settings settings;
     private SideBarService sideBarService;
+    private FreeformNotificationListener notificationListener;
 
-    public MiFreeformUIService(Context context, MiFreeformDisplayAdapter miFreeformDisplayAdapter, MiFreeformService miFreeformService, Handler uiHandler) {
-        if (null == context || null == miFreeformDisplayAdapter || null == miFreeformService || null == uiHandler) return;
+    public MiFreeformUIService(Context context, MiFreeformDisplayAdapter miFreeformDisplayAdapter, MiFreeformService miFreeformService, Handler uiHandler, Handler handler) {
+        if (null == context || null == miFreeformDisplayAdapter || null == miFreeformService || null == uiHandler || null == handler) return;
 
         this.systemContext = context;
         this.miFreeformDisplayAdapter = miFreeformDisplayAdapter;
         this.miFreeformService = miFreeformService;
         this.uiHandler = uiHandler;
+        this.handler = handler;
         this.settings = DataHelper.INSTANCE.getSettings();
+
         SystemServiceHolder.init(() -> {
             try {
                 ServiceManager.addService("mi_freeform", this);
@@ -52,19 +64,33 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
             }
             if (ServiceManager.getService("mi_freeform") == null) return;
             this.sideBarService = new SideBarService(context, uiHandler, settings);
+
+            try {
+                Context userContext = context.createPackageContext("com.sunshine.freeform", CONTEXT_INCLUDE_CODE | CONTEXT_IGNORE_SECURITY);
+                NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationListener = new FreeformNotificationListener(userContext, notificationManager, handler);
+                SystemServiceHolder.notificationManager.registerListener(
+                        notificationListener,
+                        new ComponentName("com.sunshine.freeform", "com.sunshine.freeform.ui.main.MainActivity"),
+                        0
+                );
+            } catch (Exception e) {
+                MLog.e(TAG, "register notification listener failed: " + e);
+            }
+
         });
     }
 
     @Override
     public void startAppInFreeform(
-            ComponentName componentName, int userId,
+            String packageName, String activityName, int userId, PendingIntent pendingIntent,
             int width, int height, int densityDpi, float refreshRate,
             boolean secure, boolean ownContentOnly, boolean shouldShowSystemDecorations,
             String resPkg, String layoutName) {
         MLog.i(TAG, "startAppInFreeform");
         FreeformWindowManager.addWindow(
-                uiHandler, systemContext,
-                componentName, userId,
+                handler, systemContext,
+                packageName, activityName, userId, pendingIntent,
                 width, height, densityDpi, refreshRate,
                 secure, ownContentOnly, shouldShowSystemDecorations,
                 resPkg, layoutName);
@@ -130,7 +156,12 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
 
     @Override
     public void collapseStatusBar() {
-        uiHandler.post(() -> SystemServiceHolder.statusBarService.collapsePanels());
+        handler.post(() -> SystemServiceHolder.statusBarService.collapsePanels());
+    }
+
+    @Override
+    public void cancelNotification(String key) {
+        handler.post(() -> SystemServiceHolder.notificationManager.cancelNotificationsFromListener(notificationListener, new String[]{key}));
     }
 
 }

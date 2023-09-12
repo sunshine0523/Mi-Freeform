@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
+/app/libs/XposedBridgeAPI-89.jar
