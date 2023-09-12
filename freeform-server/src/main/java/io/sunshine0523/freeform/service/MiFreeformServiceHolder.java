@@ -75,10 +75,10 @@ public class MiFreeformServiceHolder {
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             ActivityOptions activityOptions = ActivityOptions.makeBasic();
             activityOptions.setLaunchDisplayId(displayId);
-//            ActivityOptionsHidden activityOptionsHidden = Refine.unsafeCast(activityOptions);
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//                activityOptionsHidden.setCallerDisplayId(displayId);
-//            }
+            ActivityOptionsHidden activityOptionsHidden = Refine.unsafeCast(activityOptions);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                activityOptionsHidden.setCallerDisplayId(displayId);
+            }
             Context.class.getMethod("startActivityAsUser", Intent.class, Bundle.class, UserHandleHidden.class)
                     .invoke(context, intent, activityOptions.toBundle(), new UserHandleHidden(appConfig.getUserId()));
             return true;
@@ -93,7 +93,9 @@ public class MiFreeformServiceHolder {
         ActivityOptions activityOptions = ActivityOptions.makeBasic();
         activityOptions.setLaunchDisplayId(displayId);
         ActivityOptionsHidden activityOptionsHidden = Refine.unsafeCast(activityOptions);
-        activityOptionsHidden.setCallerDisplayId(displayId);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            activityOptionsHidden.setCallerDisplayId(displayId);
+        }
         SystemServiceHolder.activityManager.sendIntentSender(
                 pendingIntentHidden.getTarget(),
                 pendingIntentHidden.getWhitelistToken(),

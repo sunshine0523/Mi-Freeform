@@ -6,6 +6,7 @@ import android.app.ITaskStackListener
 import android.content.ComponentName
 import android.os.Build
 import android.util.Log
+import android.view.Surface
 import android.window.TaskSnapshot
 import androidx.annotation.RequiresApi
 import io.sunshine0523.freeform.service.MiFreeformServiceHolder
@@ -22,6 +23,8 @@ class FreeformTaskStackListener(
     var taskId = -1
     //For A10
     var stackId = -1
+    // if true, listen taskRemoved
+    var listenTaskRemoved = false
 
     companion object {
         private const val TAG = "Mi-Freeform/FreeformTaskStackListener"
@@ -68,14 +71,14 @@ class FreeformTaskStackListener(
         taskInfo: ActivityManager.RunningTaskInfo?,
         requestedDisplayId: Int
     ) {
-
+        Log.e(TAG, "onActivityLaunchOnSecondaryDisplayFailed $taskInfo $requestedDisplayId")
     }
 
     override fun onActivityLaunchOnSecondaryDisplayRerouted(
         taskInfo: ActivityManager.RunningTaskInfo?,
         requestedDisplayId: Int
     ) {
-
+        Log.e(TAG, "onActivityLaunchOnSecondaryDisplayRerouted $taskInfo $requestedDisplayId")
     }
 
     override fun onTaskCreated(taskId: Int, componentName: ComponentName?) {
@@ -83,13 +86,15 @@ class FreeformTaskStackListener(
     }
 
     override fun onTaskRemoved(taskId: Int) {
-        MLog.i(TAG, "onTaskRemoved $taskId")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            SystemServiceHolder.activityTaskManager.unregisterTaskStackListener(this)
-        } else {
-            SystemServiceHolder.activityManager.unregisterTaskStackListener(this)
+        if (listenTaskRemoved) {
+            MLog.i(TAG, "onTaskRemoved $taskId")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                SystemServiceHolder.activityTaskManager.unregisterTaskStackListener(this)
+            } else {
+                SystemServiceHolder.activityManager.unregisterTaskStackListener(this)
+            }
+            MiFreeformServiceHolder.releaseFreeform(window)
         }
-        MiFreeformServiceHolder.releaseFreeform(window)
     }
 
     override fun onTaskMovedToFront(taskId: Int) {
@@ -102,7 +107,10 @@ class FreeformTaskStackListener(
                 val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
                 if (this.displayId == displayId) {
                     taskId = taskInfo.taskId
-                    MLog.i(TAG, "onTaskDescriptionChanged $taskInfo")
+                    if (FreeformWindowManager.settings.showImeInFreeform && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        SystemServiceHolder.windowManager.setDisplayImePolicy(displayId, 0)
+                    }
+                    MLog.i(TAG, "onTaskMovedToFront $taskInfo")
                 }
             }
         }
@@ -128,7 +136,7 @@ class FreeformTaskStackListener(
                     val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
                     val stackId = taskInfo::class.java.getField("stackId").get(taskInfo) as Int
                     if (this.taskId == taskInfo.taskId && displayId != this.displayId) {
-                        window.destroy(false)
+                        window.destroy("onTaskDescriptionChanged: display!=this.display", false)
                     }
                     if (this.displayId == displayId) {
                         this.taskId = taskInfo.taskId
@@ -147,7 +155,7 @@ class FreeformTaskStackListener(
     override fun onTaskRemovalStarted(taskId: Int) {
         Log.i(TAG, "onTaskRemovalStarted")
         if (this.taskId == taskId) {
-            window.destroy(false)
+            window.destroy("onTaskRemovalStarted", false)
         }
     }
 
@@ -155,7 +163,7 @@ class FreeformTaskStackListener(
     override fun onTaskRemovalStarted(taskInfo: ActivityManager.RunningTaskInfo?) {
         Log.i(TAG, "onTaskRemovalStarted")
         if (this.taskId == taskInfo?.taskId) {
-            window.destroy(false)
+            window.destroy("onTaskRemovalStarted", false)
         }
     }
 

@@ -32,7 +32,7 @@ public class FreeformWindowManager {
         FreeformWindow window = new FreeformWindow(handler, context, appConfig, freeformConfig, uiConfig);
         //if freeform exist, remove old
         FreeformWindow oldWindow = freeformWindows.get(window.getFreeformId());
-        if (oldWindow != null) oldWindow.destroy(false);
+        if (oldWindow != null) oldWindow.destroy("addWindow:destroy old window", false);
         freeformWindows.put(window.getFreeformId(), window);
     }
 
@@ -41,6 +41,6 @@ public class FreeformWindowManager {
      */
     public static void removeWindow(String freeformId) {
         FreeformWindow removedWindow = freeformWindows.remove(freeformId);
-        if (removedWindow != null) removedWindow.destroy(false);
+        if (removedWindow != null) removedWindow.destroy("FreeformWindowManager#removeWindow", false);
     }
 }

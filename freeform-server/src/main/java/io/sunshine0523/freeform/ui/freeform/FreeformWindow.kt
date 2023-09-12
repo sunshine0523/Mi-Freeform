@@ -55,9 +55,9 @@ class FreeformWindow(
         measureScale()
         if (MiFreeformServiceHolder.ping()) {
             MLog.i(TAG, "FreeformWindow init")
-            handler.post { if (!addFreeformView()) destroy() }
+            handler.post { if (!addFreeformView()) destroy("init:addFreeform failed") }
         } else {
-            destroy()
+            destroy("init:service not running")
             // NOT RUNNING !!!
         }
     }
@@ -101,24 +101,21 @@ class FreeformWindow(
         } else {
             SystemServiceHolder.activityManager.registerTaskStackListener(freeformTaskStackListener)
         }
-//        if (FreeformWindowManager.settings.showImeInFreeform && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            SystemServiceHolder.windowManager.setDisplayImePolicy(displayId, 0)
-//        }
         handler.post {
             // pendingIntent
             if (appConfig.userId == -100) {
-                if (appConfig.pendingIntent == null) destroy(false)
+                if (appConfig.pendingIntent == null) destroy("onDisplayAdd:userId=-100, but pendingIntent is null", false)
                 else {
                     MiFreeformServiceHolder.startPendingIntent(appConfig.pendingIntent, displayId)
                 }
             } else {
-                MiFreeformServiceHolder.startApp(context, appConfig, displayId)
+                if (MiFreeformServiceHolder.startApp(context, appConfig, displayId).not()) destroy("onDisplayAdd:startApp failed", false)
             }
 
             val rightView = resourceHolder.getLayoutChildViewByTag<View>(freeformLayout, "rightView")
             if (null == rightView) {
-                MLog.e(TAG, "left&leftScale&rightScale view is null")
-                destroy()
+                MLog.e(TAG, "right&rightScale view is null")
+                destroy("onDisplayAdd:rightView is null")
                 return@post
             }
             rightView.setOnClickListener(RightViewClickListener(displayId))
@@ -196,7 +193,7 @@ class FreeformWindow(
         val rightScaleView = resourceHolder.getLayoutChildViewByTag<View>(freeformLayout, "rightScaleView")
         if (null == leftView || null == leftScaleView || null == rightScaleView) {
             MLog.e(TAG, "left&leftScale&rightScale view is null")
-            destroy()
+            destroy("addFreeformView:left&leftScale&rightScale view is null")
             return false
         }
         leftView.setOnClickListener(LeftViewClickListener(this))
@@ -336,8 +333,8 @@ class FreeformWindow(
         }
     }
 
-    fun destroy(removeTask: Boolean = true) {
-        MLog.i(TAG, "destroy ${getFreeformId()}, displayId=$displayId")
+    fun destroy(callReason: String, removeTask: Boolean = true) {
+        MLog.i(TAG, "destroy ${getFreeformId()}, displayId=$displayId, callReason: $callReason")
         handler.post {
             runCatching { windowManager.removeViewImmediate(freeformLayout) }.onFailure { exception -> Log.e(TAG, "removeView failed $exception") }
         }
@@ -352,5 +349,6 @@ class FreeformWindow(
         }
         SystemServiceHolder.windowManager.removeRotationWatcher(rotationWatcher)
         FreeformWindowManager.removeWindow(getFreeformId())
+        freeformTaskStackListener!!.listenTaskRemoved = true
     }
 }

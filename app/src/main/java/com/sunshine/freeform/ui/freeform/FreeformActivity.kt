@@ -27,7 +27,7 @@ class FreeformActivity : AppCompatActivity() {
         val pendingIntent =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) intent?.getParcelableExtra("pendingIntent", PendingIntent::class.java)
             else intent?.getParcelableExtra("pendingIntent") as PendingIntent?
-        Log.i("Mi-Freeform", "$key $isClearable $pendingIntent")
+        Log.i("Mi-Freeform", "$key $isClearable $pendingIntent ${pendingIntent?.creatorPackage}")
         MiFreeformServiceManager.createWindow(
             pendingIntent,
             viewModel.getIntSp("freeform_width", (viewModel.screenWidth * 0.8).roundToInt()),

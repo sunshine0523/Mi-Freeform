@@ -43,7 +43,7 @@ class MoveTouchListener(
 
 class LeftViewClickListener(private val window: FreeformWindow) : View.OnClickListener {
     override fun onClick(v: View) {
-        window.destroy()
+        window.destroy("LeftViewClickListener")
     }
 
 }
@@ -74,7 +74,7 @@ class LeftViewLongClickListener(private val window: FreeformWindow): View.OnLong
                 }
             }
         }
-        window.destroy(false)
+        window.destroy("LeftViewLongClickListener", false)
         return true
     }
 }

@@ -12,6 +12,8 @@ public interface IWindowManager extends IInterface {
     //Only support A12+
     void setDisplayImePolicy(int displayId, int imePolicy);
 
+    void freezeDisplayRotation(int displayId, int rotation);
+
     abstract class Stub extends Binder implements IWindowManager {
         public static IWindowManager asInterface(IBinder binder) {
             throw new RuntimeException("Stub!");

@@ -76,6 +76,7 @@ class FreeformNotificationListener(
                     notification.actions = actions
                     notificationManager.cancel(sbn.id)
                     notificationManager.notify(sbn.id, notification)
+                    Log.i(TAG, "${sbn.notification}")
                 } catch (e: Exception) {
                     MLog.e(TAG, "$e")
                 }
