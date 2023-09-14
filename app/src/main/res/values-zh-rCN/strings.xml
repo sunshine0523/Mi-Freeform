@@ -10,7 +10,7 @@
     <string name="title_activity_app_list">应用列表</string>
     <string name="search_app">搜索应用</string>
     <string name="sidebar">侧边栏</string>
-    <string name="sidebar_message">屏幕两侧边缘向屏幕内侧滑动启动侧边栏</string>
+    <string name="sidebar_message">屏幕两侧边缘向屏幕内侧滑动启动侧边栏。在Android 11以下设备可能与返回手势冲突，请使用上下滑动手势或其他APP启动</string>
     <string name="sidebar_height">侧边栏高度</string>
     <string name="freeform_width">小窗宽度</string>
     <string name="freeform_height">小窗高度</string>

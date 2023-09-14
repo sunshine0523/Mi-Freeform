@@ -21,7 +21,7 @@ class FreeformTaskStackListener(
 ) : ITaskStackListener.Stub() {
 
     var taskId = -1
-    //For A10
+    //For A10, A11
     var stackId = -1
     // if true, listen taskRemoved
     var listenTaskRemoved = false
@@ -126,7 +126,7 @@ class FreeformTaskStackListener(
 
     override fun onTaskDescriptionChanged(taskInfo: ActivityManager.RunningTaskInfo?) {
         when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
                 if (taskInfo != null) {
                     val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
                     if (this.displayId == displayId) {
@@ -135,7 +135,7 @@ class FreeformTaskStackListener(
                     }
                 }
             }
-            Build.VERSION.SDK_INT == Build.VERSION_CODES.Q -> {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
                 if (taskInfo != null) {
                     val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
                     val stackId = taskInfo::class.java.getField("stackId").get(taskInfo) as Int

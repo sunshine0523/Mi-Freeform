@@ -23,7 +23,7 @@
 
     <!--SettingView-->
     <string name="sidebar">SideBar</string>
-    <string name="sidebar_message">Swipe both sides of the screen to the inside of the screen to launch the sidebar</string>
+    <string name="sidebar_message">Swipe both sides of the screen to the inside of the screen to launch the sidebar. On devices below Android 11, it may conflict with the back gesture. Please use the up and down gesture or another APP to start</string>
     <string name="sidebar_height">SideBar Height</string>
     <string name="freeform_width">Freeform Width</string>
     <string name="freeform_height">Freeform Height</string>
