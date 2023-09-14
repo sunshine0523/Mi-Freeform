@@ -7,7 +7,10 @@ import android.graphics.PixelFormat
 import android.os.Handler
 import android.view.Display
 import android.view.IRotationWatcher
+import android.view.View
+import android.view.WindowInsetsHidden
 import android.view.WindowManager
+import android.view.WindowManagerHidden
 import io.sunshine0523.freeform.service.SystemServiceHolder
 import io.sunshine0523.freeform.util.MLog
 import java.lang.reflect.Field
@@ -21,10 +24,10 @@ class SideBarWindow(
     val uiHandler: Handler
 ) : IRotationWatcher.Stub() {
     private val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    private val leftWindowParams = WindowManager.LayoutParams()
-    private val rightWindowParams = WindowManager.LayoutParams()
-    lateinit var leftView: SideBarView
-    lateinit var rightView: SideBarView
+    private val leftWindowParams = WindowManagerHidden.LayoutParams()
+    private val rightWindowParams = WindowManagerHidden.LayoutParams()
+    lateinit var leftView: View
+    lateinit var rightView: View
 
     companion object {
         private const val TAG = "Mi-Freeform/SideBarWindow"
@@ -45,30 +48,37 @@ class SideBarWindow(
         val screenWidth = context.resources.displayMetrics.widthPixels
         val screenHeight = context.resources.displayMetrics.heightPixels
         uiHandler.post {
-            leftView = SideBarView(context)
-            rightView = SideBarView(context)
+            leftView = View(context)
+            rightView = View(context)
             leftView.setBackgroundColor(Color.TRANSPARENT)
             rightView.setBackgroundColor(Color.TRANSPARENT)
             SideBarTouchListener(this)
             leftWindowParams.apply {
-                type = 2038
-                width = 50
+                type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                width = 100
                 height = screenHeight / 5
                 x = -screenWidth / 2
                 y = -screenHeight / 6
-                flags = 8 or 256 or 1024 or 524288 or 16777216
+                flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
+                        WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+                privateFlags = WindowManagerHidden.LayoutParams.SYSTEM_FLAG_SHOW_FOR_ALL_USERS or WindowManagerHidden.LayoutParams.PRIVATE_FLAG_IS_ROUNDED_CORNERS_OVERLAY or WindowManagerHidden.LayoutParams.PRIVATE_FLAG_USE_BLAST or WindowManagerHidden.LayoutParams.PRIVATE_FLAG_TRUSTED_OVERLAY
                 format = PixelFormat.RGBA_8888
             }
             rightWindowParams.apply {
-                type = 2038
-                width = 50
+                type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                width = 100
                 height = screenHeight / 5
                 x = screenWidth / 2
                 y = -screenHeight / 6
-                flags = 8 or 256 or 1024 or 524288 or 16777216
+                flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
+                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
+                        WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+                privateFlags = WindowManagerHidden.LayoutParams.SYSTEM_FLAG_SHOW_FOR_ALL_USERS or WindowManagerHidden.LayoutParams.PRIVATE_FLAG_IS_ROUNDED_CORNERS_OVERLAY or WindowManagerHidden.LayoutParams.PRIVATE_FLAG_USE_BLAST or WindowManagerHidden.LayoutParams.PRIVATE_FLAG_TRUSTED_OVERLAY
                 format = PixelFormat.RGBA_8888
             }
-            setPrivateFlag()
             uiHandler.post {
                 runCatching {
                     windowManager.addView(leftView, leftWindowParams)
@@ -86,18 +96,6 @@ class SideBarWindow(
                 }
             }
         }
-    }
-
-    private fun setPrivateFlag() {
-        val classname = "android.view.WindowManager\$LayoutParams"
-        try {
-            val layoutParamsClass: Class<*> = Class.forName(classname)
-            val privateFlags: Field = layoutParamsClass.getField("privateFlags")
-            var privateFlagsValue: Int = privateFlags.getInt(leftWindowParams)
-            privateFlagsValue = privateFlagsValue or 16
-            privateFlags.setInt(leftWindowParams, privateFlagsValue)
-            privateFlags.setInt(rightWindowParams, privateFlagsValue)
-        } catch (e: Exception) { }
     }
 
     /**

@@ -17,6 +17,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.sunshine.freeform.MiFreeformServiceManager
 import com.sunshine.freeform.R
@@ -107,6 +108,7 @@ class ChooseAppFloatingAdapter(
                     Glide.with(context)
                         .load(appInfo.loadIcon(context.packageManager))
                         .transition(DrawableTransitionOptions.withCrossFade())
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .into(holder.icon)
                     holder.appName.text = getLabel(appInfo, apps[position - 1].userId)
                     holder.click.setOnClickListener {

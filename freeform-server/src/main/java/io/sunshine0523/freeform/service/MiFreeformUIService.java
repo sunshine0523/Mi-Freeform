@@ -9,10 +9,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.util.ArrayMap;
-import android.util.Log;
 import android.view.Surface;
 
 import com.android.server.display.MiFreeformDisplayAdapter;
@@ -22,9 +20,7 @@ import java.util.Map;
 import io.sunshine0523.freeform.IMiFreeformDisplayCallback;
 import io.sunshine0523.freeform.IMiFreeformUIService;
 import io.sunshine0523.freeform.notification.FreeformNotificationListener;
-import io.sunshine0523.freeform.ui.freeform.FreeformWindow;
 import io.sunshine0523.freeform.ui.freeform.FreeformWindowManager;
-import io.sunshine0523.freeform.util.DataChangeListener;
 import io.sunshine0523.freeform.util.DataHelper;
 import io.sunshine0523.freeform.util.MLog;
 import io.sunshine0523.freeform.util.Settings;
@@ -64,20 +60,7 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
             }
             if (ServiceManager.getService("mi_freeform") == null) return;
             this.sideBarService = new SideBarService(context, uiHandler, settings);
-
-            try {
-                Context userContext = context.createPackageContext("com.sunshine.freeform", CONTEXT_INCLUDE_CODE | CONTEXT_IGNORE_SECURITY);
-                NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationListener = new FreeformNotificationListener(userContext, notificationManager, handler);
-                SystemServiceHolder.notificationManager.registerListener(
-                        notificationListener,
-                        new ComponentName("com.sunshine.freeform", "com.sunshine.freeform.ui.main.MainActivity"),
-                        0
-                );
-            } catch (Exception e) {
-                MLog.e(TAG, "register notification listener failed: " + e);
-            }
-
+            initNotificationListener();
         });
     }
 
@@ -163,6 +146,21 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
     @Override
     public void cancelNotification(String key) {
         handler.post(() -> SystemServiceHolder.notificationManager.cancelNotificationsFromListener(notificationListener, new String[]{key}));
+    }
+
+    private void initNotificationListener() {
+        try {
+            Context userContext = systemContext.createPackageContext("com.sunshine.freeform", CONTEXT_INCLUDE_CODE | CONTEXT_IGNORE_SECURITY);
+            NotificationManager notificationManager = (NotificationManager) systemContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationListener = new FreeformNotificationListener(userContext, notificationManager, handler);
+            SystemServiceHolder.notificationManager.registerListener(
+                    notificationListener,
+                    new ComponentName("com.sunshine.freeform", "com.sunshine.freeform.ui.main.MainActivity"),
+                    0
+            );
+        } catch (Exception e) {
+            MLog.e(TAG, "register notification listener failed: " + e);
+        }
     }
 
 }

@@ -1,13 +1,20 @@
 package io.sunshine0523.freeform;
 
+import android.content.Context;
 import android.os.Binder;
 import android.os.Build;
+import android.util.Log;
+import android.view.IWindowManager;
 
+import com.android.server.SystemServer;
+import com.android.server.wm.WindowManagerService;
 import com.github.kr328.magic.services.ServiceManagerProxy;
+import com.github.kr328.zloader.BinderInterceptors;
 import com.github.kr328.zloader.ZygoteLoader;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 import io.sunshine0523.freeform.util.MLog;
 
@@ -35,7 +42,6 @@ public class ZygoteMain {
                             throw new RuntimeException(e);
                         }
                     }
-
                     return super.addService(name, service);
                 }
             });

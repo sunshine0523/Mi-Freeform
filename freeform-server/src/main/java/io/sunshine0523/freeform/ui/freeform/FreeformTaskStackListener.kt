@@ -107,8 +107,12 @@ class FreeformTaskStackListener(
                 val displayId = taskInfo::class.java.getField("displayId").get(taskInfo) as Int
                 if (this.displayId == displayId) {
                     taskId = taskInfo.taskId
-                    if (FreeformWindowManager.settings.showImeInFreeform && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        SystemServiceHolder.windowManager.setDisplayImePolicy(displayId, 0)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        if (FreeformWindowManager.settings.showImeInFreeform) {
+                            SystemServiceHolder.windowManager.setDisplayImePolicy(displayId, 0)
+                        } else {
+                            SystemServiceHolder.windowManager.setDisplayImePolicy(displayId, 1)
+                        }
                     }
                     MLog.i(TAG, "onTaskMovedToFront $taskInfo")
                 }

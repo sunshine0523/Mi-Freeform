@@ -62,7 +62,7 @@ class FloatingWindow(
                     flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     format = PixelFormat.RGBA_8888
                     gravity = Gravity.CENTER_VERTICAL
-                    windowAnimations = android.R.style.Animation_Dialog
+                    windowAnimations = if (isLeft) R.style.FloatingViewLeftAnim else R.style.FloatingViewRightAnim
                 }
 
                 setFloatingViewContent(floatingView)

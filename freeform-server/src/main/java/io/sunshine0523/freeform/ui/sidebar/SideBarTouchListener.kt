@@ -42,19 +42,12 @@ class SideBarTouchListener(private val sideBarWindow: SideBarWindow) {
             velocity: Float
         ): Boolean {
             if (null != gestureEvent) {
-                when (gestureEvent) {
-                    MGestureManager.GestureEvent.SINGLE_GINGER_UP_SLIP, MGestureManager.GestureEvent.SINGLE_GINGER_DOWN_SLIP -> {
-                        val intent = Intent().apply {
-                            component = ComponentName("com.sunshine.freeform", "com.sunshine.freeform.ui.floating.FloatingActivity")
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            action = Intent.ACTION_MAIN
-                            addCategory(Intent.CATEGORY_LAUNCHER)
-                            putExtra("isLeft", true)
-                        }
-                        runCatching { sideBarWindow.context.startActivity(intent) }.onFailure { MLog.e(TAG, "$it") }
-                    }
-                    else -> { }
+                val intent = Intent().apply {
+                    component = ComponentName("com.sunshine.freeform", "com.sunshine.freeform.ui.floating.FloatingActivity")
+                    putExtra("isLeft", true)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
+                runCatching { sideBarWindow.context.startActivity(intent) }.onFailure { MLog.e(TAG, "$it") }
             }
             return true
         }
@@ -69,7 +62,7 @@ class SideBarTouchListener(private val sideBarWindow: SideBarWindow) {
         ): Boolean {
             if (null != gestureEvent) {
                 when (gestureEvent) {
-                    MGestureManager.GestureEvent.SINGLE_GINGER_UP_SLIP, MGestureManager.GestureEvent.SINGLE_GINGER_DOWN_SLIP -> {
+                    MGestureManager.GestureEvent.SINGLE_GINGER_LEFT_SLIP, MGestureManager.GestureEvent.SINGLE_GINGER_RIGHT_SLIP -> {
                         val intent = Intent().apply {
                             component = ComponentName("com.sunshine.freeform", "com.sunshine.freeform.ui.floating.FloatingActivity")
                             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -78,11 +71,12 @@ class SideBarTouchListener(private val sideBarWindow: SideBarWindow) {
                             putExtra("isLeft", false)
                         }
                         runCatching { sideBarWindow.context.startActivity(intent) }.onFailure { MLog.e(TAG, "$it") }
+                        return true
                     }
                     else -> { }
                 }
             }
-            return true
+            return false
         }
     }
 }

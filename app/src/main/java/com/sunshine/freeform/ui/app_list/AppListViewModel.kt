@@ -20,6 +20,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.Collator
+import java.util.Collections
+import java.util.Locale
 import kotlin.math.max
 import kotlin.math.min
 
@@ -44,6 +47,8 @@ class AppListViewModel(private val application: Application): AndroidViewModel(a
     val screenWidth = min(application.resources.displayMetrics.widthPixels, application.resources.displayMetrics.heightPixels)
     val screenHeight = max(application.resources.displayMetrics.widthPixels, application.resources.displayMetrics.heightPixels)
     val screenDensityDpi = application.resources.displayMetrics.densityDpi
+
+    private val comparable = AppComparable()
 
     init {
         userManager.userProfiles.forEach {
@@ -82,6 +87,7 @@ class AppListViewModel(private val application: Application): AndroidViewModel(a
                     ))
                 }
             }
+            Collections.sort(allAppList, comparable)
             _appList.postValue(allAppList)
         }
     }
@@ -93,6 +99,7 @@ class AppListViewModel(private val application: Application): AndroidViewModel(a
                 val filterAppList = allAppList.filter { appInfo ->
                     appInfo.label.contains(filter, true)
                 }
+                Collections.sort(filterAppList, comparable)
                 _appList.postValue(filterAppList)
             }
         }
@@ -112,5 +119,12 @@ class AppListViewModel(private val application: Application): AndroidViewModel(a
 
     fun getIntSp(name: String, defaultValue: Int): Int {
         return sp.getInt(name, defaultValue)
+    }
+
+    private inner class AppComparable : Comparator<AppInfo> {
+        override fun compare(p0: AppInfo, p1: AppInfo): Int {
+            return Collator.getInstance(Locale.CHINESE).compare(p0.label, p1.label)
+        }
+
     }
 }
