@@ -58,6 +58,14 @@ public final class MiFreeformRDisplayAdapter extends MiFreeformDisplayAdapter {
                     LogicalDisplay display = findLogicalDisplayForDevice(device);
                     while (count-- > 0 && display == null) {
                         display = findLogicalDisplayForDevice(device);
+                        Log.i(TAG, "findLogicalDisplayForDevice " + display);
+                        if (display == null) {
+                            try {
+                                Thread.sleep(200);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
                     }
                     try {
                         callback.onDisplayAdd(display.getDisplayIdLocked());
