@@ -13,13 +13,10 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.os.UserHandleHidden;
-import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Surface;
-
-import java.util.Date;
 
 import dev.rikka.tools.refine.Refine;
 import io.sunshine0523.freeform.IMiFreeformDisplayCallback;

@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.sunshine.freeform.R
+import com.sunshine.freeform.service.ServiceViewModel
 import com.sunshine.freeform.ui.theme.MiFreeformTheme
 
 class FreeformAppActivity : ComponentActivity() {
@@ -51,7 +51,7 @@ class FreeformAppActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        val viewModel = AppListViewModel(application)
+        val viewModel = ServiceViewModel(application)
 
         setContent {
             MiFreeformTheme {
@@ -68,7 +68,7 @@ class FreeformAppActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScaffoldWidget(viewModel: AppListViewModel) {
+fun ScaffoldWidget(viewModel: ServiceViewModel) {
     Scaffold(
         topBar = {
             TopBarWidget()
@@ -101,7 +101,7 @@ fun TopBarWidget() {
 }
 
 @Composable
-fun FreeformAppListWidget(viewModel: AppListViewModel) {
+fun FreeformAppListWidget(viewModel: ServiceViewModel) {
     val appList by viewModel.appListLiveData.observeAsState(ArrayList())
     LazyColumn(content = {
         items(appList) { appInfo ->
@@ -111,7 +111,7 @@ fun FreeformAppListWidget(viewModel: AppListViewModel) {
 }
 
 @Composable
-fun FreeformAppListItem(appInfo: AppInfo, viewModel: AppListViewModel) {
+fun FreeformAppListItem(appInfo: AppInfo, viewModel: ServiceViewModel) {
     var bg by remember { mutableStateOf(Color.Transparent) }
     val selectedBg = MaterialTheme.colorScheme.primaryContainer
     if (appInfo.isFreeformApp) bg = selectedBg

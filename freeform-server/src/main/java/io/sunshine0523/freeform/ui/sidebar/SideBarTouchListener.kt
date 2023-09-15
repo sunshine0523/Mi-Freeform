@@ -44,10 +44,13 @@ class SideBarTouchListener(private val sideBarWindow: SideBarWindow) {
             if (null != gestureEvent) {
                 val intent = Intent().apply {
                     component = ComponentName("com.sunshine.freeform", "com.sunshine.freeform.ui.floating.FloatingActivity")
-                    putExtra("isLeft", true)
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    action = Intent.ACTION_MAIN
+                    addCategory(Intent.CATEGORY_LAUNCHER)
+                    putExtra("isLeft", true)
                 }
                 runCatching { sideBarWindow.context.startActivity(intent) }.onFailure { MLog.e(TAG, "$it") }
+                return true
             }
             return true
         }
@@ -61,20 +64,15 @@ class SideBarTouchListener(private val sideBarWindow: SideBarWindow) {
             velocity: Float
         ): Boolean {
             if (null != gestureEvent) {
-                when (gestureEvent) {
-                    MGestureManager.GestureEvent.SINGLE_GINGER_LEFT_SLIP, MGestureManager.GestureEvent.SINGLE_GINGER_RIGHT_SLIP -> {
-                        val intent = Intent().apply {
-                            component = ComponentName("com.sunshine.freeform", "com.sunshine.freeform.ui.floating.FloatingActivity")
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            action = Intent.ACTION_MAIN
-                            addCategory(Intent.CATEGORY_LAUNCHER)
-                            putExtra("isLeft", false)
-                        }
-                        runCatching { sideBarWindow.context.startActivity(intent) }.onFailure { MLog.e(TAG, "$it") }
-                        return true
-                    }
-                    else -> { }
+                val intent = Intent().apply {
+                    component = ComponentName("com.sunshine.freeform", "com.sunshine.freeform.ui.floating.FloatingActivity")
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    action = Intent.ACTION_MAIN
+                    addCategory(Intent.CATEGORY_LAUNCHER)
+                    putExtra("isLeft", false)
                 }
+                runCatching { sideBarWindow.context.startActivity(intent) }.onFailure { MLog.e(TAG, "$it") }
+                return true
             }
             return false
         }

@@ -25,7 +25,7 @@ class RemoteResourceHolder(context: Context, private val resPkg: String) {
             remoteContext = context.createPackageContext(resPkg, CONTEXT_INCLUDE_CODE or CONTEXT_IGNORE_SECURITY)
         } catch (e: Exception) {
             e.printStackTrace()
-            MLog.e(TAG, "init $e")
+            MLog.e(TAG, "init", e)
         }
     }
 
@@ -37,7 +37,7 @@ class RemoteResourceHolder(context: Context, private val resPkg: String) {
             r as ViewGroup
         } catch (e: Exception) {
             e.printStackTrace()
-            MLog.e(TAG, "getLayout $e")
+            MLog.e(TAG, "getLayout", e)
             null
         }
     }
@@ -49,7 +49,7 @@ class RemoteResourceHolder(context: Context, private val resPkg: String) {
             r
         } catch (e: Exception) {
             e.printStackTrace()
-            MLog.e(TAG, "getLayoutChildViewByTag $e")
+            MLog.e(TAG, "getLayoutChildViewByTag", e)
             null
         }
     }

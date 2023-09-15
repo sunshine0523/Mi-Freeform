@@ -21,13 +21,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.sunshine.freeform.R
+import com.sunshine.freeform.service.ServiceViewModel
 
 /**
  * @author KindBrave
  * @since 2023/8/29
  */
 @Composable
-fun SearchWidget(textStyle: TextStyle = TextStyle.Default, viewModel: AppListViewModel) {
+fun SearchWidget(textStyle: TextStyle = TextStyle.Default, viewModel: ServiceViewModel) {
     var text by remember { mutableStateOf("") }
     Box {
         BasicTextField(

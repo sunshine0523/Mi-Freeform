@@ -1,13 +1,10 @@
-package com.sunshine.freeform.ui.app_list
+package com.sunshine.freeform.service
 
 import android.app.Application
 import android.content.Context
-import android.content.pm.ApplicationInfo
-import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.os.UserHandle
 import android.os.UserManager
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,10 +12,9 @@ import androidx.lifecycle.viewModelScope
 import com.sunshine.freeform.MiFreeform
 import com.sunshine.freeform.room.DatabaseRepository
 import com.sunshine.freeform.room.FreeFormAppsEntity
+import com.sunshine.freeform.ui.app_list.AppInfo
 import com.sunshine.freeform.utils.contains
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.Collator
 import java.util.Collections
@@ -30,14 +26,13 @@ import kotlin.math.min
  * @author KindBrave
  * @since 2023/8/25
  */
-class AppListViewModel(private val application: Application): AndroidViewModel(application) {
+class ServiceViewModel(private val application: Application): AndroidViewModel(application) {
     private val repository = DatabaseRepository(application)
     private val allAppList = ArrayList<AppInfo>()
     val appListLiveData: LiveData<List<AppInfo>>
         get() = _appList
     private val _appList = MutableLiveData<List<AppInfo>>()
-    private val _finishActivity = MutableLiveData<Boolean>()
-    val finishActivity: LiveData<Boolean> = _finishActivity
+    val finishActivity = MutableLiveData<Boolean>()
 
     private val launcherApps: LauncherApps = application.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
     private val userManager: UserManager = application.getSystemService(Context.USER_SERVICE) as UserManager
@@ -78,13 +73,15 @@ class AppListViewModel(private val application: Application): AndroidViewModel(a
                         info1.activityName == info2.activityName &&
                         info1.userId == info2.userId
                     }
-                    allAppList.add(AppInfo(
+                    allAppList.add(
+                        AppInfo(
                         "${info.label}${if (com.sunshine.freeform.systemapi.UserHandle.getUserId(userHandle) != 0) -com.sunshine.freeform.systemapi.UserHandle.getUserId(userHandle) else ""}",
                         info.applicationInfo.loadIcon(application.packageManager),
                         info.componentName,
                         userId,
                         isFreeformApp
-                    ))
+                    )
+                    )
                 }
             }
             Collections.sort(allAppList, comparable)
@@ -114,7 +111,7 @@ class AppListViewModel(private val application: Application): AndroidViewModel(a
     }
 
     fun closeActivity() {
-        _finishActivity.value = true
+        finishActivity.value = true
     }
 
     fun getIntSp(name: String, defaultValue: Int): Int {
