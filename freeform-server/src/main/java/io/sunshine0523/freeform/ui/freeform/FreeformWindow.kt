@@ -125,6 +125,7 @@ class FreeformWindow(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(view: View, event: MotionEvent): Boolean {
+        Log.i(TAG, "1")
         val pointerCoords: Array<MotionEvent.PointerCoords?> = arrayOfNulls(event.pointerCount)
         val pointerProperties: Array<MotionEvent.PointerProperties?> = arrayOfNulls(event.pointerCount)
         for (i in 0 until event.pointerCount) {
@@ -201,7 +202,7 @@ class FreeformWindow(
         leftScaleView.setOnTouchListener(ScaleTouchListener(this, false))
         rightScaleView.setOnTouchListener(ScaleTouchListener(this))
 
-        freeformView = TextureView(context).apply {
+        freeformView = FreeformTextureView(context).apply {
             setOnTouchListener(this@FreeformWindow)
             surfaceTextureListener = this@FreeformWindow
         }

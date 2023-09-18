@@ -9,6 +9,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.util.ArrayMap;
 //@RefineAs(Display.class)
+import android.util.Log;
 import android.view.DisplayHidden;
 import android.view.Surface;
 //@RefineAs(SurfaceControl.class)
@@ -39,7 +40,7 @@ public final class MiFreeformTDisplayAdapter extends MiFreeformDisplayAdapter {
     ) {
         super(syncRoot, context, handler, listener, uiHandler, TAG);
         mLogicalDisplayMapper = logicalDisplayMapper;
-        addListener((DisplayDeviceRepository) listener);
+        //addListener((DisplayDeviceRepository) listener);
     }
 
     @Override
@@ -58,6 +59,28 @@ public final class MiFreeformTDisplayAdapter extends MiFreeformDisplayAdapter {
             sendDisplayDeviceEventLocked(device, DISPLAY_DEVICE_EVENT_ADDED);
             mFreeformDisplayDevices.put(appToken, device);
             miFreeformDisplayCallbackArrayMap.put(device, callback);
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    int count = 10;
+                    LogicalDisplay display = mLogicalDisplayMapper.getDisplayLocked(device);
+                    while (count-- > 0 && display == null) {
+                        display = mLogicalDisplayMapper.getDisplayLocked(device);
+                        Log.i(TAG, "findLogicalDisplayForDevice " + display);
+                        if (display == null) {
+                            try {
+                                Thread.sleep(200);
+                            } catch (InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    }
+                    try {
+                        callback.onDisplayAdd(display.getDisplayIdLocked());
+                    } catch (Exception ignored) {}
+                }
+            }).start();
 
             try {
                 appToken.linkToDeath(device, 0);

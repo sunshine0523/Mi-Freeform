@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -55,6 +56,7 @@ class AppListActivity : ComponentActivity() {
         serviceConnection = object : ServiceConnection {
             override fun onServiceConnected(p0: ComponentName, binder: IBinder) {
                 val viewModel = (binder as FloatingService.MyBinder).getService().getViewModel()
+                viewModel.filterApp("")
                 setContent {
                     MiFreeformTheme {
                         Surface(

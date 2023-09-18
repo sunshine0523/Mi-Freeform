@@ -1,10 +1,13 @@
 package com.sunshine.freeform.ui.floating
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.LauncherApps
 import android.graphics.PixelFormat
 import android.net.Uri
+import android.os.IBinder
 import android.os.UserHandle
 import android.os.UserManager
 import android.provider.Settings
@@ -17,7 +20,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sunshine.freeform.R
 import com.sunshine.freeform.room.FreeFormAppsEntity
+import com.sunshine.freeform.service.FloatingService
 import com.sunshine.freeform.utils.PackageUtils
+import com.sunshine.freeform.utils.ServiceUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
@@ -43,11 +48,34 @@ class FloatingWindow(
     private var allFreeFormApps: ArrayList<FreeFormAppsEntity>? = null
     private var floatingView: View? = null
     private var floatingViewLayoutParams = WindowManager.LayoutParams()
+
+    private var serviceConnection: ServiceConnection?= null
+    private var service: FloatingService? = null
     init {
-        userManager.userProfiles.forEach {
-            userHandleMap[com.sunshine.freeform.systemapi.UserHandle.getUserId(it)] = it
+        val intent = Intent(context, FloatingService::class.java)
+        if (ServiceUtils.isServiceWork(context, "com.sunshine.freeform.service.FloatingService").not()) {
+            context.startService(intent)
         }
-        showFloatingView()
+        serviceConnection = object : ServiceConnection {
+            override fun onServiceConnected(p0: ComponentName?, binder: IBinder) {
+                service = (binder as FloatingService.MyBinder).getService()
+                if (service?.getShowingSidebar() == true) {
+                    context.unbindService(serviceConnection!!)
+                } else {
+                    userManager.userProfiles.forEach {
+                        userHandleMap[com.sunshine.freeform.systemapi.UserHandle.getUserId(it)] = it
+                    }
+                    showFloatingView()
+                }
+            }
+
+            override fun onServiceDisconnected(p0: ComponentName?) {
+
+            }
+
+        }
+        context.bindService(intent, serviceConnection!!, Context.BIND_AUTO_CREATE)
+
     }
 
     private fun showFloatingView() {
@@ -74,6 +102,7 @@ class FloatingWindow(
 
                 runCatching {
                     windowManager.addView(floatingView, floatingViewLayoutParams)
+                    service?.setShowingSidebar(true)
                 }.onFailure {
                     if (!Settings.canDrawOverlays(context)) {
                         runCatching {
@@ -143,7 +172,13 @@ class FloatingWindow(
     }
 
     private fun removeWindow() {
-        runCatching { windowManager.removeViewImmediate(floatingView) }
+        runCatching {
+            windowManager.removeViewImmediate(floatingView)
+            service?.setShowingSidebar(false)
+            if (serviceConnection != null) {
+                context.unbindService(serviceConnection!!)
+            }
+        }
     }
 
     abstract class ClickListener {

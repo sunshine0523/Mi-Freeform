@@ -8,6 +8,7 @@ import android.os.IBinder
 class FloatingService : Service() {
 
     private lateinit var viewModel: ServiceViewModel
+    private var isShowingSidebar = false
 
     override fun onBind(intent: Intent): IBinder {
         viewModel = ServiceViewModel(this.application)
@@ -16,6 +17,14 @@ class FloatingService : Service() {
 
     fun getViewModel(): ServiceViewModel {
         return viewModel
+    }
+
+    fun getShowingSidebar(): Boolean {
+        return isShowingSidebar
+    }
+
+    fun setShowingSidebar(isShowingSidebar: Boolean) {
+        this.isShowingSidebar = isShowingSidebar
     }
 
     inner class MyBinder : Binder() {

@@ -46,6 +46,10 @@ class ServiceViewModel(private val application: Application): AndroidViewModel(a
     private val comparable = AppComparable()
 
     init {
+        initAppList()
+    }
+
+    private fun initAppList() {
         userManager.userProfiles.forEach {
             userHandleMap[com.sunshine.freeform.systemapi.UserHandle.getUserId(it)] = it
         }
@@ -91,7 +95,9 @@ class ServiceViewModel(private val application: Application): AndroidViewModel(a
 
     fun filterApp(filter: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            if (filter.isBlank()) _appList.postValue(allAppList)
+            if (filter.isBlank()) {
+                _appList.postValue(allAppList)
+            }
             else {
                 val filterAppList = allAppList.filter { appInfo ->
                     appInfo.label.contains(filter, true)
