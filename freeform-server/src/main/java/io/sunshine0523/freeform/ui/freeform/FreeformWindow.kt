@@ -94,14 +94,14 @@ class FreeformWindow(
 
     override fun onDisplayAdd(displayId: Int) {
         MLog.i(TAG, "onDisplayAdd displayId $displayId")
-        this.displayId = displayId
-        freeformTaskStackListener = FreeformTaskStackListener(displayId, this)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            SystemServiceHolder.activityTaskManager.registerTaskStackListener(freeformTaskStackListener)
-        } else {
-            SystemServiceHolder.activityManager.registerTaskStackListener(freeformTaskStackListener)
-        }
         handler.post {
+            this.displayId = displayId
+            freeformTaskStackListener = FreeformTaskStackListener(displayId, this)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                SystemServiceHolder.activityTaskManager.registerTaskStackListener(freeformTaskStackListener)
+            } else {
+                SystemServiceHolder.activityManager.registerTaskStackListener(freeformTaskStackListener)
+            }
             // pendingIntent
             if (appConfig.userId == -100) {
                 if (appConfig.pendingIntent == null) destroy("onDisplayAdd:userId=-100, but pendingIntent is null", false)
@@ -125,7 +125,6 @@ class FreeformWindow(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(view: View, event: MotionEvent): Boolean {
-        Log.i(TAG, "1")
         val pointerCoords: Array<MotionEvent.PointerCoords?> = arrayOfNulls(event.pointerCount)
         val pointerProperties: Array<MotionEvent.PointerProperties?> = arrayOfNulls(event.pointerCount)
         for (i in 0 until event.pointerCount) {
