@@ -6,6 +6,7 @@ import android.app.ITaskStackListener
 import android.content.ComponentName
 import android.os.Build
 import android.util.Log
+import android.view.Display
 import android.view.Surface
 import android.window.TaskSnapshot
 import androidx.annotation.RequiresApi
@@ -193,7 +194,7 @@ class FreeformTaskStackListener(
     }
 
     override fun onTaskDisplayChanged(taskId: Int, newDisplayId: Int) {
-
+        if (taskId == this.taskId && newDisplayId == Display.DEFAULT_DISPLAY) window.destroy("onTaskDisplayChanged", false)
     }
 
     override fun onRecentTaskListUpdated() {

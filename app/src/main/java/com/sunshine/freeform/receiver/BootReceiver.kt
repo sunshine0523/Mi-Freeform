@@ -16,7 +16,7 @@ class BootReceiver : BroadcastReceiver() {
     }
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == BOOT) {
-            context.startService(Intent(context, SidebarService::class.java))
+            //context.startService(Intent(context, SidebarService::class.java))
         }
     }
 }

@@ -63,14 +63,14 @@ class LeftViewLongClickListener(private val window: FreeformWindow): View.OnLong
                         MLog.e(TAG, "taskId is -1, can`t move")
                         return true
                     }
-                    SystemServiceHolder.activityTaskManager.moveRootTaskToDisplay(window.freeformTaskStackListener!!.taskId, Display.DEFAULT_DISPLAY)
+                    runCatching { SystemServiceHolder.activityTaskManager.moveRootTaskToDisplay(window.freeformTaskStackListener!!.taskId, Display.DEFAULT_DISPLAY) }
                 }
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> {
                     if (window.freeformTaskStackListener!!.stackId == -1) {
                         MLog.e(TAG, "stackId is -1, can`t move")
                         return true
                     }
-                    SystemServiceHolder.activityTaskManager.moveStackToDisplay(window.freeformTaskStackListener!!.stackId, Display.DEFAULT_DISPLAY)
+                    runCatching { SystemServiceHolder.activityTaskManager.moveStackToDisplay(window.freeformTaskStackListener!!.stackId, Display.DEFAULT_DISPLAY) }
                 }
             }
         }
