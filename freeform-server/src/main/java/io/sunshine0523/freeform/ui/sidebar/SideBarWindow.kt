@@ -8,13 +8,10 @@ import android.os.Handler
 import android.view.Display
 import android.view.IRotationWatcher
 import android.view.View
-import android.view.WindowInsetsHidden
 import android.view.WindowManager
 import android.view.WindowManagerHidden
 import io.sunshine0523.freeform.service.SystemServiceHolder
 import io.sunshine0523.freeform.util.MLog
-import java.lang.reflect.Field
-
 /**
  * @author KindBrave
  * @since 2023/8/22
@@ -54,7 +51,7 @@ class SideBarWindow(
             rightView.setBackgroundColor(Color.TRANSPARENT)
             SideBarTouchListener(this)
             leftWindowParams.apply {
-                type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                type = 2026
                 width = 100
                 height = screenHeight / 5
                 x = -screenWidth / 2
@@ -67,7 +64,7 @@ class SideBarWindow(
                 format = PixelFormat.RGBA_8888
             }
             rightWindowParams.apply {
-                type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                type = 2026
                 width = 100
                 height = screenHeight / 5
                 x = screenWidth / 2

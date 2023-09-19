@@ -6,6 +6,7 @@
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".MiFreeform"
@@ -69,11 +70,31 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
-
         <service
             android:name=".service.FloatingService"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false" />
+        <service
+            android:name=".service.SidebarService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver
+            android:name=".receiver.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".receiver.StartFreeformReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.sunshine.freeform.start_freeform" />
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="xposedmodule"

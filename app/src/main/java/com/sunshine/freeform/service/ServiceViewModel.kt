@@ -124,6 +124,10 @@ class ServiceViewModel(private val application: Application): AndroidViewModel(a
         return sp.getInt(name, defaultValue)
     }
 
+    fun getBooleanSp(name: String, defaultValue: Boolean): Boolean {
+        return sp.getBoolean(name, defaultValue)
+    }
+
     private inner class AppComparable : Comparator<AppInfo> {
         override fun compare(p0: AppInfo, p1: AppInfo): Int {
             return Collator.getInstance(Locale.CHINESE).compare(p0.label, p1.label)

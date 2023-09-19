@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(platform(libs.compose.bom))
     implementation(platform(libs.compose.bom))
+    implementation(libs.hiddenapirefineruntime)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(platform(libs.compose.bom))
     ksp(libs.room.compiler)
@@ -68,6 +69,7 @@ dependencies {
     androidTestImplementation(platform(libs.compose.bom))
 
     compileOnly(files("libs/XposedBridgeAPI-89.jar"))
+    compileOnly(projects.hiddenApi)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
