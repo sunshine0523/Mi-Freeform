@@ -9,7 +9,7 @@ Mi-Freeform 3 is an Android third-party freeform software that supports Android 
 ## TODO
 
 - Compatible with Android 8.1-Android 9 ⭐⭐⭐⭐⭐
-- Redo the sidebar trigger way ⭐⭐⭐⭐
+- ✅Redo the sidebar trigger way ⭐⭐⭐⭐
 - Sliding style window ⭐⭐⭐
 - Takeover notification ⭐⭐
 - Start in multitasking ⭐
