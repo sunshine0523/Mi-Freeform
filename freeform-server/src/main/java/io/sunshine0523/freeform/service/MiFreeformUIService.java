@@ -35,7 +35,7 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
     private Handler uiHandler = null;
     private Handler handler = null;
     private Settings settings;
-    private SideBarService sideBarService;
+    //private SideBarService sideBarService;
     private FreeformNotificationListener notificationListener;
 
     public MiFreeformUIService(Context context, MiFreeformDisplayAdapter miFreeformDisplayAdapter, MiFreeformService miFreeformService, Handler uiHandler, Handler handler) {
@@ -59,7 +59,7 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
                 MLog.e(TAG, "add mi_freeform service failed, " + e);
             }
             if (ServiceManager.getService("mi_freeform") == null) return;
-            this.sideBarService = new SideBarService(context, uiHandler, settings);
+            //this.sideBarService = new SideBarService(context, uiHandler, settings);
             initNotificationListener();
         });
     }
@@ -122,7 +122,7 @@ public class MiFreeformUIService extends IMiFreeformUIService.Stub {
     @Override
     public void setSettings(String settings) {
         DataHelper.INSTANCE.saveSettings(settings, () -> {
-            sideBarService.onChanged();
+            //sideBarService.onChanged();
             notificationListener.onChanged();
             FreeformWindowManager.settings = DataHelper.INSTANCE.getSettings();
         });

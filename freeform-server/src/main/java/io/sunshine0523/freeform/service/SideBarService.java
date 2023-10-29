@@ -20,19 +20,19 @@ public class SideBarService implements DataChangeListener {
         this.uiHandler = uiHandler;
         this.settings = settings;
 
-        new Thread(() -> {
-            if (settings.getEnableSideBar()) {
-                // wait system ui boot
-                SystemServiceHolder.waitSystemService("wallpaper");
-                sideBarWindow = new SideBarWindow(context, uiHandler);
-            }
-        }).start();
+//        new Thread(() -> {
+//            if (settings.getEnableSideBar()) {
+//                // wait system ui boot
+//                SystemServiceHolder.waitSystemService("wallpaper");
+//                sideBarWindow = new SideBarWindow(context, uiHandler);
+//            }
+//        }).start();
     }
 
     @Override
     public void onChanged() {
-        settings = DataHelper.INSTANCE.getSettings();
-        setSideBarStatus(settings.getEnableSideBar());
+//        settings = DataHelper.INSTANCE.getSettings();
+//        setSideBarStatus(settings.getEnableSideBar());
     }
 
     public void setSideBarStatus(boolean show) {

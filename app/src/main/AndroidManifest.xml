@@ -19,11 +19,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MiFreeform"
         tools:targetApi="31" >
-        <activity
-            android:name=".ui.app_list.FreeformAppActivity"
-            android:exported="false"
-            android:label="@string/title_activity_freeform_app"
-            android:theme="@style/Theme.MiFreeform" />
+<!--        <activity-->
+<!--            android:name=".ui.app_list.FreeformAppActivity"-->
+<!--            android:exported="false"-->
+<!--            android:label="@string/title_activity_freeform_app"-->
+<!--            android:theme="@style/Theme.MiFreeform" />-->
         <activity
             android:name=".ui.app_list.AppListActivity"
             android:exported="true"
