@@ -57,6 +57,7 @@ class AppListActivity : ComponentActivity() {
             override fun onServiceConnected(p0: ComponentName, binder: IBinder) {
                 val viewModel = (binder as FloatingService.MyBinder).getService().getViewModel()
                 viewModel.filterApp("")
+                viewModel.initAppList()
                 setContent {
                     MiFreeformTheme {
                         Surface(

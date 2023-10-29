@@ -21,3 +21,5 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class * implements android.os.IInterface {*;}
+-keep class com.sunshine.freeform.ui.main.MainActivity
+-keep class com.sunshine.freeform.ui.main.MainActivityKt

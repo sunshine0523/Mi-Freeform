@@ -25,3 +25,4 @@ include(
     ":freeform-server",
     ":service"
 )
+include(":module")

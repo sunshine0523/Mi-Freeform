@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">米窗</string>
-    <string name="xposed_description">Test</string>
     <string name="service_running">米窗服务正在运行</string>
     <string name="service_not_running">米窗服务没有运行</string>
     <string name="title_activity_floating">侧边栏</string>
@@ -25,4 +24,5 @@
     <string name="title_activity_freeform">启动小窗</string>
     <string name="take_over_notification">接管通知</string>
     <string name="take_over_notification_message">在通知中展示小窗按钮。仅支持Android 12+。警告：使用推送服务的通知无法正确跳转，比如MIUI</string>
+    <string name="please_install_mi_freeform_sidebar_app">请安装米窗-侧边栏软件</string>
 </resources>

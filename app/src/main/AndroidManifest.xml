@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools" >
 
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
@@ -18,8 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MiFreeform"
-        tools:targetApi="31">
-
+        tools:targetApi="31" >
         <activity
             android:name=".ui.app_list.FreeformAppActivity"
             android:exported="false"
@@ -36,7 +35,7 @@
             android:exported="true"
             android:label="@string/title_activity_floating"
             android:taskAffinity=":floating"
-            android:theme="@style/ActivityDialogTheme">
+            android:theme="@style/ActivityDialogTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.ASSIST" />
 
@@ -46,7 +45,7 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.MiFreeform">
+            android:theme="@style/Theme.MiFreeform" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -65,7 +64,7 @@
             android:exported="true"
             android:icon="@drawable/tile_icon"
             android:label="@string/sidebar"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE" >
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
@@ -81,7 +80,7 @@
 
         <receiver
             android:name=".receiver.BootReceiver"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
@@ -90,24 +89,11 @@
         </receiver>
         <receiver
             android:name=".receiver.StartFreeformReceiver"
-            android:exported="true">
+            android:exported="true" >
             <intent-filter>
                 <action android:name="com.sunshine.freeform.start_freeform" />
             </intent-filter>
         </receiver>
-
-        <meta-data
-            android:name="xposedmodule"
-            android:value="true" />
-        <meta-data
-            android:name="xposeddescription"
-            android:value="@string/xposed_description" />
-        <meta-data
-            android:name="xposedminversion"
-            android:value="53" />
-        <meta-data
-            android:name="xposedscope"
-            android:resource="@array/xposedscope" />
     </application>
 
 </manifest>

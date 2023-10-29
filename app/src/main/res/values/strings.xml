@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Mi-Freeform</string>
-    <string name="xposed_description">A Freeform App</string>
 
     <!--MainActivity-->
     <string name="setting">Settings</string>
@@ -29,6 +28,7 @@
     <string name="freeform_height">Freeform Height</string>
     <string name="freeform_dpi">Freeform DPI</string>
     <string name="freeform_width_height_warn">Freeform`s height must bigger than width</string>
+    <string name="please_install_mi_freeform_sidebar_app">Please install Mi-Freeform - Sidebar app</string>
 
     <!--FreeformAppActivity-->
     <string name="title_activity_freeform_app">Choose Freeform App</string>
@@ -40,4 +40,10 @@
     <string name="title_activity_freeform">Open a Freeform</string>
     <string name="take_over_notification">Take over notification</string>
     <string name="take_over_notification_message">Display the freeform button in the notification. Only support Android 12+. Warning: use push can NOT be redirected correctly. e.g. MIUI.</string>
+    <string name="title_activity_test">TestActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
 </resources>

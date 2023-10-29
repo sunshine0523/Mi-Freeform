@@ -1,7 +1,5 @@
 package android.view;
 
-import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_DEFAULT;
-
 import dev.rikka.tools.refine.RefineAs;
 
 @RefineAs(WindowManager.class)

@@ -26,6 +26,7 @@ class RemoteResourceHolder(context: Context, private val resPkg: String) {
         } catch (e: Exception) {
             e.printStackTrace()
             MLog.e(TAG, "init", e)
+            runCatching { remoteContext = context.createPackageContext(resPkg, CONTEXT_INCLUDE_CODE or CONTEXT_IGNORE_SECURITY) }
         }
     }
 

@@ -1,6 +1,9 @@
 package com.sunshine.freeform.ui.main
 
+import android.content.ComponentName
+import android.content.Intent
 import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +30,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sunshine.freeform.R
@@ -40,7 +44,9 @@ import kotlin.math.roundToInt
 
 @Composable
 fun SettingWidget(mainViewModel: MainViewModel) {
-    val enableSideBar by mainViewModel.enableSideBar.observeAsState(false)
+    val sidebarPackageName = "io.sunshine0523.sidebar"
+    val sidebarActivityName = "io.sunshine0523.sidebar.ui.main.MainActivity"
+    val context = LocalContext.current
     val showImeInFreeform by mainViewModel.showImeInFreeform.observeAsState(false)
     val takeOverNotification by mainViewModel.notification.observeAsState(false)
     val freeformWidth by mainViewModel.freeformWidth.observeAsState((mainViewModel.screenWidth * 0.8).roundToInt())
@@ -50,18 +56,33 @@ fun SettingWidget(mainViewModel: MainViewModel) {
     val snackBarHostState = remember { SnackbarHostState() }
     var isShowingSnackBar by remember { mutableStateOf(false) }
     val warn = stringResource(id = R.string.freeform_width_height_warn)
+    val notInstallSidebar = stringResource(id = R.string.please_install_mi_freeform_sidebar_app)
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
         item {
-            SettingSwitchOption(
+            SettingButton(
                 stringResource(id = R.string.sidebar),
                 stringResource(id = R.string.sidebar_message),
-                enableSideBar
             ) {
-                mainViewModel.saveRemoteSidebar(it)
+                runCatching {
+                    val intent = Intent().apply {
+                        component = ComponentName(sidebarPackageName, sidebarActivityName)
+                    }
+                    context.startActivity(intent)
+                }.onFailure {
+                    if (isShowingSnackBar.not()) {
+                        coroutineScope.launch {
+                            isShowingSnackBar = true
+                            val result = snackBarHostState.showSnackbar(notInstallSidebar, withDismissAction = true)
+                            if (result == SnackbarResult.Dismissed) {
+                                isShowingSnackBar = false
+                            }
+                        }
+                    }
+                }
             }
             SettingSlideBarOption(
                 stringResource(id = R.string.freeform_width),
@@ -184,5 +205,26 @@ fun SettingSlideBarOption(
             steps = steps,
             onValueChange = onValueChanged,
         )
+    }
+}
+
+@Composable
+fun SettingButton(
+    title: String,
+    message: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(text = title, style = MaterialTheme.typography.titleLarge)
+            Text(text = message, style = MaterialTheme.typography.bodyMedium)
+        }
     }
 }

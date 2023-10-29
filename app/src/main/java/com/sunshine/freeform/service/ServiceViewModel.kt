@@ -49,7 +49,7 @@ class ServiceViewModel(private val application: Application): AndroidViewModel(a
         initAppList()
     }
 
-    private fun initAppList() {
+    fun initAppList() {
         userManager.userProfiles.forEach {
             userHandleMap[com.sunshine.freeform.systemapi.UserHandle.getUserId(it)] = it
         }
