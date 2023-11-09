@@ -101,12 +101,12 @@ public abstract class MiFreeformDisplayAdapter extends DisplayAdapter {
         private int mWidth;
         private int mHeight;
         private int mDensityDpi;
-        private DisplayHidden.Mode mMode;
-        private Surface mSurface;
-        private DisplayDeviceInfo mInfo;
+        protected DisplayHidden.Mode mMode;
+        protected Surface mSurface;
+        protected DisplayDeviceInfo mInfo;
 
-        private final Callback mCallback;
-        private final IBinder mAppToken;
+        protected final Callback mCallback;
+        protected final IBinder mAppToken;
 
         private int mPendingChanges;
 
