@@ -76,7 +76,9 @@ class FreeformWindow(
 
     override fun onSurfaceTextureAvailable(surfaceTexture: SurfaceTexture, width: Int, height: Int) {
         MLog.i(TAG, "onSurfaceTextureAvailable width:$width height:$height")
-        MiFreeformServiceHolder.createDisplay(freeformConfig, appConfig, Surface(surfaceTexture), this)
+        if (displayId < 0) {
+            MiFreeformServiceHolder.createDisplay(freeformConfig, appConfig, Surface(surfaceTexture), this)
+        }
         surfaceTexture.setDefaultBufferSize(freeformConfig.freeformWidth, freeformConfig.freeformHeight)
     }
 
