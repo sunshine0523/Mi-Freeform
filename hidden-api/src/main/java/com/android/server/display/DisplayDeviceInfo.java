@@ -1,6 +1,7 @@
 package com.android.server.display;
 
 import android.view.DisplayHidden;
+import android.view.DisplayShape;
 
 final class DisplayDeviceInfo {
     /**
@@ -117,6 +118,11 @@ final class DisplayDeviceInfo {
      * Display flags.
      */
     public int flags;
+
+    /**
+     * The {@link RoundedCorners} if present or {@code null} otherwise.
+     */
+    public DisplayShape displayShape;
 
     /**
      * The touch attachment, per {@link DisplayViewport#touch}.

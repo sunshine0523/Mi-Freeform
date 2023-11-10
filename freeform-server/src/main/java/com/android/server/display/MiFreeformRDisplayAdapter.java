@@ -51,27 +51,15 @@ public final class MiFreeformRDisplayAdapter extends MiFreeformDisplayAdapter {
             mFreeformDisplayDevices.put(appToken, device);
             miFreeformDisplayCallbackArrayMap.put(device, callback);
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    int count = 10;
-                    LogicalDisplay display = findLogicalDisplayForDevice(device);
-                    while (count-- > 0 && display == null) {
-                        display = findLogicalDisplayForDevice(device);
-                        Log.i(TAG, "findLogicalDisplayForDevice " + display);
-                        if (display == null) {
-                            try {
-                                Thread.sleep(200);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-                    try {
-                        callback.onDisplayAdd(display.getDisplayIdLocked());
-                    } catch (Exception ignored) {}
+            mHandler.postDelayed(() -> {
+                LogicalDisplay display = findLogicalDisplayForDevice(device);
+                MLog.i(TAG, "findLogicalDisplayForDevice " + display);
+                try {
+                    callback.onDisplayAdd(display.getDisplayIdLocked());
+                } catch (Exception ignored) {
+
                 }
-            }).start();
+            }, 500);
 
             try {
                 appToken.linkToDeath(device, 0);

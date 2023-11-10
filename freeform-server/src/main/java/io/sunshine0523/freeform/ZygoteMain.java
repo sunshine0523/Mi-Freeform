@@ -88,6 +88,9 @@ public class ZygoteMain {
             Object mDisplayDeviceRepo = mDisplayDeviceRepoField.get(displayManagerServiceObj);
             Object mLogicalDisplayMapper = mLogicalDisplayMapperField.get(displayManagerServiceObj);
             Class<?> mfdaClass = classLoader.loadClass("com.android.server.display.MiFreeformTDisplayAdapter");
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                mfdaClass = classLoader.loadClass("com.android.server.display.MiFreeformUDisplayAdapter");
+            }
             miFreeformDisplayAdapterObj = mfdaClass.getConstructors()[0].newInstance(mSyncRoot, mContext, mHandler, mDisplayDeviceRepo, mLogicalDisplayMapper, mUiHandler);
             mfdaClass.getMethod("registerLocked").invoke(miFreeformDisplayAdapterObj);
         }

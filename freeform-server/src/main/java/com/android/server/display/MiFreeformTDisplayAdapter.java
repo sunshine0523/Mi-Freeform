@@ -1,21 +1,12 @@
 package com.android.server.display;
 
-import static com.android.server.display.DisplayDeviceInfo.FLAG_TRUSTED;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.os.RemoteException;
-import android.util.ArrayMap;
-//@RefineAs(Display.class)
 import android.util.Log;
-import android.view.DisplayHidden;
 import android.view.Surface;
-//@RefineAs(SurfaceControl.class)
 import android.view.SurfaceControlHidden;
-
-import java.io.PrintWriter;
 
 import io.sunshine0523.freeform.IMiFreeformDisplayCallback;
 import io.sunshine0523.freeform.util.MLog;
@@ -60,27 +51,15 @@ public final class MiFreeformTDisplayAdapter extends MiFreeformDisplayAdapter {
             mFreeformDisplayDevices.put(appToken, device);
             miFreeformDisplayCallbackArrayMap.put(device, callback);
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    int count = 10;
-                    LogicalDisplay display = mLogicalDisplayMapper.getDisplayLocked(device);
-                    while (count-- > 0 && display == null) {
-                        display = mLogicalDisplayMapper.getDisplayLocked(device);
-                        Log.i(TAG, "findLogicalDisplayForDevice " + display);
-                        if (display == null) {
-                            try {
-                                Thread.sleep(200);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-                    try {
-                        callback.onDisplayAdd(display.getDisplayIdLocked());
-                    } catch (Exception ignored) {}
+            mHandler.postDelayed(() -> {
+                LogicalDisplay display = mLogicalDisplayMapper.getDisplayLocked(device);
+                MLog.i(TAG, "findLogicalDisplayForDevice " + display);
+                try {
+                    callback.onDisplayAdd(display.getDisplayIdLocked());
+                } catch (Exception e) {
+
                 }
-            }).start();
+            }, 500);
 
             try {
                 appToken.linkToDeath(device, 0);
@@ -88,7 +67,6 @@ public final class MiFreeformTDisplayAdapter extends MiFreeformDisplayAdapter {
                 mFreeformDisplayDevices.remove(appToken);
                 device.destroyLocked(false);
             }
-            //MLog.i(TAG, "createFreeformLocked");
         }
     }
 
