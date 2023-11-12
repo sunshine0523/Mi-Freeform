@@ -79,8 +79,20 @@ public class ZygoteMain {
         classLoader.getClass().getMethod("addDexPath", String.class).invoke(classLoader, "/data/system/mi_freeform/freeform.dex");
 
         Object miFreeformDisplayAdapterObj;
+        // for Android U
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            Field mDisplayDeviceRepoField = dmsClass.getDeclaredField("mDisplayDeviceRepo");
+            Field mLogicalDisplayMapperField = dmsClass.getDeclaredField("mLogicalDisplayMapper");
+            mDisplayDeviceRepoField.setAccessible(true);
+            mLogicalDisplayMapperField.setAccessible(true);
+            Object mDisplayDeviceRepo = mDisplayDeviceRepoField.get(displayManagerServiceObj);
+            Object mLogicalDisplayMapper = mLogicalDisplayMapperField.get(displayManagerServiceObj);
+            Class<?> mfdaClass = classLoader.loadClass("com.android.server.display.MiFreeformUDisplayAdapter");
+            miFreeformDisplayAdapterObj = mfdaClass.getConstructors()[0].newInstance(mSyncRoot, mContext, mHandler, mDisplayDeviceRepo, mLogicalDisplayMapper, mUiHandler);
+            mfdaClass.getMethod("registerLocked").invoke(miFreeformDisplayAdapterObj);
+        }
         // for Android S,T
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             Field mDisplayDeviceRepoField = dmsClass.getDeclaredField("mDisplayDeviceRepo");
             Field mLogicalDisplayMapperField = dmsClass.getDeclaredField("mLogicalDisplayMapper");
             mDisplayDeviceRepoField.setAccessible(true);
@@ -88,9 +100,6 @@ public class ZygoteMain {
             Object mDisplayDeviceRepo = mDisplayDeviceRepoField.get(displayManagerServiceObj);
             Object mLogicalDisplayMapper = mLogicalDisplayMapperField.get(displayManagerServiceObj);
             Class<?> mfdaClass = classLoader.loadClass("com.android.server.display.MiFreeformTDisplayAdapter");
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                mfdaClass = classLoader.loadClass("com.android.server.display.MiFreeformUDisplayAdapter");
-            }
             miFreeformDisplayAdapterObj = mfdaClass.getConstructors()[0].newInstance(mSyncRoot, mContext, mHandler, mDisplayDeviceRepo, mLogicalDisplayMapper, mUiHandler);
             mfdaClass.getMethod("registerLocked").invoke(miFreeformDisplayAdapterObj);
         }
