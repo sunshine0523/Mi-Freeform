@@ -19,6 +19,10 @@ Mi-Freeform 3 is an Android third-party freeform software that supports Android 
 - Touch sampling rate
 - Some apps will reload after restoring to the default screen
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=sunshine0523/Mi-Freeform&type=Date)](https://star-history.com/#sunshine0523/Mi-Freeform&Date)
+
 ## License
 
 ```
